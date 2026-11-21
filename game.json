@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "template": "voxel",
+  "title": "Arc Voxel Survivors · Endless",
+  "runtime": [
+    "three"
+  ],
+  "slots": {
+    "hero": {
+      "file": "assets/hero.svg",
+      "label": "Arc Hero",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "enemy": {
+      "file": "assets/enemy.svg",
+      "label": "Void Boss",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "pickup": {
+      "file": "assets/pickup.svg",
+      "label": "Arc Gem",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "background": {
+      "file": "assets/ground.svg",
+      "label": "Cyber Isle Ground",
+      "size": [
+        512,
+        512
+      ],
+      "transparent": false,
+      "tile": true,
+      "texture": true
+    }
+  },
+  "rules": {
+    "duration": 0,
+    "hearts": 4,
+    "heroSpeed": 8.6,
+    "enemySpeed": 3.8,
+    "enemySpeedGrowth": 0.06,
+    "enemySpawnEvery": 0.9,
+    "maxEnemies": 36,
+    "maxPickups": 6,
+    "bossEvery": 30,
+    "heroSize": 1.9,
+    "enemySize": 1.65,
+    "pickupSize": 1.15,
+    "shield": {
+      "enabled": false,
+      "every": 15,
+      "seconds": 2
+    },
+    "worldSize": 38,
+    "seed": 11,
+    "palette": {
+      "skyTop": "#060b1e",
+      "skyBottom": "#183363",
+      "fog": "#102347",
+      "grass": "#226f68",
+      "dirt": "#2c324f",
+      "sand": "#6b99b2",
+      "water": "#083a61",
+      "accent": "#38f2ff"
+    }
+  },
+  "style": "hardcore endless cyber-voxel roguelite arena with enemy bullet hell, charging beasts, and live leaderboard",
+  "orientation": "landscape"
+}
