@@ -1,0 +1,25 @@
+{
+  "defaultNetwork": "arc-testnet",
+  "defaultContract": "",
+  "networks": {
+    "arc-testnet": {
+      "chainId": "0x4cef52",
+      "chainIdDec": 5042002,
+      "chainName": "Arc Testnet",
+      "nativeCurrency": {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 18
+      },
+      "rpcUrls": [
+        "https://rpc.testnet.arc.network",
+        "https://testnet-rpc.arc.network"
+      ],
+      "blockExplorerUrls": [
+        "https://testnet.arcscan.app/"
+      ],
+      "faucetUrl": "https://faucet.circle.com/",
+      "erc20Usdc": "0x3600000000000000000000000000000000000000"
+    }
+  }
+}
