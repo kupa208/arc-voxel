@@ -13,8 +13,10 @@
   "private": true,
   "scripts": {
     "start": "bun server.mjs",
-    "build": "bun run build:wc && bun run build:passkey && node build.mjs",
+    "build": "bun run build:wc && bun run build:passkey && bun run build:circle && node build.mjs",
     "test:local": "bun contracts/test-integration/gamefi-local.ts",
+    "test:email": "bun contracts/test-integration/email-wallet.ts",
+    "build:circle": "bun build vendor/circle-entry.js --target=browser --format=iife --minify --define process.env.NODE_ENV=\\\"production\\\" --outfile=vendor/circle-sdk.js",
     "build:wc": "bun build vendor/walletconnect-entry.js --target=browser --format=iife --minify --define process.env.NODE_ENV=\\\"production\\\" --define import.meta.env=undefined --outfile=vendor/walletconnect.js",
     "build:passkey": "bun build vendor/passkey-entry.js --target=browser --format=iife --minify --define process.env.NODE_ENV=\\\"production\\\" --outfile=vendor/passkey.js"
   },

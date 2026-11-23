@@ -370,7 +370,7 @@
       featuresTitle: '🗺️ Arc Quest Board',
       boardDone: 'done',
       questNext: 'NEXT',
-      qConnectT: 'Connect your wallet', qConnectD: 'A passkey wallet (fingerprint or face) or any wallet. It unlocks every quest.',
+      qConnectT: 'Connect your wallet', qConnectD: 'Sign in with email or use any wallet. It unlocks every quest.',
       qPlayT: 'Play your first run', qPlayD: 'Survive the waves and rack up points.',
       qSaveT: 'Save a score onchain', qSaveD: 'Free gas. Earn ARCQ, and a Scout badge from 300 points.',
       qSeasonT: 'Enter the daily season', qSeasonD: 'Pay 1 USDC. The top 3 share the prize pool.',
@@ -406,6 +406,33 @@
       passkeySetup: 'Passkey wallets are not set up on this server yet. Add CIRCLE_CLIENT_KEY to .env.local and restart. In Circle Console, set the Client Key Allowed Domain and the Passkey Domain Name to exactly:',
       passkeyDomainErr: 'This passkey belongs to a different address than the game. In Circle Console, set the Passkey Domain Name to:',
       passkeyExists: 'That passkey already exists on this device. Press "Use an existing passkey" instead.',
+      emailTitle: 'Sign in with email',
+      emailNote: 'Use your Gmail or any email. Circle sends a one-time code, you set a PIN once, and your Arc wallet is created. Gas is free. Keep your PIN safe: nobody can recover it for you.',
+      emailPh: 'you@gmail.com',
+      emailSendBtn: 'Send me a code',
+      emailEnterBtn: 'Enter the code',
+      emailOtherBtn: 'Use another email',
+      emailSending: 'Sending the code',
+      emailSent: 'Code sent to {email}. Check your inbox and spam folder, then press "Enter the code".',
+      emailWaitCode: 'Waiting for your code',
+      emailWaitPin: 'Set your PIN in the Circle window',
+      emailWaitWallet: 'Creating your wallet',
+      emailBad: 'Enter a valid email address.',
+      emailSetup: 'Email sign-in is not ready yet: the email provider (SMTP) still has to be set up in Circle Console.',
+      emailSendFirst: 'Request a code first.',
+      emailPending: 'Your wallet is still being created. Wait a moment and sign in again.',
+      emailSigninAgain: 'Your email sign-in expired. Sign in with email again to approve transactions.',
+      emailSigninBtn: 'Sign in again',
+      emailErrExpired: 'That code expired. Request a new one.',
+      emailErrWrong: 'That code is not correct. Try again.',
+      emailErrLocked: 'Too many wrong codes. Request a new one.',
+      emailErrRate: 'Too many requests. Wait a few minutes and try again.',
+      emailErrSend: 'The email could not be sent. Try again in a moment.',
+      emailErrPin: 'That PIN is not correct.',
+      emailErrPinLocked: 'Your PIN is locked after too many wrong tries. Try again later.',
+      emailLabel: 'Email',
+      claimingEmail: 'Approve with your PIN in the Circle window...',
+      emailGasNote: 'Gas is free for this wallet. You approve every transaction with your PIN. You only need USDC for the season entry fee. Send USDC to the address above (testnet faucet) to enter a season.',
       confirmTitle: 'Confirm transaction',
       confirmBtn: 'Confirm',
       rejectBtn: 'Cancel',
@@ -623,7 +650,7 @@
       featuresTitle: '🗺️ Bảng Nhiệm Vụ Arc',
       boardDone: 'hoàn thành',
       questNext: 'TIẾP THEO',
-      qConnectT: 'Kết nối ví', qConnectD: 'Ví passkey (vân tay, khuôn mặt) hoặc ví có sẵn. Mở khóa mọi nhiệm vụ.',
+      qConnectT: 'Kết nối ví', qConnectD: 'Đăng nhập bằng email hoặc dùng ví có sẵn. Mở khóa mọi nhiệm vụ.',
       qPlayT: 'Chơi ván đầu tiên', qPlayD: 'Sống sót qua các đợt quái để lấy điểm.',
       qSaveT: 'Ghi điểm lên chuỗi', qSaveD: 'Miễn phí gas. Nhận ARCQ, và huy hiệu Trinh Sát từ 300 điểm.',
       qSeasonT: 'Vào mùa giải hằng ngày', qSeasonD: 'Đóng 1 USDC. Top 3 chia quỹ thưởng.',
@@ -653,6 +680,33 @@
       passkeySetup: 'Ví passkey chưa được cấu hình trên server. Thêm CIRCLE_CLIENT_KEY vào .env.local rồi khởi động lại. Trong Circle Console, đặt Allowed Domain của Client Key và Passkey Domain Name đúng bằng:',
       passkeyDomainErr: 'Passkey này thuộc về một địa chỉ khác với game. Trong Circle Console, hãy đặt Passkey Domain Name là:',
       passkeyExists: 'Passkey này đã có trên thiết bị. Hãy bấm "Dùng passkey có sẵn".',
+      emailTitle: 'Đăng nhập bằng email',
+      emailNote: 'Dùng Gmail hoặc email bất kỳ. Circle gửi mã dùng một lần, bạn đặt mã PIN một lần và ví Arc của bạn được tạo. Miễn phí gas. Hãy giữ kỹ mã PIN: không ai khôi phục được giúp bạn.',
+      emailPh: 'ban@gmail.com',
+      emailSendBtn: 'Gửi mã cho tôi',
+      emailEnterBtn: 'Nhập mã',
+      emailOtherBtn: 'Dùng email khác',
+      emailSending: 'Đang gửi mã',
+      emailSent: 'Đã gửi mã tới {email}. Hãy kiểm tra hộp thư và thư rác, rồi bấm "Nhập mã".',
+      emailWaitCode: 'Đang chờ mã của bạn',
+      emailWaitPin: 'Hãy đặt mã PIN trong cửa sổ Circle',
+      emailWaitWallet: 'Đang tạo ví của bạn',
+      emailBad: 'Hãy nhập địa chỉ email hợp lệ.',
+      emailSetup: 'Đăng nhập bằng email chưa sẵn sàng: cần cấu hình nhà cung cấp email (SMTP) trong Circle Console.',
+      emailSendFirst: 'Hãy yêu cầu mã trước.',
+      emailPending: 'Ví của bạn vẫn đang được tạo. Hãy chờ một chút rồi đăng nhập lại.',
+      emailSigninAgain: 'Phiên đăng nhập email đã hết hạn. Hãy đăng nhập lại bằng email để xác nhận giao dịch.',
+      emailSigninBtn: 'Đăng nhập lại',
+      emailErrExpired: 'Mã đã hết hạn. Hãy yêu cầu mã mới.',
+      emailErrWrong: 'Mã chưa đúng. Hãy thử lại.',
+      emailErrLocked: 'Nhập sai quá nhiều lần. Hãy yêu cầu mã mới.',
+      emailErrRate: 'Quá nhiều yêu cầu. Hãy chờ vài phút rồi thử lại.',
+      emailErrSend: 'Không gửi được email. Hãy thử lại sau ít phút.',
+      emailErrPin: 'Mã PIN chưa đúng.',
+      emailErrPinLocked: 'PIN bị khóa do nhập sai nhiều lần. Hãy thử lại sau.',
+      emailLabel: 'Email',
+      claimingEmail: 'Hãy xác nhận bằng mã PIN trong cửa sổ Circle...',
+      emailGasNote: 'Ví này miễn phí gas. Bạn xác nhận mỗi giao dịch bằng mã PIN. Bạn chỉ cần USDC để đóng phí vào mùa giải. Hãy gửi USDC testnet vào địa chỉ ở trên để vào mùa.',
       confirmTitle: 'Xác nhận giao dịch',
       confirmBtn: 'Xác nhận',
       rejectBtn: 'Hủy',
@@ -2996,9 +3050,19 @@
     }
     return '';
   }
+  var EMAIL_ERR = {
+    155104: 'emailSigninAgain', 155105: 'emailSigninAgain', 155130: 'emailErrExpired', 155131: 'emailErrExpired', 155132: 'emailErrExpired',
+    155133: 'emailErrWrong', 155134: 'emailErrWrong', 155141: 'emailErrLocked', 155146: 'emailErrLocked', 155142: 'emailErrRate',
+    155135: 'emailBad', 155138: 'emailErrSend', 155150: 'emailSetup', 503: 'emailSetup', 155112: 'emailErrPin', 155119: 'emailErrPinLocked', 429: 'emailErrRate',
+  };
   function friendlyTxError(err) {
     var msg = (err && err.message) || String(err);
     if (err && err.code === 4001) return t('cancelled');
+    if (err && err.emailCode && EMAIL_ERR[err.emailCode]) return t(EMAIL_ERR[err.emailCode]);
+    if (msg === 'EMAIL_SIGNIN_AGAIN') return t('emailSigninAgain');
+    if (msg === 'EMAIL_NOT_CONFIGURED') return t('emailSetup');
+    if (msg === 'EMAIL_WALLET_PENDING') return t('emailPending');
+    if (msg === 'EMAIL_NO_CODE') return t('emailSendFirst');
     var known = contractErrorText(err);
     if (known) return known;
     if (msg === 'NEED_USDC') return t('needUsdc');
@@ -3298,6 +3362,54 @@
       .catch(function (err) { cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
   }
 
+  /* Sign in with email: Circle emails a one-time code, the player enters it (and sets a PIN the first time) in Circle's window. */
+  var emailStage = 'input', emailTyped = '';
+  var EMAIL_RESTART_CODES = [155130, 155131, 155132, 155141, 155146];
+  function maskEmail(addr) {
+    var parts = String(addr || '').split('@');
+    if (parts.length !== 2) return '';
+    return parts[0].slice(0, 2) + '***@' + parts[1];
+  }
+  function renderEmailBox(parent) {
+    var box = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.4)', parent);
+    el('div', 'font-weight:900;font-size:14px;color:#ffd166', box).textContent = '✉️ ' + t('emailTitle');
+    el('div', 'font-size:12.5px;opacity:.85;line-height:1.45', box).textContent = t('emailNote');
+    var inp = el('input', 'width:100%;padding:8px 10px;font-size:13px;box-sizing:border-box', box);
+    inp.className = 'avq-input'; inp.type = 'email'; inp.maxLength = 254; inp.autocomplete = 'email'; inp.placeholder = t('emailPh'); inp.value = emailTyped;
+    inp.disabled = emailStage === 'sent';
+    inp.oninput = function () { emailTyped = inp.value; };
+    var row = el('div', 'display:flex;gap:8px;flex-wrap:wrap', box);
+    if (emailStage === 'input') {
+      var bSend = el('button', '', row); bSend.className = 'avq-btn pri'; bSend.textContent = '📨 ' + t('emailSendBtn');
+      bSend.onclick = function () {
+        var addr = String(inp.value || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(addr)) { cnStatus.textContent = '⚠️ ' + t('emailBad'); return; }
+        emailTyped = addr;
+        bSend.disabled = true;
+        cnStatus.textContent = '⏳ ' + t('emailSending') + '...';
+        web3.requestEmailCode(addr).then(function () {
+          emailStage = 'sent'; cnStatus.textContent = ''; renderConnectModal();
+        }).catch(function (err) { bSend.disabled = false; cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
+      };
+    } else {
+      el('div', 'font-size:12.5px;color:#7dffb1;line-height:1.45;width:100%', row).textContent = fill(t('emailSent'), { email: emailTyped });
+      var bEnter = el('button', '', row); bEnter.className = 'avq-btn pri'; bEnter.textContent = '🔑 ' + t('emailEnterBtn');
+      bEnter.onclick = function () {
+        cnStatus.textContent = '⏳ ' + t('emailWaitCode') + '...';
+        web3.verifyEmailCode(function (step) {
+          cnStatus.textContent = '⏳ ' + t(step === 'pin' ? 'emailWaitPin' : step === 'wallet' ? 'emailWaitWallet' : 'emailWaitCode') + '...';
+        }).then(function () {
+          emailStage = 'input'; cnStatus.textContent = ''; afterLogin();
+        }).catch(function (err) {
+          cnStatus.textContent = '⚠️ ' + friendlyTxError(err);
+          if (err && EMAIL_RESTART_CODES.indexOf(err.emailCode) !== -1) { emailStage = 'input'; renderConnectModal(); }
+        });
+      };
+      var bOther = el('button', '', row); bOther.className = 'avq-btn'; bOther.textContent = t('emailOtherBtn');
+      bOther.onclick = function () { emailStage = 'input'; cnStatus.textContent = ''; renderConnectModal(); };
+    }
+  }
+
   function renderConnectModal() {
     var st = web3.state;
     cnBody.innerHTML = '';
@@ -3311,22 +3423,7 @@
     el('div', 'font-size:22px;font-weight:900;color:#eefaff', head).textContent = t('connectTitle');
     el('div', 'opacity:.75;font-size:13px', head).textContent = t('connectSub');
 
-    // Passkey wallet: a smart account opened with fingerprint, face or Windows Hello (no extension, no seed phrase, no gas)
-    var pBox = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(99,247,255,.07);border:1px solid rgba(99,247,255,.35)', cnBody);
-    el('div', 'font-weight:900;font-size:14px;color:#63f7ff', pBox).textContent = '🔐 ' + t('passkeyTitle');
-    el('div', 'font-size:12.5px;opacity:.85;line-height:1.45', pBox).textContent = t('passkeyNote');
-    if (!web3.passkeyEnabled()) {
-      var setupBox = el('div', 'padding:8px 10px;border-radius:10px;background:rgba(255,209,102,.08);border:1px dashed rgba(255,209,102,.45);font-size:12px;line-height:1.5;color:#ffe9a8', pBox);
-      setupBox.textContent = t('passkeySetup') + ' ' + window.location.hostname;
-    } else {
-      var nameIn = el('input', 'width:100%;padding:8px 10px;font-size:13px;box-sizing:border-box', pBox);
-      nameIn.className = 'avq-input'; nameIn.maxLength = 32; nameIn.placeholder = t('passkeyNamePh'); nameIn.value = playerName || '';
-      var pBtns = el('div', 'display:flex;gap:8px;flex-wrap:wrap', pBox);
-      var bNew = el('button', '', pBtns); bNew.className = 'avq-btn pri'; bNew.textContent = '✨ ' + t('passkeyCreateBtn');
-      bNew.onclick = function () { connectWith(function () { return web3.registerPasskey(nameIn.value); }, t('passkeyWorking')); };
-      var bOld = el('button', '', pBtns); bOld.className = 'avq-btn'; bOld.textContent = '🔑 ' + t('passkeyLoginBtn');
-      bOld.onclick = function () { connectWith(function () { return web3.loginPasskey(); }, t('passkeyWorking')); };
-    }
+    if (web3.emailEnabled()) renderEmailBox(cnBody);
 
     // Other wallets (installed ones connect directly, others link to their install page)
     el('div', 'font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.65;margin-top:4px', cnBody).textContent = t('yourWallets');
@@ -3470,8 +3567,17 @@
         row(t('walletLabel'), st.walletName || '—');
         row(t('walletAddrLabel'), st.account);
         row(t('gasBalLabel'), window.ARC_WEB3.formatUnits(st.usdcBalance, 6, 2) + ' USDC');
+        if (st.kind === 'email' && st.email) row(t('emailLabel'), maskEmail(st.email));
+        if (st.kind === 'email' && web3.emailNeedsSignin()) {
+          var reBox = el('div', 'display:flex;flex-direction:column;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(255,209,102,.08);border:1px dashed rgba(255,209,102,.45);font-size:12px;color:#ffe9a8', infoBox);
+          el('div', '', reBox).textContent = t('emailSigninAgain');
+          var bRe = el('button', 'align-self:flex-start', reBox); bRe.className = 'avq-btn'; bRe.textContent = t('emailSigninBtn');
+          bRe.onclick = function () { web3.logout().then(function () { refreshStaticTexts(); closeWeb3Modal(); openConnectModal(); }); };
+        }
         if (st.kind === 'passkey') {
           el('div', 'opacity:.8;font-size:12px', infoBox).textContent = t('passkeyGasNote');
+        } else if (st.kind === 'email') {
+          el('div', 'opacity:.8;font-size:12px', infoBox).textContent = t('emailGasNote');
         } else {
           if (st.usdcBalance === 0n) el('div', 'color:#ffd166;font-weight:700', infoBox).textContent = t('noGasWarn');
           el('div', 'opacity:.7;font-size:12px', infoBox).textContent = t('fundHint');
@@ -3582,14 +3688,14 @@
       updateCardTexts();
       return;
     }
-    if (!freeGas && web3.state.kind !== 'passkey' && web3.state.usdcBalance === 0n) { // passkey wallets never pay gas
+    if (!freeGas && web3.state.kind !== 'passkey' && web3.state.kind !== 'email' && web3.state.usdcBalance === 0n) { // passkey and email wallets never pay gas
       claimStatusText = '⚠️ ' + t('needGas');
       updateCardTexts();
       return;
     }
     cardClaimBtn.disabled = true;
     cardClaimOwnBtn.disabled = true;
-    claimStatusText = t(freeGas ? 'claimingFree' : (web3.state.kind === 'passkey' ? 'claimingPasskey' : 'claimingWallet'));
+    claimStatusText = t(freeGas ? 'claimingFree' : (web3.state.kind === 'passkey' ? 'claimingPasskey' : (web3.state.kind === 'email' ? 'claimingEmail' : 'claimingWallet')));
     updateCardTexts();
     var run = { score: score, gems: gems, maxCombo: maxCombo, wave: wave, elapsed: Math.floor(elapsed), telemetry: telemetry };
     try {

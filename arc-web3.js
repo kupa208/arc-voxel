@@ -530,6 +530,9 @@
       state.walletName = '';
       injected = null;
       passkey = null;
+      emailCtx = null;
+      emailLoginWaiter = null;
+      saveEmailTokens(null);
       state.account = '';
       state.walletId = '';
       state.email = '';
@@ -546,10 +549,12 @@
     async function apiPost(path, body) {
       var res = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
       var json = await res.json().catch(function () { return {}; });
-      if (res.status === 401 && body && body.session) clearSession();
+      // An expired email sign-in (155104) only asks for a new code; the game session itself is still fine.
+      if (res.status === 401 && body && body.session && json.code !== 155104) clearSession();
       if (!res.ok) {
         var err = new Error(json.error || ('Server error ' + res.status));
         err.status = res.status;
+        if (json.code) err.code = json.code;
         throw err;
       }
       return json;
@@ -605,6 +610,18 @@
           state.kind = 'passkey';
           state.walletName = 'Passkey wallet';
           state.account = String(stP.address).toLowerCase();
+          await refreshChainState().catch(function () {});
+          return true;
+        }
+        if (saved.kind === 'email') {
+          if (!state.setup || !state.setup.email || !state.setup.email.enabled) return false;
+          var stM = await apiPost('/api/wallet/status', { session: state.session });
+          var tokens = loadEmailTokens(); // kept for this browser tab only; without them the player can look around but must sign in again to approve
+          emailCtx = { userToken: tokens ? tokens.userToken : '', encryptionKey: tokens ? tokens.encryptionKey : '', email: saved.email || '' };
+          state.kind = 'email';
+          state.walletName = 'Email wallet';
+          state.email = saved.email || '';
+          state.account = String(stM.address).toLowerCase();
           await refreshChainState().catch(function () {});
           return true;
         }
@@ -678,6 +695,10 @@
     }
 
     /* ---- WalletConnect: scan a QR code with a phone wallet. The ~2 MB bundle is only loaded when it is used. ---- */
+    function reportClientError(message) {
+      try { fetch('/api/client-error', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ message: String(message) }) }).catch(function () {}); } catch (e) { /* reporting must never break the flow */ }
+    }
+
     function loadScriptOnce(src) {
       return new Promise(function (resolve, reject) {
         var el = document.createElement('script');
@@ -935,6 +956,180 @@
       return { txHash: state.lastTxHash, explorerUrl: explorerLink(state.lastTxHash), points: built.points };
     }
 
+    /* ---- email wallets (Circle user-controlled wallets): a one-time code sent to the player's email, then a PIN.
+       The wallet is a smart account whose gas Circle sponsors. Every transaction is approved with the PIN in Circle's hosted window. ---- */
+    var SS_EMAIL = 'arc-voxel-quest:email-auth';
+    var emailCtx = null; // { sdk, deviceId, email, otpReady, userToken, encryptionKey }
+    var emailLoginWaiter = null; // resolved by the SDK's login callback after the code is verified
+
+    function loadEmailTokens() {
+      try {
+        var raw = window.sessionStorage.getItem(SS_EMAIL);
+        var j = raw ? JSON.parse(raw) : null;
+        return j && j.exp > Date.now() && j.userToken ? j : null;
+      } catch (e) { return null; }
+    }
+
+    function saveEmailTokens(v) {
+      try {
+        if (typeof window === 'undefined' || !window.sessionStorage) return;
+        if (v) window.sessionStorage.setItem(SS_EMAIL, JSON.stringify(v));
+        else window.sessionStorage.removeItem(SS_EMAIL);
+      } catch (e) { /* ignore */ }
+    }
+
+    function emailConfig() {
+      var e = state.setup && state.setup.email;
+      if (!e || !e.enabled || !e.appId) throw new Error('EMAIL_NOT_CONFIGURED');
+      return e;
+    }
+
+    /* Keeps Circle error codes on the error so the game can show a clear message. A closed PIN window is a plain cancel. */
+    function wrapEmailError(err) {
+      var code = Number(err && (err.circleCode || err.code)) || 0;
+      if (code === 155701) { var cancelled = new Error('Cancelled'); cancelled.code = 4001; return cancelled; }
+      var out = err instanceof Error ? err : new Error(String((err && err.message) || err || 'Email sign-in failed'));
+      out.emailCode = code;
+      return out;
+    }
+
+    async function getEmailSdk() {
+      var cfg = emailConfig();
+      if (emailCtx && emailCtx.sdk) return emailCtx.sdk;
+      if (!root.ARC_CIRCLE) {
+        var loadErrors = [];
+        var onErr = function (ev) { loadErrors.push((ev && ev.message) || 'script error'); };
+        window.addEventListener('error', onErr);
+        try { await loadScriptOnce('/vendor/circle-sdk.js?v=' + ((state.setup && state.setup.assetVersion) || Date.now())); } finally { window.removeEventListener('error', onErr); }
+        for (var w = 0; w < 60 && !root.ARC_CIRCLE && !root.ARC_CIRCLE_ERROR; w++) await sleep(100);
+        if (!root.ARC_CIRCLE) {
+          var why = root.ARC_CIRCLE_ERROR || loadErrors[0] || 'the script did not register itself';
+          reportClientError('circle sdk load: ' + why);
+          throw new Error('Could not load email sign-in (' + why + ')');
+        }
+      }
+      var sdk = new root.ARC_CIRCLE.W3SSdk({ appSettings: { appId: cfg.appId } }, function (error, result) {
+        var waiter = emailLoginWaiter;
+        emailLoginWaiter = null;
+        if (!waiter) return;
+        if (error) waiter.reject(error); else waiter.resolve(result);
+      });
+      var deviceId = await sdk.getDeviceId(); // opens the session with Circle's hosted frame; execute() fails silently without it
+      emailCtx = Object.assign(emailCtx || {}, { sdk: sdk, deviceId: deviceId });
+      return sdk;
+    }
+
+    /* Step 1: Circle emails a one-time code to the player. */
+    async function requestEmailCode(email) {
+      try {
+        var cfg = emailConfig();
+        var sdk = await getEmailSdk();
+        var r = await apiPost('/api/email/request-otp', { email: String(email || '').trim(), deviceId: emailCtx.deviceId });
+        sdk.updateConfigs({
+          appSettings: { appId: cfg.appId },
+          loginConfigs: { deviceToken: r.deviceToken, deviceEncryptionKey: r.deviceEncryptionKey, otpToken: r.otpToken },
+        });
+        emailCtx.email = String(email).trim().toLowerCase();
+        emailCtx.otpReady = true;
+        emailCtx.userToken = '';
+        return true;
+      } catch (err) { throw wrapEmailError(err); }
+    }
+
+    function executeChallenge(challengeId) {
+      return new Promise(function (resolve, reject) {
+        emailCtx.sdk.execute(challengeId, function (error, result) {
+          if (error) { var e = new Error(String(error.message || 'Circle could not complete this step')); e.circleCode = error.code; reject(wrapEmailError(e)); } else resolve(result);
+        });
+      });
+    }
+
+    /* Step 2: the player enters the code in Circle's window. First sign-in also sets a PIN and creates the wallet.
+       `onStep` is called with 'code', 'pin' and 'wallet' so the game can say what is happening. */
+    async function verifyEmailCode(onStep) {
+      var step = onStep || function () {};
+      try {
+        if (!emailCtx || !emailCtx.sdk || !emailCtx.otpReady) throw new Error('EMAIL_NO_CODE');
+        var sdk = emailCtx.sdk;
+        step('code');
+        var login = await new Promise(function (resolve, reject) {
+          emailLoginWaiter = { resolve: resolve, reject: reject };
+          sdk.verifyOtp();
+        });
+        emailCtx.userToken = login.userToken;
+        emailCtx.encryptionKey = login.encryptionKey;
+        emailCtx.otpReady = false;
+        step('wallet');
+        var init = await apiPost('/api/email/initialize', { userToken: login.userToken });
+        if (init.challengeId) {
+          step('pin');
+          sdk.setAuthentication({ userToken: login.userToken, encryptionKey: login.encryptionKey });
+          await executeChallenge(init.challengeId);
+          step('wallet');
+        }
+        var s = null; // Circle creates the wallet a few seconds after the PIN is set
+        for (var i = 0; i < 24; i++) {
+          s = await apiPost('/api/email/session', { userToken: login.userToken });
+          if (s.session) break;
+          await sleep(1500);
+        }
+        if (!s || !s.session) throw new Error('EMAIL_WALLET_PENDING');
+        state.kind = 'email';
+        state.session = s.session;
+        state.account = String(s.address).toLowerCase();
+        state.walletName = 'Email wallet';
+        state.email = emailCtx.email || '';
+        saveStorageJson(LS_AUTH, { session: s.session, kind: 'email', email: state.email, exp: Date.now() + 23 * 3600 * 1000 });
+        saveEmailTokens({ userToken: login.userToken, encryptionKey: login.encryptionKey, exp: Date.now() + 55 * 60 * 1000 });
+        await refreshChainState().catch(function () {});
+        notify();
+        return state;
+      } catch (err) { throw wrapEmailError(err); }
+    }
+
+    /* Follows the newest transaction of this wallet until it has a hash. Returns '' when Circle is slow: the caller then checks the chain. */
+    async function waitEmailTx(beforeId) {
+      var end = Date.now() + 60000;
+      while (Date.now() < end) {
+        var r = await apiPost('/api/email/last-tx', { session: state.session, userToken: emailCtx.userToken }).catch(function () { return null; });
+        if (r && r.id && r.id !== beforeId) {
+          if (r.state === 'FAILED' || r.state === 'DENIED' || r.state === 'CANCELLED') throw new Error('The transaction did not go through (' + r.state.toLowerCase() + ').');
+          if (r.txHash) return r.txHash;
+        }
+        await sleep(1500);
+      }
+      return '';
+    }
+
+    /* Email wallet: the PIN window approves a contract call that Circle sends and sponsors. */
+    async function sendEmail(action, params, done) {
+      if (!emailCtx || !emailCtx.userToken || !emailCtx.encryptionKey) throw wrapEmailError(Object.assign(new Error('EMAIL_SIGNIN_AGAIN'), { circleCode: 155104 }));
+      try {
+        var built = await buildAction(action, params);
+        if (client.onConfirm) {
+          var okToGo = await client.onConfirm({ action: action, params: params || {}, points: built.points });
+          if (!okToGo) { var cancelled = new Error('Cancelled'); cancelled.code = 4001; throw cancelled; }
+        }
+        var sdk = await getEmailSdk();
+        var cred = { session: state.session, userToken: emailCtx.userToken };
+        var before = await apiPost('/api/email/last-tx', cred).catch(function () { return { id: '' }; });
+        var ch = await apiPost('/api/email/challenge', Object.assign({ to: built.to, data: built.data }, cred));
+        sdk.setAuthentication({ userToken: emailCtx.userToken, encryptionKey: emailCtx.encryptionKey });
+        await executeChallenge(ch.challengeId);
+        var hash = await waitEmailTx(before.id);
+        if (hash) state.lastTxHash = hash;
+        await waitFor(done);
+        return { txHash: state.lastTxHash, explorerUrl: explorerLink(state.lastTxHash), points: built.points };
+      } catch (err) {
+        if (err && (err.code === 155104 || err.code === 155105 || err.emailCode === 155104 || err.emailCode === 155105)) {
+          emailCtx.userToken = '';
+          saveEmailTokens(null);
+          throw wrapEmailError(Object.assign(new Error('EMAIL_SIGNIN_AGAIN'), { circleCode: 155104 }));
+        }
+        throw wrapEmailError(err);
+      }
+    }
+
     async function logout() {
       var token = state.session;
       clearSession();
@@ -955,6 +1150,7 @@
     async function sendAction(action, params, done) {
       if (!state.session || !state.account) throw new Error('NEED_LOGIN');
       if (state.kind === 'passkey') return sendPasskey(action, params, done);
+      if (state.kind === 'email') return sendEmail(action, params, done);
       return sendEvm(action, params, done);
     }
 
@@ -1149,6 +1345,10 @@
       registerPasskey: registerPasskey,
       loginPasskey: loginPasskey,
       passkeyEnabled: function () { return Boolean(state.setup && state.setup.passkey && state.setup.passkey.enabled); },
+      emailEnabled: function () { return Boolean(state.setup && state.setup.email && state.setup.email.enabled); },
+      emailNeedsSignin: function () { return state.kind === 'email' && !(emailCtx && emailCtx.userToken && emailCtx.encryptionKey); },
+      requestEmailCode: requestEmailCode,
+      verifyEmailCode: verifyEmailCode,
       onConfirm: null,
       listWalletOptions: listWalletOptions,
       connectWalletConnectWallet: connectWalletConnectWallet,

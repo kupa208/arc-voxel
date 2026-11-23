@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url'
 import { createPublicClient, createWalletClient, decodeFunctionResult, defineChain, encodeAbiParameters, encodeFunctionData, fallback, formatUnits, http, isAddress, keccak256, parseAbi, recoverMessageAddress, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { verifyTelemetry } from './anticheat.mjs'
+import { createEmailWallet, EmailError } from './email-wallet.mjs'
 import { chainCall, getBoard, getPlayer, indexerStatus, indexerRpcUrl, readConfigPublic, readStartTime, scanNow, startIndexer } from './indexer.mjs'
 
 const root = dirname(fileURLToPath(import.meta.url))
@@ -74,6 +75,22 @@ const clientErrWindow = { at: 0, n: 0 }
 // The client key is meant for browsers and is limited to the allowed domain set in Circle Console.
 const circleClientKey = (process.env.CIRCLE_CLIENT_KEY || '').trim()
 const CIRCLE_CLIENT_URL = 'https://modular-sdk.circle.com/v1/rpc/w3s/buidl'
+// Email wallets: Circle user-controlled wallets (email one-time code + PIN). Needs CIRCLE_API_KEY, SMTP set up in Circle Console, and CIRCLE_EMAIL_OTP=on.
+const circleApiKey = (process.env.CIRCLE_API_KEY || '').trim()
+const emailOtpOn = ['on', '1', 'true'].includes(String(process.env.CIRCLE_EMAIL_OTP || '').toLowerCase()) && Boolean(circleApiKey)
+let circleClientPromise = null
+let circleAppIdPromise = null
+function circleUserClient() {
+  circleClientPromise ||= import('@circle-fin/user-controlled-wallets').then((m) => m.initiateUserControlledWalletsClient({ apiKey: circleApiKey }))
+  return circleClientPromise
+}
+/** The Circle App ID is public (the browser SDK needs it). It is read once from the account behind the API key. */
+function circleAppId() {
+  circleAppIdPromise ||= fetch('https://api.circle.com/v1/w3s/config/entity', { headers: { Authorization: `Bearer ${circleApiKey}` } })
+    .then(async (r) => { const j = await r.json(); const id = j && j.data && j.data.appId; if (!id) throw new Error('no app id'); return String(id) })
+    .catch((e) => { circleAppIdPromise = null; throw e })
+  return circleAppIdPromise
+}
 /** browser wallet sessions, proven by a signed message
  * @type {Map<string, {address: string, exp: number}>} */
 const sessions = new Map()
@@ -151,6 +168,35 @@ function sessionOf(body) {
   const s = sessions.get(String(body?.session || ''))
   if (!s || s.exp < Date.now()) throw new HttpError(401, 'Please connect your wallet')
   return s
+}
+
+const emailWallet = createEmailWallet({
+  getClient: () => (emailOtpOn ? circleUserClient() : Promise.reject(new EmailError(503, 'Email sign-in is not enabled on this server.', 503))),
+  getContract: contractAddress,
+  usdc: process.env.GAME_USDC || '0x3600000000000000000000000000000000000000',
+  newSession,
+  sessionOf,
+  log: (m) => console.log('[email]', m),
+})
+
+/** Client address for rate limits. Behind a local reverse proxy the forwarded address is used. */
+function clientIp(req, srv) {
+  const direct = String((srv && srv.requestIP(req) && srv.requestIP(req).address) || '')
+  if (/^(127\.|::1|::ffff:127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|fc|fd)/iu.test(direct)) {
+    const fwd = String(req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+    if (fwd) return fwd.slice(0, 64)
+  }
+  return direct || 'unknown'
+}
+
+async function handleEmail(p, body, ip) {
+  if (!emailOtpOn) throw new HttpError(404, 'Email sign-in is not enabled on this server.')
+  if (p === '/api/email/request-otp') return json(await emailWallet.requestOtp(body, ip))
+  if (p === '/api/email/initialize') return json(await emailWallet.initialize(body, ip))
+  if (p === '/api/email/session') return json(await emailWallet.session(body, ip))
+  if (p === '/api/email/challenge') return json(await emailWallet.challenge(body, ip))
+  if (p === '/api/email/last-tx') return json(await emailWallet.lastTx(body))
+  return new Response('Not found', { status: 404 })
 }
 
 function handleWalletStatus(body) {
@@ -341,7 +387,7 @@ function rejectLog(player, reason, detail) {
 
 /** Changes whenever a lazily loaded vendor bundle changes, so browsers never keep serving an old copy. */
 function assetVersion() {
-  try { return ['passkey.js', 'walletconnect.js'].map((f) => Math.floor(statSync(join(root, 'vendor', f)).mtimeMs / 1000)).join('-') } catch { return '0' }
+  try { return ['passkey.js', 'walletconnect.js', 'circle-sdk.js'].map((f) => Math.floor(statSync(join(root, 'vendor', f)).mtimeMs / 1000)).join('-') } catch { return '0' }
 }
 
 /** Removes URLs (which can carry the RPC proxy token) from anything that gets logged. */
@@ -417,7 +463,7 @@ async function relayRun(s, t) {
 
 /* ---------- routing ---------- */
 
-async function route(req, url) {
+async function route(req, url, srv) {
   const m = req.method
   const p = url.pathname
   const body = m === 'POST' ? await req.json().catch(() => ({})) : {}
@@ -428,8 +474,18 @@ async function route(req, url) {
     return json({ ok: !idx.stalled, signer: signer.address, indexer: idx, relayer: { enabled: Boolean(relayer), funded: relayerOk }, uptimeS: Math.floor(process.uptime()) })
   }
   if (m === 'GET' && p === '/api/config') {
-    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
+    let email = { enabled: false, appId: '' }
+    if (emailOtpOn) {
+      try { email = { enabled: true, appId: await circleAppId() } } catch (e) { console.warn('[email] could not read the Circle app id:', redact(e).split('\n')[0].slice(0, 160)) }
+    }
+    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
   }
+  if (m === 'GET' && p === '/vendor/circle-sdk.js') {
+    return new Response(Bun.file(join(root, 'vendor', 'circle-sdk.js')), {
+      headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache' },
+    })
+  }
+  if (m === 'POST' && p.startsWith('/api/email/')) return handleEmail(p, body, clientIp(req, srv))
   if (m === 'GET' && p === '/api/leaderboard') {
     if (url.searchParams.get('refresh') === '1' && Date.now() - lastRefreshAt > REFRESH_MIN_GAP_MS) {
       lastRefreshAt = Date.now()
@@ -497,13 +553,14 @@ Bun.serve({
   port,
   hostname: '0.0.0.0',
   maxRequestBodySize: 64 * 1024,
-  async fetch(req) {
+  async fetch(req, srv) {
     try {
-      const res = await route(req, new URL(req.url))
+      const res = await route(req, new URL(req.url), srv)
       if (req.method === 'POST') saveState()
       return res
     } catch (err) {
       if (err instanceof HttpError) return json({ error: err.message }, err.status)
+      if (err instanceof EmailError) return json({ error: err.message, code: err.code }, err.status)
       console.error('[server]', redact(err).slice(0, 400))
       return json({ error: 'Server error' }, 500)
     }

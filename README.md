@@ -8,6 +8,7 @@ Built with [Arc Studio](https://studio.arc.io)
 
 - **Play** an endless run with 5 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
 - **Connect** MetaMask, OKX, Rabby, Coinbase, Trust, Bitget, Phantom, Rainbow, Zerion or Brave. Arc Testnet is added for you.
+- **Sign in with email:** enter your Gmail (or any email), type the one-time code Circle sends you, set a PIN once and your Arc wallet is created. Gas is sponsored, and you approve each transaction with your PIN. If you lose the PIN nobody can recover the wallet.
 - **Save a run onchain** for free (the game pays the gas) or with your own wallet. Only runs with a transaction appear on the leaderboard, each with a link to its transaction.
 - **Daily seasons:** enter for 1 USDC, the top 3 split the pool.
 - **Daily quests and streaks** pay ARCQ automatically when you save a run.
@@ -38,7 +39,8 @@ Put these in `.env.local` (git-ignored). Never commit them.
 | --- | --- |
 | `GAME_SIGNER_PRIVATE_KEY` | Required. Signs run tickets the contract accepts. |
 | `RELAYER_PRIVATE_KEY` | Optional. Hot wallet that pays gas for free saves. Fund it with a little testnet USDC. |
-| `CIRCLE_CLIENT_KEY` | Optional. A Circle Modular Wallets Client Key (starts with `TEST_CLIENT_KEY:`). Enables passkey wallets: players create a wallet with a fingerprint, face or Windows Hello and confirm each transaction with it, with gas sponsored. In Circle Console set the key's Allowed Domain and the Passkey Domain Name to your game's hostname. |
+| `CIRCLE_API_KEY` | Optional. A Circle Standard Developer API Key. Needed for email sign-in. It stays on the server. |
+| `CIRCLE_EMAIL_OTP` | Optional. Set to `on` to show "Sign in with email". Before turning it on, add an SMTP email provider (SendGrid, Mailgun, Amazon SES or Resend; Mailtrap only captures mail) in Circle Console under Wallets, User Controlled, Configurator, Authentication Methods, Email OTP. |
 | `WALLETCONNECT_PROJECT_ID` | Optional. Shows the WalletConnect row for phone wallets. |
 | `RPC_PROXY_BASE_URL`, `RPC_PROXY_TOKEN`, `RPC_PROXY_CHAINS` | Optional outside Arc Studio. Provided by Arc Studio for RPC access. |
 | `RPC_URL_Arc_Testnet` | Optional. Your own RPC endpoint for the leaderboard indexer. |
@@ -48,6 +50,7 @@ Put these in `.env.local` (git-ignored). Never commit them.
 
 ```bash
 bun run test:local    # starts a local chain and the server, runs the full game flow (needs Foundry's anvil)
+bun run test:email    # email sign-in backend checks (no network or keys needed)
 forge build           # compile the contract
 ```
 

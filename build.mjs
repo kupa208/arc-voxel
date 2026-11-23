@@ -34,6 +34,7 @@ const csp = [
   "style-src 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline'",
   "connect-src 'self' https: wss: http://127.0.0.1:* http://localhost:*",
+  'frame-src https://*.circle.com', // Circle hosted windows (email code, PIN)
 ].join('; ')
 
 const style = 'html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:#09132b;user-select:none;-webkit-user-select:none;overscroll-behavior:none}'
