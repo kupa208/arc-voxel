@@ -1,0 +1,22 @@
+{
+  "name": "arc-voxel-quest",
+  "dependencies": {
+    "@circle-fin/modular-wallets-core": "^1.0.16",
+    "@circle-fin/user-controlled-wallets": "^10.8.1",
+    "@circle-fin/w3s-pw-web-sdk": "^1.1.11",
+    "@walletconnect/ethereum-provider": "^2.26.0"
+  },
+  "overrides": {
+    "zod": "^4.6.6",
+    "undici": "^6.25.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "bun server.mjs",
+    "build": "bun run build:wc && bun run build:passkey && node build.mjs",
+    "test:local": "bun contracts/test-integration/gamefi-local.ts",
+    "build:wc": "bun build vendor/walletconnect-entry.js --target=browser --format=iife --minify --define process.env.NODE_ENV=\\\"production\\\" --define import.meta.env=undefined --outfile=vendor/walletconnect.js",
+    "build:passkey": "bun build vendor/passkey-entry.js --target=browser --format=iife --minify --define process.env.NODE_ENV=\\\"production\\\" --outfile=vendor/passkey.js"
+  },
+  "type": "module"
+}

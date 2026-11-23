@@ -340,15 +340,104 @@
   /* 2. BILINGUAL I18N */
   var STRINGS = {
     en: {
-      title: 'Arc Voxel · Endless Arena',
-      subtitle: 'Survive infinite escalating waves! Dodge charging bulls, weave through enemy plasma fire & climb the Leaderboard.',
+      title: 'Arc Voxel Quest · Survive on Arc',
+      subtitle: 'Survive ever stronger waves on Arc! Dodge charging bulls, weave through boss plasma, then save your best run onchain and climb the leaderboard.',
       chooseHero: 'Select Hero (Arc VN):',
       chooseMap: 'Arc Community Arena:',
       roadmapLabel: 'W1-2 Warmup → W3-4 Pressure → W5-7 Elites → W8+ Overdrive',
       nickPlaceholder: 'Callsign (e.g. AceVN)',
-      startBtn: 'Start Endless Run',
+      startBtn: 'Enter the Arc Arena',
+      badgeRoadmapTitle: '🏅 Badge roadmap',
+      milestonesTitle: 'Side milestones',
+      msRuns5: 'Persistent: save 5 runs', msRuns25: 'Veteran: save 25 runs', msRuns100: 'Unbreakable: save 100 runs',
+      msGems500: 'Gem Hunter: collect 500 gems', msGems5000: 'Gem Tycoon: collect 5,000 gems',
+      msCombo5: 'Combo x5: reach a x5 multiplier', msCombo10: 'Combo Master: reach the x10 multiplier',
+      msStreak3: 'On a roll: a 3-day play streak', msStreak7: 'Weekly warrior: a 7-day play streak',
+      badgeReq: 'Save a run of {n}+ points (about {g} in-game points)',
+      badgeChampionReq: 'Win a daily season: finish first on the season leaderboard',
+      badgeEarned: 'Earned',
+      badgeNextGoal: 'Next goal: {tier} badge. {n} more points to go (about {g} in-game points).',
+      badgeAllScore: 'You hold every score badge. Win a daily season to earn the Champion badge.',
+      badgeFirstGoal: 'Goal: save one run of 300+ points (about 6,000 in-game points) to earn your first badge, Scout.',
+      badgeTipsTitle: 'How to climb',
+      badgeTips: [
+        'Keep your combo alive: every 4 kills in a row raises the score multiplier, up to x10.',
+        'Defeat bosses: each one is worth 300 base points before your multiplier.',
+        'Pick up gems to level up and unlock stronger weapons.',
+        'Buy upgrade NFTs in the shop to widen your item pickup range.',
+        'Enter the daily season to fight for the Champion badge and the USDC prize pool.'
+      ],
+      featuresTitle: '🗺️ Arc Quest Board',
+      boardDone: 'done',
+      questNext: 'NEXT',
+      qConnectT: 'Connect your wallet', qConnectD: 'A passkey wallet (fingerprint or face) or any wallet. It unlocks every quest.',
+      qPlayT: 'Play your first run', qPlayD: 'Survive the waves and rack up points.',
+      qSaveT: 'Save a score onchain', qSaveD: 'Free gas. Earn ARCQ, and a Scout badge from 300 points.',
+      qSeasonT: 'Enter the daily season', qSeasonD: 'Pay 1 USDC. The top 3 share the prize pool.',
+      qDailyT: 'Finish a daily quest', qDailyD: 'Quests and streaks pay up to 80 ARCQ a day.',
+      qHeroT: 'Buy an upgrade NFT', qHeroD: 'Each level widens your item pickup range.',
+      surrenderBtn: '🏳️ End run', surrenderConfirm: 'Tap again to end',
+      connectWalletShort: 'Connect Wallet',
+      accountTitle: 'My Account',
+      noWalletDetected: 'No browser wallet detected yet. Install MetaMask or Rabby in this browser, then reload the page.',
+      noWalletInFrame: 'You are viewing the game inside a preview frame, and wallet extensions are often blocked there. If you already installed a wallet, open the game outside the frame, or connect from a phone wallet with WalletConnect (set WALLETCONNECT_PROJECT_ID).',
+      detectAgain: 'Detect again',
+      noWalletDetected: 'Chưa phát hiện ví nào trong trình duyệt này. Hãy cài MetaMask hoặc Rabby vào trình duyệt này rồi tải lại trang.',
+      noWalletInFrame: 'Bạn đang xem game trong khung xem trước, nơi tiện ích ví thường bị chặn. Nếu đã cài ví mà vẫn không thấy, hãy mở game ngoài khung, hoặc kết nối bằng ví điện thoại qua WalletConnect (cần WALLETCONNECT_PROJECT_ID).',
+      detectAgain: 'Dò lại',
+      yourWallets: 'OTHER WALLETS',
+      installedInBrowser: 'Installed in browser',
+      installLink: 'Install',
+      wcTitle: 'WalletConnect',
+      wcDesc: 'Scan with a phone wallet',
+      wcNeedsSetup: 'WalletConnect needs a Project ID: add WALLETCONNECT_PROJECT_ID to .env.local',
+      connectTitle: 'Connect wallet',
+      connectSub: 'Connect a wallet to play on Arc Testnet.',
+      noBrowserWallet: 'No browser wallet found. Install MetaMask or Rabby, then reload the page.',
+      walletLabel: 'Wallet',
+      claimingWallet: 'Confirm the transaction in your wallet...',
+      claimingPasskey: 'Confirm with your passkey (fingerprint, face or Windows Hello)...',
+      passkeyTitle: 'Create a wallet with a passkey',
+      passkeyNote: 'No extension, no seed phrase. Confirm every transaction with your fingerprint, face or Windows Hello. Gas is free.',
+      passkeyNamePh: 'Wallet name (e.g. your nickname)',
+      passkeyCreateBtn: 'Create my wallet',
+      passkeyLoginBtn: 'Use an existing passkey',
+      passkeyWorking: 'Waiting for your passkey',
+      passkeySetup: 'Passkey wallets are not set up on this server yet. Add CIRCLE_CLIENT_KEY to .env.local and restart. In Circle Console, set the Client Key Allowed Domain and the Passkey Domain Name to exactly:',
+      passkeyDomainErr: 'This passkey belongs to a different address than the game. In Circle Console, set the Passkey Domain Name to:',
+      passkeyExists: 'That passkey already exists on this device. Press "Use an existing passkey" instead.',
+      confirmTitle: 'Confirm transaction',
+      confirmBtn: 'Confirm',
+      rejectBtn: 'Cancel',
+      confirmNetwork: 'Network',
+      confirmGas: 'Gas fee',
+      confirmGasFree: 'Free (sponsored)',
+      confirmWallet: 'Your wallet',
+      confirmEnter: 'Enter the daily season. Entry fee: {fee} USDC.',
+      confirmBuy: 'Buy upgrade NFT level {lvl} ({name}) for {cost} ARCQ (burned). +{bonus}% pickup range.',
+      confirmEquip: 'Use the level {lvl} NFT ({name}) colors on your hero.',
+      confirmUnequip: 'Remove the NFT colors from your hero.',
+      confirmClaim: 'Claim your prize for season #{season}, rank {rank}.',
+      confirmRollover: 'Move the prize pool of empty season #{season} to the current season.',
+      confirmSave: 'Save this run onchain: {points} points.',
+      confirmGeneric: 'Send this transaction to the Arc Voxel contract.',
+      emailLabel: 'Email',
+      googleNote: 'Get a wallet with your Google account. You set a PIN, and you approve every transaction with it.',
+      googleSetup: 'Email sign-in is not set up on this server yet. Add GOOGLE_CLIENT_ID to .env.local, restart the server, and allow this address as an Authorized JavaScript origin in Google Cloud:',
+      creatingWallet: 'Creating your wallet... finish the PIN setup in the Circle window.',
+      creatingWalletShort: 'Creating wallet',
+      finishWalletHint: 'signed in. Finish creating your wallet.',
+      finishWalletBtn: 'Create my wallet',
+      walletRequired: 'Connect your wallet to play.',
+      walletAddrLabel: 'Wallet address',
+      logoutBtn: 'Disconnect',
+      copyBtn: 'Copy address',
+      copied: 'Address copied',
+      passkeyGasNote: 'Gas is free for this wallet. You only need USDC for the season entry fee. Send USDC to the address above (testnet faucet) to enter a season.',
+      fundHint: 'This wallet pays gas in USDC. Copy the address, then request test USDC at the faucet.',
+      noGasWarn: 'This wallet has 0 USDC, so it cannot pay gas yet.',
+      needGas: 'Your wallet needs USDC for gas. Fund it from the faucet, then try again.',
       playAgainBtn: 'Run Again',
-      walletBtn: 'Web3 · Arc L1',
       dashBtn: 'DASH',
       lvlShort: 'LV',
       waveShort: 'WAVE',
@@ -367,7 +456,10 @@
       waveLabel: 'Wave',
       timeLabel: 'Survived',
       killsLabel: 'Kills',
-      lbTitle: '🏆 Endless Leaderboard (Top 6)',
+      lbTitle: '🏆 Arc Onchain Leaderboard (Top 6)',
+      lbColTx: 'Tx',
+      lbEmpty: 'No verified runs yet. Play, then press Record Score to be the first on the board.',
+      lbSyncing: 'Syncing chain data...',
       lbColPlayer: 'Player',
       lbColHero: 'Hero',
       lbColWave: 'Wave',
@@ -381,15 +473,87 @@
       tutStep1: 'Dodge red charge lines & magenta bullets! Stay off the water edge!',
       tutStep2: 'SPACE / DASH grants brief invulnerability & clears projectiles!',
       claimChainBtn: 'Submit Score On-Chain (Arc L1)',
+      claimGaslessBtn: 'Save Score · free gas',
+      claimOwnBtn: 'Save with my wallet (pay gas)',
+      claimingFree: 'Saving your run onchain (free)...',
+      shareBtn: 'Share score',
+      shareCopied: 'Card downloaded and text copied',
       claimDemoBtn: 'Save to Ranked Leaderboard',
-      claiming: 'Sending TX to Arc L1...',
       claimedOk: 'Score recorded on Arc L1!',
       claimedDemoOk: 'Rank saved!',
-      viewTx: 'View TX on ArcScan',
+      viewTx: 'View TX on Arc Explorer',
+      tabProfile: 'Profile',
+      tabQuests: 'Daily',
+      tabShop: 'Shop',
+      lbAll: 'All time',
+      lbSeasonF: 'This season',
+      streakLabel: 'Day streak',
+      recentRuns: 'Recent runs',
+      noRuns: 'No saved runs yet.',
+      badgeArtTitle: 'Your badge',
+      noBadge: 'Save a run of 300+ points to earn your first badge (Scout).',
+      skinsOwnedTitle: 'Your skins',
+      questsTitle: 'Daily quests',
+      questHint: 'Rewards are paid automatically when you save the run. They reset every UTC day.',
+      questFirst: 'Save a run today',
+      questFirstR: '5 ARCQ x streak (up to 7)',
+      questThree: 'Save 3 runs today',
+      questThreeR: '15 ARCQ',
+      questBig: 'Save one run of 1,000+ points',
+      questBigR: '30 ARCQ',
+      questDone: 'Done',
+      runsTodayLabel: 'Runs today',
+      shopTitle: 'Upgrade NFT shop',
+      magnetLvLabel: 'Pickup level',
+      magnetBonusLabel: 'Item pickup range',
+      magnetShort: 'pickup range',
+      levelWord: 'Level',
+      lockedBtn: 'Locked',
+      totalWord: 'total',
+      shopHint: 'Each NFT you own is one level. Every level widens the range that pulls items to you, and each one adds more than the last (+4%, +6%, +8%, +10%, +12%, +15%). Buy them in order. They are soulbound (you keep them, no trading) and the ARCQ you spend is burned. An owned NFT can also tint your hero.',
+      buyBtn: 'Buy',
+      equipBtn: 'Equip',
+      unequipBtn: 'Unequip',
+      equippedLabel: 'Equipped',
+      ownedLabel: 'Owned',
+      skinNames: ['', 'Ruby', 'Amber', 'Emerald', 'Violet', 'Frost', 'Gold'],
+      joinBtn: 'Join',
+      leaveRoomBtn: 'Stop playing in this room',
+      refundBtn: 'Get my fee back',
+      roomEndsIn: 'Ends in',
+      roomEntrants: 'players',
+      roomPool: 'Pool',
+      seasonPillLabel: 'Season',
+      prizeAlert: 'Prizes waiting',
+      tabSeason: 'Season',
+      seasonTitle: 'Daily Season',
+      seasonLabel: 'Season',
+      poolLabel: 'Prize pool',
+      entrantsLabel: 'Entrants',
+      endsInLabel: 'Ends in',
+      usdcBalLabel: 'USDC balance',
+      enterBtn: 'Enter season (1 USDC)',
+      enteredLabel: 'Entered: your runs rank this season',
+      notEnteredLabel: 'Not entered: runs earn ARCQ but do not rank',
+      seasonHint: 'On-chain points = game score ÷ 20. Entry fees fill the prize pool. After a season ends, the top 3 split it 50/30/20 (60/40 with 2 players).',
+      prizesTitle: 'Prizes from ended seasons',
+      noPrizes: 'No prizes to claim yet.',
+      claimPrizeBtn: 'Claim',
+      rolloverBtn: 'Roll pool into current season',
+      upgradeTitle: 'Hero Upgrade (burns ARCQ)',
+      heroLvLabel: 'Hero level',
+      upgradeBtn: 'Upgrade',
+      upgradeCostLabel: 'Next level costs',
+      upgradeBonus: 'Level 2 and 4: +1 heart. Every level: +10% pickup magnet range.',
+      maxLevel: 'MAX',
+      needUsdc: 'You need 1 USDC. Use Get test USDC in the sidebar or the faucet link.',
+      needWallet: 'Connect your wallet first.',
+      noContractMsg: 'Set the game contract in the L1 & Contract tab.',
+      cancelled: 'Cancelled in wallet.',
       tabWallet: 'Wallet & Stats',
       tabLeaderboard: 'Full Rankings',
       tabNetwork: 'L1 & Contract',
-      connectWallet: 'Connect EVM Wallet',
+      connectWallet: 'Connect Wallet',
       switchArc: 'Switch / Add Arc Testnet',
       refreshChain: 'Refresh On-Chain',
       faucetLink: 'Get Testnet USDC (Faucet)',
@@ -398,11 +562,11 @@
       noWalletDesc: 'Install MetaMask or Rabby for Arc Testnet on-chain leaderboard, or compete on the Local Ranked Board.',
       networkLabel: 'Active L1 Network',
       accountLabel: 'Account',
-      gasBalLabel: 'Native Gas',
+      gasBalLabel: 'USDC (gas + play)',
       arcqBalLabel: 'ARCQ Earned',
       badgeLabel: 'Explorer NFT',
       runsLabel: 'On-Chain Runs',
-      tiers: ['None', 'Bronze (100+)', 'Silver (250+)', 'Gold (500+)'],
+      tiers: ['None', 'Scout', 'Vanguard', 'Striker', 'Sentinel', 'Warlord', 'Titan', 'Overlord', 'Arc Legend', 'Champion'],
       contractLabel: 'ArcVoxelGameFi Contract Address',
       saveContract: 'Save Contract',
       contractHint: 'Leave empty for Local Ranked mode. Deploy contracts/ArcVoxelGameFi.sol and paste its address here.',
@@ -410,7 +574,7 @@
       applyNetwork: 'Apply Network',
       resetArc: 'Reset to Arc Testnet',
       lbModeDemo: 'Merged Local + Arc Rivals Leaderboard',
-      lbModeChain: 'Arc L1 On-Chain Top 10',
+      lbModeChain: 'Top scores with a transaction on Arc Testnet',
       soundOn: 'Sound On',
       soundOff: 'Muted',
       statusSavedContract: 'Contract saved!',
@@ -429,15 +593,98 @@
       },
     },
     vi: {
-      title: 'Arc Voxel · Sinh Tồn Vô Tận',
-      subtitle: 'Vòng lặp vô tận độ khó tăng liên tục! Né bò húc đỏ, luồn lách mưa đạn Boss & leo top Bảng Xếp Hạng.',
+      title: 'Arc Voxel Quest · Sinh Tồn Trên Arc',
+      subtitle: 'Sống sót qua những đợt quái ngày càng mạnh trên Arc! Né bò húc đỏ, luồn lách mưa đạn Boss, rồi ghi điểm cao nhất lên chuỗi để leo bảng xếp hạng.',
       chooseHero: 'Chọn Nhân Vật (Arc VN):',
       chooseMap: 'Bản Đồ Cộng Đồng Arc:',
       roadmapLabel: 'W1-2 Khởi Động → W3-4 Áp Lực → W5-7 Quái Tinh Anh → W8+ Quá Tải',
       nickPlaceholder: 'Biệt danh (VD: HungVN)',
-      startBtn: 'Vào Chiến Vô Tận',
+      startBtn: 'Vào Đấu Trường Arc',
+      badgeRoadmapTitle: '🏅 Lộ trình huy hiệu',
+      milestonesTitle: 'Cột mốc phụ',
+      msRuns5: 'Kiên trì: ghi 5 ván', msRuns25: 'Cựu binh: ghi 25 ván', msRuns100: 'Bất khuất: ghi 100 ván',
+      msGems500: 'Thợ săn gem: nhặt 500 gem', msGems5000: 'Đại gia gem: nhặt 5.000 gem',
+      msCombo5: 'Combo x5: đạt hệ số x5', msCombo10: 'Bậc thầy combo: đạt hệ số x10',
+      msStreak3: 'Đà thắng lợi: chơi liên tục 3 ngày', msStreak7: 'Chiến binh tuần: chơi liên tục 7 ngày',
+      badgeReq: 'Ghi một ván từ {n} điểm (khoảng {g} điểm trong ván)',
+      badgeChampionReq: 'Thắng một mùa giải hằng ngày: đứng nhất bảng xếp hạng mùa',
+      badgeEarned: 'Đã đạt',
+      badgeNextGoal: 'Mục tiêu tiếp theo: huy hiệu {tier}. Còn {n} điểm nữa (khoảng {g} điểm trong ván).',
+      badgeAllScore: 'Bạn đã có đủ huy hiệu điểm. Hãy thắng một mùa giải để nhận huy hiệu Quán quân.',
+      badgeFirstGoal: 'Mục tiêu: ghi một ván từ 300 điểm (khoảng 6.000 điểm trong ván) để nhận huy hiệu đầu tiên: Trinh Sát.',
+      badgeTipsTitle: 'Mẹo để leo hạng',
+      badgeTips: [
+        'Giữ combo liên tục: cứ 4 lần hạ liên tiếp, hệ số điểm tăng thêm, tối đa x10.',
+        'Hạ Boss: mỗi con có 300 điểm cơ bản trước khi nhân hệ số.',
+        'Nhặt gem để lên cấp và mở vũ khí mạnh hơn.',
+        'Mua NFT nâng cấp trong cửa hàng để mở rộng tầm hút vật phẩm.',
+        'Vào mùa giải hằng ngày để tranh huy hiệu Quán quân và quỹ thưởng USDC.'
+      ],
+      featuresTitle: '🗺️ Bảng Nhiệm Vụ Arc',
+      boardDone: 'hoàn thành',
+      questNext: 'TIẾP THEO',
+      qConnectT: 'Kết nối ví', qConnectD: 'Ví passkey (vân tay, khuôn mặt) hoặc ví có sẵn. Mở khóa mọi nhiệm vụ.',
+      qPlayT: 'Chơi ván đầu tiên', qPlayD: 'Sống sót qua các đợt quái để lấy điểm.',
+      qSaveT: 'Ghi điểm lên chuỗi', qSaveD: 'Miễn phí gas. Nhận ARCQ, và huy hiệu Trinh Sát từ 300 điểm.',
+      qSeasonT: 'Vào mùa giải hằng ngày', qSeasonD: 'Đóng 1 USDC. Top 3 chia quỹ thưởng.',
+      qDailyT: 'Hoàn thành nhiệm vụ ngày', qDailyD: 'Nhiệm vụ và chuỗi ngày chơi trả tới 80 ARCQ mỗi ngày.',
+      qHeroT: 'Mua NFT nâng cấp', qHeroD: 'Mỗi cấp mở rộng tầm hút vật phẩm.',
+      surrenderBtn: '🏳️ Kết thúc sớm', surrenderConfirm: 'Bấm lần nữa để kết thúc',
+      connectWalletShort: 'Kết Nối Ví',
+      accountTitle: 'Tài khoản của tôi',
+      yourWallets: 'VÍ KHÁC',
+      installedInBrowser: 'Đã cài trong trình duyệt',
+      installLink: 'Cài đặt',
+      wcTitle: 'WalletConnect',
+      wcDesc: 'Quét bằng ví trên điện thoại',
+      wcNeedsSetup: 'WalletConnect cần Project ID: thêm WALLETCONNECT_PROJECT_ID vào .env.local',
+      connectTitle: 'Kết nối ví',
+      connectSub: 'Kết nối ví để chơi trên Arc Testnet.',
+      noBrowserWallet: 'Không thấy ví trình duyệt. Hãy cài MetaMask hoặc Rabby rồi tải lại trang.',
+      walletLabel: 'Ví',
+      claimingWallet: 'Hãy xác nhận giao dịch trong ví của bạn...',
+      claimingPasskey: 'Hãy xác nhận bằng passkey (vân tay, khuôn mặt hoặc Windows Hello)...',
+      passkeyTitle: 'Tạo ví bằng passkey',
+      passkeyNote: 'Không cần cài tiện ích, không có cụm từ khôi phục. Xác nhận mọi giao dịch bằng vân tay, khuôn mặt hoặc Windows Hello. Miễn phí gas.',
+      passkeyNamePh: 'Tên ví (ví dụ biệt danh của bạn)',
+      passkeyCreateBtn: 'Tạo ví của tôi',
+      passkeyLoginBtn: 'Dùng passkey có sẵn',
+      passkeyWorking: 'Đang chờ passkey của bạn',
+      passkeySetup: 'Ví passkey chưa được cấu hình trên server. Thêm CIRCLE_CLIENT_KEY vào .env.local rồi khởi động lại. Trong Circle Console, đặt Allowed Domain của Client Key và Passkey Domain Name đúng bằng:',
+      passkeyDomainErr: 'Passkey này thuộc về một địa chỉ khác với game. Trong Circle Console, hãy đặt Passkey Domain Name là:',
+      passkeyExists: 'Passkey này đã có trên thiết bị. Hãy bấm "Dùng passkey có sẵn".',
+      confirmTitle: 'Xác nhận giao dịch',
+      confirmBtn: 'Xác nhận',
+      rejectBtn: 'Hủy',
+      confirmNetwork: 'Mạng',
+      confirmGas: 'Phí gas',
+      confirmGasFree: 'Miễn phí (được tài trợ)',
+      confirmWallet: 'Ví của bạn',
+      confirmEnter: 'Vào mùa giải hằng ngày. Phí vào: {fee} USDC.',
+      confirmBuy: 'Mua NFT nâng cấp cấp {lvl} ({name}) giá {cost} ARCQ (bị đốt). +{bonus}% tầm hút.',
+      confirmEquip: 'Dùng màu của NFT cấp {lvl} ({name}) cho tướng của bạn.',
+      confirmUnequip: 'Bỏ màu NFT khỏi tướng của bạn.',
+      confirmClaim: 'Nhận thưởng mùa giải #{season}, hạng {rank}.',
+      confirmRollover: 'Chuyển quỹ thưởng của mùa trống #{season} sang mùa hiện tại.',
+      confirmSave: 'Ghi ván này lên chuỗi: {points} điểm.',
+      confirmGeneric: 'Gửi giao dịch này tới contract Arc Voxel.',
+      emailLabel: 'Email',
+      googleNote: 'Nhận ví bằng tài khoản Google. Bạn đặt mã PIN và dùng PIN để duyệt mọi giao dịch.',
+      googleSetup: 'Đăng nhập bằng email chưa được cấu hình trên server. Thêm GOOGLE_CLIENT_ID vào .env.local, khởi động lại server và thêm địa chỉ này vào Authorized JavaScript origins trong Google Cloud:',
+      creatingWallet: 'Đang tạo ví... hãy hoàn tất đặt PIN trong cửa sổ Circle.',
+      creatingWalletShort: 'Đang tạo ví',
+      finishWalletHint: 'đã đăng nhập. Hãy hoàn tất tạo ví.',
+      finishWalletBtn: 'Tạo ví của tôi',
+      walletRequired: 'Hãy kết nối ví để chơi.',
+      walletAddrLabel: 'Địa chỉ ví',
+      logoutBtn: 'Ngắt kết nối',
+      copyBtn: 'Sao chép địa chỉ',
+      copied: 'Đã sao chép địa chỉ',
+      passkeyGasNote: 'Ví này miễn phí gas. Bạn chỉ cần USDC để đóng phí vào mùa giải. Hãy gửi USDC testnet vào địa chỉ ở trên để vào mùa.',
+      fundHint: 'Ví này trả gas bằng USDC. Hãy sao chép địa chỉ rồi xin USDC thử nghiệm ở faucet.',
+      noGasWarn: 'Ví đang có 0 USDC nên chưa trả được gas.',
+      needGas: 'Ví của bạn cần USDC để trả gas. Hãy nạp từ faucet rồi thử lại.',
       playAgainBtn: 'Đấu Lại Ngay',
-      walletBtn: 'Web3 · Arc L1',
       dashBtn: 'LƯỚT',
       lvlShort: 'CẤP',
       waveShort: 'WAVE',
@@ -456,7 +703,10 @@
       waveLabel: 'Wave',
       timeLabel: 'Sống sót',
       killsLabel: 'Đã hạ',
-      lbTitle: '🏆 Bảng Xếp Hạng Vô Tận (Top 6)',
+      lbTitle: '🏆 Bảng Xếp Hạng Onchain Arc (Top 6)',
+      lbColTx: 'Tx',
+      lbEmpty: 'Chưa có ván nào được xác thực. Hãy chơi rồi bấm Ghi Điểm để đứng đầu bảng.',
+      lbSyncing: 'Đang đồng bộ dữ liệu chuỗi...',
       lbColPlayer: 'Người chơi',
       lbColHero: 'Tướng',
       lbColWave: 'Wave',
@@ -470,15 +720,87 @@
       tutStep1: 'Né vạch húc đỏ & đạn tím! Đừng bước ra mép nước kẻo mất máu!',
       tutStep2: 'Bấm SPACE / LƯỚT để né sát thương & thổi bay đạn địch!',
       claimChainBtn: 'Ghi Điểm Lên Arc L1',
+      claimGaslessBtn: 'Ghi điểm · miễn phí gas',
+      claimOwnBtn: 'Ghi bằng ví của tôi (trả gas)',
+      claimingFree: 'Đang ghi ván lên chuỗi (miễn phí)...',
+      shareBtn: 'Chia sẻ điểm',
+      shareCopied: 'Đã tải ảnh và sao chép nội dung',
       claimDemoBtn: 'Lưu Lên Bảng Xếp Hạng',
-      claiming: 'Đang gửi giao dịch lên Arc L1...',
       claimedOk: 'Đã ghi điểm lên Arc L1!',
       claimedDemoOk: 'Đã cập nhật Bảng Xếp Hạng!',
       viewTx: 'Xem TX trên ArcScan',
+      tabProfile: 'Hồ sơ',
+      tabQuests: 'Hằng ngày',
+      tabShop: 'Cửa hàng',
+      lbAll: 'Mọi thời đại',
+      lbSeasonF: 'Mùa này',
+      streakLabel: 'Chuỗi ngày chơi',
+      recentRuns: 'Ván gần đây',
+      noRuns: 'Chưa có ván nào được ghi.',
+      badgeArtTitle: 'Huy hiệu của bạn',
+      noBadge: 'Ghi một ván từ 300 điểm để nhận huy hiệu đầu tiên (Trinh Sát).',
+      skinsOwnedTitle: 'Skin của bạn',
+      questsTitle: 'Nhiệm vụ hằng ngày',
+      questHint: 'Thưởng tự trả khi bạn ghi ván. Làm mới mỗi ngày theo giờ UTC.',
+      questFirst: 'Ghi một ván hôm nay',
+      questFirstR: '5 ARCQ x chuỗi ngày (tối đa 7)',
+      questThree: 'Ghi 3 ván hôm nay',
+      questThreeR: '15 ARCQ',
+      questBig: 'Ghi một ván từ 1.000 điểm',
+      questBigR: '30 ARCQ',
+      questDone: 'Xong',
+      runsTodayLabel: 'Số ván hôm nay',
+      shopTitle: 'Cửa hàng NFT nâng cấp',
+      magnetLvLabel: 'Cấp tầm hút',
+      magnetBonusLabel: 'Tầm hút vật phẩm',
+      magnetShort: 'tầm hút',
+      levelWord: 'Cấp',
+      lockedBtn: 'Chưa mở',
+      totalWord: 'tổng',
+      shopHint: 'Mỗi NFT bạn sở hữu là một cấp. Mỗi cấp mở rộng tầm hút kéo vật phẩm về phía bạn, và cấp sau cộng nhiều hơn cấp trước (+4%, +6%, +8%, +10%, +12%, +15%). Hãy mua lần lượt. NFT gắn chặt vào ví (giữ mãi, không chuyển nhượng) và ARCQ đã tiêu sẽ bị đốt. NFT đang sở hữu còn đổi được màu tướng.',
+      buyBtn: 'Mua',
+      equipBtn: 'Trang bị',
+      unequipBtn: 'Bỏ trang bị',
+      equippedLabel: 'Đang dùng',
+      ownedLabel: 'Đã sở hữu',
+      skinNames: ['', 'Hồng ngọc', 'Hổ phách', 'Lục bảo', 'Tím', 'Băng giá', 'Vàng kim'],
+      joinBtn: 'Tham gia',
+      leaveRoomBtn: 'Thôi không chơi trong phòng này',
+      refundBtn: 'Nhận lại phí',
+      roomEndsIn: 'Kết thúc sau',
+      roomEntrants: 'người chơi',
+      roomPool: 'Quỹ',
+      seasonPillLabel: 'Mùa',
+      prizeAlert: 'Có thưởng chờ nhận',
+      tabSeason: 'Mùa giải',
+      seasonTitle: 'Mùa giải hằng ngày',
+      seasonLabel: 'Mùa',
+      poolLabel: 'Quỹ thưởng',
+      entrantsLabel: 'Số người tham gia',
+      endsInLabel: 'Kết thúc sau',
+      usdcBalLabel: 'Số dư USDC',
+      enterBtn: 'Vào mùa giải (1 USDC)',
+      enteredLabel: 'Đã tham gia: điểm của bạn được xếp hạng mùa này',
+      notEnteredLabel: 'Chưa tham gia: chơi vẫn nhận ARCQ nhưng không vào BXH',
+      seasonHint: 'Điểm onchain = điểm game ÷ 20. Phí vào mùa tạo quỹ thưởng. Sau khi mùa kết thúc, top 3 chia 50/30/20 (60/40 nếu chỉ có 2 người).',
+      prizesTitle: 'Thưởng từ các mùa đã kết thúc',
+      noPrizes: 'Chưa có thưởng để nhận.',
+      claimPrizeBtn: 'Nhận',
+      rolloverBtn: 'Chuyển quỹ sang mùa hiện tại',
+      upgradeTitle: 'Nâng cấp tướng (đốt ARCQ)',
+      heroLvLabel: 'Cấp tướng',
+      upgradeBtn: 'Nâng cấp',
+      upgradeCostLabel: 'Cấp tiếp theo tốn',
+      upgradeBonus: 'Cấp 2 và 4: +1 tim. Mỗi cấp: +10% tầm hút vật phẩm.',
+      maxLevel: 'TỐI ĐA',
+      needUsdc: 'Bạn cần 1 USDC. Dùng Get test USDC ở thanh bên hoặc liên kết faucet.',
+      needWallet: 'Hãy kết nối ví trước.',
+      noContractMsg: 'Hãy đặt địa chỉ contract ở tab Mạng L1 & Contract.',
+      cancelled: 'Đã hủy trong ví.',
       tabWallet: 'Ví & Chỉ số',
       tabLeaderboard: 'Bảng Xếp Hạng',
       tabNetwork: 'Mạng L1 & Contract',
-      connectWallet: 'Kết nối ví EVM',
+      connectWallet: 'Kết nối ví',
       switchArc: 'Thêm / Chuyển Arc Testnet',
       refreshChain: 'Làm mới dữ liệu',
       faucetLink: 'Lấy USDC Testnet (Faucet)',
@@ -487,11 +809,11 @@
       noWalletDesc: 'Cài MetaMask hoặc Rabby để ghi BXH thật trên Arc Testnet, hoặc đua top trực tiếp trên BXH cục bộ.',
       networkLabel: 'Mạng L1 đang dùng',
       accountLabel: 'Địa chỉ ví',
-      gasBalLabel: 'Số dư Gas',
+      gasBalLabel: 'USDC (gas + chơi)',
       arcqBalLabel: 'Token ARCQ',
       badgeLabel: 'Huy hiệu NFT',
       runsLabel: 'Số lượt On-Chain',
-      tiers: ['Chưa có', 'Đồng (100+)', 'Bạc (250+)', 'Vàng (500+)'],
+      tiers: ['Chưa có', 'Trinh Sát', 'Tiên Phong', 'Xung Kích', 'Hộ Vệ', 'Thống Soái', 'Cự Thần', 'Bá Chủ', 'Huyền Thoại Arc', 'Quán Quân'],
       contractLabel: 'Địa chỉ Contract ArcVoxelGameFi',
       saveContract: 'Lưu Contract',
       contractHint: 'Để trống nếu dùng BXH cục bộ. Sau khi deploy contracts/ArcVoxelGameFi.sol, dán địa chỉ vào đây.',
@@ -499,7 +821,7 @@
       applyNetwork: 'Áp dụng mạng',
       resetArc: 'Về mặc định Arc Testnet',
       lbModeDemo: 'BXH Hợp Nhất (Người chơi + Đối thủ Arc)',
-      lbModeChain: 'Top 10 On-Chain trên Arc L1',
+      lbModeChain: 'Điểm cao nhất có giao dịch trên Arc Testnet',
       soundOn: 'Đang bật tiếng',
       soundOff: 'Đang tắt tiếng',
       statusSavedContract: 'Đã lưu địa chỉ Contract!',
@@ -752,6 +1074,7 @@
   function buildArena(mapIdx) {
     selectedMapIdx = clamp(Math.floor(mapIdx || 0), 0, MAPS.length - 1);
     var mp = activeMapSpec();
+    if (typeof musicSync === 'function' && typeof music !== 'undefined' && music) musicSync();
     while (arenaGroup.children.length) {
       var old = arenaGroup.children.pop();
       if (old.material) old.material.dispose();
@@ -1581,9 +1904,17 @@
       body = buildModelForKey('hero', hSpec.boxes, hSpec);
       body.scale.setScalar(R.heroSize / MODEL_HEIGHT.hero);
     }
+    var skinHex = skinTintHex();
+    if (skinHex && !body.userData.sprite) {
+      // Equipped skin (soulbound NFT): tint a private copy of every material of the hero model.
+      var skinColor = new THREE.Color(skinHex);
+      body.traverse(function (n) {
+        if (n.material && n.material.color) { n.material = n.material.clone(); n.material.color.lerp(skinColor, 0.5); }
+      });
+    }
     hero.node.add(body);
     hero.node.userData.body = body;
-    if (hero.node.userData.aura) hero.node.userData.aura.material.color.set(hSpec.color);
+    if (hero.node.userData.aura) hero.node.userData.aura.material.color.set(skinHex || hSpec.color);
   }
 
   var pulseRing = new THREE.Mesh(new THREE.RingGeometry(0.6, 1.0, 28), new THREE.MeshBasicMaterial({ color: '#38f2ff', side: THREE.DoubleSide, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
@@ -1661,36 +1992,45 @@
     } catch (e) { /* audio optional */ }
   }
 
+  /* Background music: a short procedural theme per map (see music.js). It follows the sound button and the current map. */
+  var music = window.ARC_MUSIC ? window.ARC_MUSIC.create({
+    getCtx: function () {
+      if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audio = null; } }
+      return audio;
+    },
+    isMuted: function () { return muted; },
+  }) : null;
+  function musicSync() {
+    if (!music) return;
+    if (muted || document.hidden) { music.stop(); return; }
+    music.setMap(activeMapSpec().id);
+    music.setMode(phase === 'playing' && !paused ? 'play' : 'lobby');
+    music.start();
+  }
+  // Browsers only allow sound after a tap or key press: start the music on the first one.
+  function unlockMusic() { if (audio && audio.state === 'suspended' && audio.resume) { try { audio.resume(); } catch (e) { /* ignore */ } } musicSync(); }
+  window.addEventListener('pointerdown', unlockMusic);
+  window.addEventListener('keydown', unlockMusic);
+  document.addEventListener('visibilitychange', musicSync);
+
   /* 8. HUD, LIVE LEADERBOARD & WEB3 UI */
   var web3 = window.ARC_WEB3 ? window.ARC_WEB3.createClient(window.ARC_WEB3_CONFIG) : null;
-  var LS_LOCAL_LB = 'arc-voxel-quest:ranked-lb';
-  function loadLocalLeaderboard() {
-    try {
-      var raw = window.localStorage.getItem(LS_LOCAL_LB);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) { return []; }
-  }
-  function saveLocalRun(entry) {
-    try {
-      var list = loadLocalLeaderboard();
-      list.push(entry);
-      list.sort(function (a, b) { return b.score - a.score; });
-      window.localStorage.setItem(LS_LOCAL_LB, JSON.stringify(list.slice(0, 15)));
-    } catch (e) { /* ignore */ }
+  // The old on-device ranking is retired: only runs with an onchain transaction count.
+  try { window.localStorage.removeItem('arc-voxel-quest:ranked-lb'); } catch (e) { /* ignore */ }
+
+  function explorerTx(hash) {
+    var base = ((web3 && web3.state.network.blockExplorerUrls && web3.state.network.blockExplorerUrls[0]) || '').replace(/\/+$/u, '');
+    return base && hash ? base + '/tx/' + hash : '';
   }
   function getMergedLeaderboard() {
-    var rows = [];
-    if (web3 && window.ARC_WEB3.isValidAddress(web3.state.contractAddress) && web3.state.leaderboard.length > 0) {
-      web3.state.leaderboard.forEach(function (e) {
-        rows.push({ name: window.ARC_WEB3.shortAddr(e.player), hero: 'Arc', wave: '—', score: e.bestScore, source: 'chain' });
-      });
-    }
-    loadLocalLeaderboard().forEach(function (e) {
-      rows.push({ name: e.name, hero: e.hero, wave: e.wave, score: e.score, source: 'local' });
+    if (!web3) return [];
+    return web3.state.board.map(function (e) {
+      return { name: window.ARC_WEB3.shortAddr(e.player), score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
     });
-    BENCHMARK_RIVALS.forEach(function (r) { rows.push(r); });
-    rows.sort(function (a, b) { return b.score - a.score; });
-    return rows.slice(0, 8);
+  }
+  function boardSyncNote() {
+    var info = web3 && web3.state.boardInfo;
+    return info && info.behind > 600 ? t('lbSyncing') + ' (' + info.behind + ')' : '';
   }
 
   var styleEl = document.createElement('style');
@@ -1736,13 +2076,24 @@
   var waveEl = el('span', 'color:#f43f5e', statPill);
   var lvlEl = el('span', 'color:#ffd166', statPill);
   var killsEl = el('span', 'color:#aef9ff;font-size:.9em', statPill);
+  var timeEl = el('span', 'color:#cfe9ff;font-size:.9em;font-variant-numeric:tabular-nums', statPill);
   var multBadge = el('span', 'color:#fb923c;font-size:.9em;display:none', statPill);
 
   var rightGroup = el('div', 'display:flex;align-items:center;gap:6px;flex-wrap:wrap', topBar);
   var langBtn = el('button', '', rightGroup); langBtn.className = 'avq-btn'; stopPtr(langBtn);
   var soundBtn = el('button', '', rightGroup); soundBtn.className = 'avq-btn'; stopPtr(soundBtn);
   var web3Btn = el('button', '', rightGroup); web3Btn.className = 'avq-btn'; stopPtr(web3Btn);
-  var timerPill = el('div', 'font-variant-numeric:tabular-nums', rightGroup); timerPill.className = 'avq-pill';
+  var seasonPill = el('button', 'display:none', rightGroup); seasonPill.className = 'avq-btn'; stopPtr(seasonPill);
+  var surrenderBtn = el('button', 'display:none', rightGroup); surrenderBtn.className = 'avq-btn'; stopPtr(surrenderBtn);
+  var surrenderArmedAt = 0;
+  surrenderBtn.onclick = function () {
+    if (phase !== 'playing') return;
+    var now = performance.now();
+    if (now - surrenderArmedAt < 3000) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); finish(false); return; }
+    surrenderArmedAt = now; // first tap only arms it, so a stray tap cannot throw away a good run
+    surrenderBtn.textContent = t('surrenderConfirm');
+    setTimeout(function () { if (surrenderArmedAt === now) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); } }, 3000);
+  };
 
   var xpWrap = el('div', 'position:fixed;top:0;left:0;right:0;height:5px;background:rgba(10,18,40,.7);z-index:15', hud);
   var xpBar = el('div', 'height:100%;width:0%;background:linear-gradient(90deg,#38f2ff,#ffd166);transition:width .15s', xpWrap);
@@ -1764,10 +2115,83 @@
   var popups = [];
 
   // Title / Game Over Center Card (with Hero Picker + Embedded Live Leaderboard!)
-  var card = el('div', 'position:fixed;left:50%;top:54%;transform:translate(-50%,-50%);text-align:center;width:min(94vw,680px);max-height:calc(100dvh - 76px);overflow-y:auto;padding:14px 18px;border-radius:22px;background:rgba(8,15,36,.9);border:1px solid rgba(99,247,255,.35);backdrop-filter:blur(12px);pointer-events:auto;z-index:20;box-shadow:0 18px 48px rgba(0,0,0,.65)', hud);
+  var card = el('div', 'position:fixed;left:50%;top:76px;transform:translateX(-50%);text-align:center;width:min(94vw,680px);max-height:calc(100dvh - 90px);overflow-y:auto;padding:14px 18px;border-radius:22px;background:rgba(7,13,32,.97);border:1px solid rgba(99,247,255,.6);backdrop-filter:blur(12px);pointer-events:auto;z-index:20;box-shadow:0 0 0 1px rgba(99,247,255,.18),0 0 34px rgba(56,242,255,.22),0 22px 56px rgba(0,0,0,.72)', hud);
+  /* The top bar wraps onto several rows on narrow screens: keep the card fully below it and scrollable instead of hidden behind it. */
+  function layoutCard() {
+    if (!card.offsetHeight) return;
+    var bar = topBar.getBoundingClientRect();
+    var top = Math.max(56, Math.ceil(bar.bottom) + 10);
+    var avail = window.innerHeight - top - 12;
+    var h = card.scrollHeight;
+    if (h < avail) top += Math.floor((avail - h) * 0.4); // sit a little lower than the top when there is room
+    card.style.top = top + 'px';
+    card.style.maxHeight = Math.max(160, window.innerHeight - top - 12) + 'px';
+  }
+  window.addEventListener('resize', layoutCard);
   stopPtr(card);
   var cardTitle = el('div', 'font-size:1.85em;font-weight:900;color:#63f7ff;line-height:1.15', card);
   var cardBody = el('div', 'margin-top:6px;opacity:.94;line-height:1.4;font-size:.96em', card);
+
+  // Feature showcase: newcomers see everything the game offers on the home card; each tile opens the matching tab.
+  var featBox = el('div', 'margin-top:10px;padding:10px;border-radius:14px;background:rgba(7,14,32,.68);border:1px solid rgba(255,209,102,.28)', card);
+  var featTitle = el('div', 'font-weight:900;font-size:13px;color:#ffd166;margin-bottom:8px', featBox);
+  var featBar = el('div', 'height:6px;border-radius:99px;background:rgba(120,230,255,.16);overflow:hidden;margin-bottom:8px', featBox);
+  var featBarFill = el('div', 'height:100%;width:0%;background:linear-gradient(90deg,#38f2ff,#ffd166);transition:width .3s', featBar);
+  var featGrid = el('div', 'display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px;text-align:left', featBox);
+  /* Quests follow a new player's journey; `done` reads the live wallet state, so ticks appear as they play. */
+  function qState() {
+    var st = web3 && web3.state;
+    return {
+      connected: Boolean(st && st.account),
+      played: best > 0 || Boolean(st && st.profile && st.profile.totalRuns > 0),
+      saved: Boolean(st && st.profile && st.profile.totalRuns > 0),
+      entered: Boolean(st && st.playerState && st.playerState.entered),
+      daily: Boolean(st && st.questState && st.questState.mask > 0),
+      hero: Boolean(st && st.skinState && st.skinState.owned > 0),
+    };
+  }
+  function openTab(tab) { activeTab = tab; if (web3 && web3.state.account) openWeb3Modal(); else openConnectModal(); }
+  var QUESTS = [
+    { icon: '🔌', t: 'qConnectT', d: 'qConnectD', done: function (q) { return q.connected; }, go: function () { if (web3 && web3.state.account) openWeb3Modal(); else openConnectModal(); } },
+    { icon: '⚔️', t: 'qPlayT', d: 'qPlayD', done: function (q) { return q.played; }, go: function () { requestStart(); } },
+    { icon: '⛓️', t: 'qSaveT', d: 'qSaveD', done: function (q) { return q.saved; }, go: function () { openTab('profile'); } },
+    { icon: '🏁', t: 'qSeasonT', d: 'qSeasonD', done: function (q) { return q.entered; }, go: function () { openTab('season'); } },
+    { icon: '📅', t: 'qDailyT', d: 'qDailyD', done: function (q) { return q.daily; }, go: function () { openTab('quests'); } },
+    { icon: '🛒', t: 'qHeroT', d: 'qHeroD', done: function (q) { return q.hero; }, go: function () { openTab('shop'); } },
+  ];
+  var QUEST_ROW = 'display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:12px;background:#0a1630;border:1px solid rgba(120,230,255,.22);color:#eefaff;cursor:pointer;text-align:left;font:inherit;min-width:0';
+  var questRows = QUESTS.map(function (qd) {
+    var b = el('button', QUEST_ROW, featGrid);
+    var mark = el('span', 'font-size:17px;line-height:1.15;flex:none;width:22px;text-align:center', b);
+    var col = el('span', 'display:flex;flex-direction:column;min-width:0;flex:1', b);
+    var head = el('span', 'display:flex;align-items:center;gap:6px', col);
+    var ti = el('span', 'font-weight:800;font-size:12.5px;color:#aef9ff', head);
+    var tag = el('span', 'font-size:9.5px;font-weight:900;letter-spacing:.06em;color:#08202f;background:#ffd166;border-radius:99px;padding:1px 7px;display:none', head);
+    var de = el('span', 'font-size:11.5px;opacity:.82;line-height:1.35', col);
+    b.onclick = qd.go;
+    return { qd: qd, b: b, mark: mark, ti: ti, tag: tag, de: de };
+  });
+  function refreshFeatureTexts() {
+    var q = qState();
+    var tracked = QUESTS.filter(function (x) { return x.done; });
+    var doneCount = tracked.filter(function (x) { return x.done(q); }).length;
+    var nextFound = false;
+    featTitle.textContent = t('featuresTitle') + ' · ' + doneCount + '/' + tracked.length + ' ' + t('boardDone');
+    featBarFill.style.width = Math.round((doneCount / tracked.length) * 100) + '%';
+    questRows.forEach(function (r) {
+      var isDone = r.qd.done ? r.qd.done(q) : false;
+      var isNext = !nextFound && r.qd.done && !isDone;
+      if (isNext) nextFound = true;
+      r.ti.textContent = t(r.qd.t);
+      r.de.textContent = t(r.qd.d);
+      r.mark.textContent = r.qd.done ? (isDone ? '✅' : '⬜') : r.qd.icon;
+      r.ti.style.textDecoration = isDone ? 'line-through' : 'none';
+      r.b.style.opacity = isDone ? '.62' : '1';
+      r.b.style.borderColor = isNext ? '#ffd166' : 'rgba(120,230,255,.22)';
+      r.tag.style.display = isNext ? 'inline' : 'none';
+      r.tag.textContent = t('questNext');
+    });
+  }
 
   var heroBox = el('div', 'margin-top:8px;padding:10px;border-radius:14px;background:rgba(7,14,32,.68);border:1px solid rgba(120,230,255,.22)', card);
   var mapRow = el('div', 'display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(120,230,255,.14)', heroBox);
@@ -1800,8 +2224,10 @@
   var cardActions = el('div', 'margin-top:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap', card);
   var cardPlayBtn = el('button', '', cardActions); cardPlayBtn.className = 'avq-btn pri';
   var cardClaimBtn = el('button', 'display:none', cardActions); cardClaimBtn.className = 'avq-btn gold';
-  var cardWeb3Btn = el('button', '', cardActions); cardWeb3Btn.className = 'avq-btn';
+  var cardClaimOwnBtn = el('button', 'display:none', cardActions); cardClaimOwnBtn.className = 'avq-btn';
+  var cardShareBtn = el('button', 'display:none', cardActions); cardShareBtn.className = 'avq-btn';
   var cardClaimStatus = el('div', 'margin-top:8px;font-size:12.5px;min-height:16px;color:#aef9ff', card);
+  var cardGoal = el('div', 'margin-top:6px;font-size:12px;color:#ffd166;font-weight:700;line-height:1.4', card);
 
   // Embedded Live Leaderboard directly on Title / End Card
   var cardLbBox = el('div', 'margin-top:10px;padding:10px;border-radius:14px;background:rgba(5,10,24,.75);border:1px solid rgba(255,209,102,.24);text-align:left', card);
@@ -1825,16 +2251,65 @@
   var w3Title = el('div', 'font-size:18px;font-weight:900;color:#63f7ff', w3Head);
   var w3Close = el('button', 'padding:4px 10px', w3Head); w3Close.className = 'avq-btn'; w3Close.textContent = '✕';
   var w3Tabs = el('div', 'display:flex;gap:6px;flex-wrap:wrap', w3Modal);
-  var tabBtns = { wallet: el('button', '', w3Tabs), leaderboard: el('button', '', w3Tabs), network: el('button', '', w3Tabs) };
+  var tabBtns = { profile: el('button', '', w3Tabs), season: el('button', '', w3Tabs), quests: el('button', '', w3Tabs), shop: el('button', '', w3Tabs), leaderboard: el('button', '', w3Tabs), wallet: el('button', '', w3Tabs), network: el('button', '', w3Tabs) };
   Object.keys(tabBtns).forEach(function (k) { tabBtns[k].className = 'avq-btn'; });
   var w3Body = el('div', 'display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.45', w3Modal);
   var w3Status = el('div', 'font-size:12px;color:#ffd166;min-height:16px', w3Modal);
 
-  var activeTab = 'wallet', claimStatusText = '', lastTxExplorerUrl = '', runClaimed = false;
+  // Connect-wallet dialog: popular wallets (same pattern as other Web3 apps)
+  var cnOverlay = el('div', 'position:fixed;inset:0;background:rgba(4,8,20,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:40', hud);
+  stopPtr(cnOverlay);
+  var cnModal = el('div', 'position:relative;width:min(94vw,460px);max-height:92vh;overflow-y:auto;background:#0d1730;border:1px solid rgba(99,247,255,.35);border-radius:22px;padding:22px 18px 16px;box-shadow:0 20px 60px rgba(0,0,0,.65);display:flex;flex-direction:column;gap:12px', cnOverlay);
+  var cnClose = el('button', 'position:absolute;top:10px;right:10px;padding:4px 10px', cnModal); cnClose.className = 'avq-btn'; cnClose.textContent = '✕';
+  var cnBody = el('div', 'display:flex;flex-direction:column;gap:12px', cnModal);
+  var cnStatus = el('div', 'font-size:12px;color:#ffd166;min-height:16px;text-align:center', cnModal);
+
+  // Transaction confirmation, like a wallet popup: shown before the passkey prompt so the player sees exactly what they approve.
+  var txOverlay = el('div', 'position:fixed;inset:0;background:rgba(4,8,20,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:60', hud);
+  stopPtr(txOverlay);
+  var txModal = el('div', 'width:min(94vw,420px);background:#0d1730;border:1px solid rgba(99,247,255,.5);border-radius:18px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:10px;color:#eefaff', txOverlay);
+  function describeTx(info) {
+    var p = info.params || {};
+    switch (info.action) {
+      case 'enter': return fill(t('confirmEnter'), { fee: '1' });
+      case 'buy-skin': return fill(t('confirmBuy'), { lvl: p.id, name: t('skinNames')[p.id] || '', cost: fmtN(SKIN_COSTS[p.id] || 0), bonus: pct(MAGNET_STEPS[(p.id || 1) - 1] || 0) });
+      case 'equip': return p.id ? fill(t('confirmEquip'), { lvl: p.id, name: t('skinNames')[p.id] || '' }) : t('confirmUnequip');
+      case 'claim': return fill(t('confirmClaim'), { season: Number(p.season) + 1, rank: Number(p.rank) + 1 });
+      case 'rollover': return fill(t('confirmRollover'), { season: Number(p.season) + 1 });
+      case 'submit-run': return fill(t('confirmSave'), { points: fmtN(info.points || 0) });
+      default: return t('confirmGeneric');
+    }
+  }
+  function confirmTx(info) {
+    return new Promise(function (resolve) {
+      txModal.innerHTML = '';
+      el('div', 'font-size:18px;font-weight:900;color:#63f7ff', txModal).textContent = '🔐 ' + t('confirmTitle');
+      el('div', 'font-size:14px;line-height:1.5;padding:10px 12px;border-radius:12px;background:rgba(120,230,255,.08)', txModal).textContent = describeTx(info);
+      function line(label, value) {
+        var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-size:12.5px', txModal);
+        el('span', 'opacity:.7', r).textContent = label;
+        el('span', 'font-weight:700;color:#aef9ff;text-align:right;word-break:break-all', r).textContent = value;
+      }
+      line(t('confirmNetwork'), web3.state.network.chainName);
+      line(t('confirmWallet'), window.ARC_WEB3.shortAddr(web3.state.account));
+      line(t('confirmGas'), t('confirmGasFree'));
+      var row = el('div', 'display:flex;gap:8px;margin-top:6px', txModal);
+      var no = el('button', 'flex:1;justify-content:center', row); no.className = 'avq-btn'; no.textContent = t('rejectBtn');
+      var ok = el('button', 'flex:1;justify-content:center', row); ok.className = 'avq-btn pri'; ok.textContent = t('confirmBtn');
+      function done(v) { txOverlay.style.display = 'none'; resolve(v); }
+      no.onclick = function () { done(false); };
+      ok.onclick = function () { done(true); };
+      txOverlay.style.display = 'flex';
+    });
+  }
+  if (web3) web3.onConfirm = confirmTx;
+
+  var activeTab = 'profile', claimStatusText = '', lastTxExplorerUrl = '', runClaimed = false;
 
   /* 9. ENDLESS SURVIVOR STATE */
   var phase = 'title', paused = false, levelUpChoices = null;
   var score = 0, best = 0, gems = 0, kills = 0, streak = 0, maxCombo = 1, streakTimer = 0;
+  var telemetry = [], lastCpAt = 0, runHeroShort = '', lastSkinTint = '', prizeAlert = false;
   var level = 1, xp = 0, xpNeed = 35, wave = 1;
   var maxHearts = 4, hearts = 4, timeLeft = 0, elapsed = 0, spawnTimer = 0, nextBossAt = 25;
   var invulnerable = 0, dashCooldown = 0, dashTimer = 0, pulseWaveTimer = 0, endedAt = 0, fps = 60;
@@ -1854,15 +2329,26 @@
     try { window.localStorage.setItem('arc-voxel-quest:best', String(val)); } catch (e) { /* ignore */ }
   }
   function activeHeroSpec() { return HEROES[selectedHeroIdx]; }
+  /* Every upgrade NFT the wallet owns is one level; each level widens the item pickup range by 20%. */
+  var MAGNET_STEPS = [0.04, 0.06, 0.08, 0.10, 0.12, 0.15]; // each level adds a bit more than the one before: +4% ... +15%
+  function magnetBonus(level) { var sum = 0; for (var i = 0; i < Math.min(6, level); i++) sum += MAGNET_STEPS[i]; return sum; }
+  function pct(x) { return Math.round(x * 100); }
+  function magnetLevel() {
+    var ss = web3 && web3.state.account && web3.state.skinState;
+    var n = 0;
+    for (var b = ss ? ss.owned : 0; b > 0; b >>= 1) n += b & 1;
+    return Math.min(6, n);
+  }
 
   function renderEmbeddedLeaderboard() {
     var rows = getMergedLeaderboard().slice(0, 6);
     cardLbTitle.textContent = t('lbTitle');
-    var html = '<tr><th>#</th><th>' + t('lbColPlayer') + '</th><th>' + t('lbColHero') + '</th><th>' + t('lbColWave') + '</th><th>' + t('lbColScore') + '</th><th>' + t('lbColTag') + '</th></tr>';
+    var html = '<tr><th>#</th><th>' + t('lbColPlayer') + '</th><th>' + t('lbColScore') + '</th><th>' + t('lbColTx') + '</th></tr>';
     rows.forEach(function (r, idx) {
-      var tag = r.source === 'chain' ? '<span style="color:#4ade80">Arc L1</span>' : (r.source === 'local' ? '<span style="color:#38f2ff">You</span>' : '<span style="color:#94a3b8">NPC</span>');
-      html += '<tr><td>' + (idx + 1) + '</td><td style="font-weight:700">' + r.name + '</td><td>' + (r.hero || '—') + '</td><td>W' + r.wave + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + tag + '</td></tr>';
+      var link = r.url ? '<a href="' + r.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">↗</a>' : '—';
+      html += '<tr><td>' + (idx + 1) + '</td><td style="font-weight:700">' + r.name + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
     });
+    if (!rows.length) html += '<tr><td colspan="4" style="opacity:.75;text-align:center;padding:8px">' + (boardSyncNote() || t('lbEmpty')) + '</td></tr>';
     cardLbTable.innerHTML = html;
   }
 
@@ -2279,18 +2765,35 @@
 
   /* 11. UI REFRESH & PHASE FLOW */
   function refreshStaticTexts() {
+    setTimeout(layoutCard, 0);
+    musicSync();
+    cardGoal.textContent = phase === 'playing' ? '' : badgeGoalText();
+    refreshFeatureTexts();
+    featBox.style.display = phase === 'title' ? 'block' : 'none';
+    if (!surrenderArmedAt) surrenderBtn.textContent = t('surrenderBtn');
     langBtn.textContent = lang === 'vi' ? '🌐 VI' : '🌐 EN';
     soundBtn.textContent = muted ? '🔇' : '🔊';
     soundBtn.title = muted ? t('soundOff') : t('soundOn');
     var connected = web3 && web3.state.account;
-    var web3Label = connected ? ('🟢 ' + window.ARC_WEB3.shortAddr(web3.state.account)) : ('🔌 ' + t('walletBtn'));
+    var web3Label = connected ? ('🟢 ' + window.ARC_WEB3.shortAddr(web3.state.account) + (prizeAlert ? ' 🏆' : '')) : ('🔌 ' + t('connectWalletShort'));
     web3Btn.textContent = web3Label;
-    cardWeb3Btn.textContent = web3Label;
+    var seasonInfo = web3 && web3.state.season;
+    seasonPill.style.display = seasonInfo ? 'inline-flex' : 'none';
+    if (seasonInfo) {
+      seasonPill.textContent = '🏁 ' + t('seasonPillLabel') + ' #' + (seasonInfo.id + 1) + ' · ' + fmtLeft(seasonInfo.endsAt - Math.floor(Date.now() / 1000)) + (prizeAlert ? ' · 🏆 ' + t('prizeAlert') : '');
+    }
+    web3Btn.className = connected ? 'avq-btn' : 'avq-btn pri';
+    var skinNow = skinTintHex();
+    if (skinNow !== lastSkinTint) { lastSkinTint = skinNow; if (phase !== 'playing') rebuildHeroMesh(); }
     heroBoxLbl.textContent = t('chooseHero');
     mapBoxLbl.textContent = t('chooseMap');
     if (typeof roadmapEl !== 'undefined') roadmapEl.textContent = t('roadmapLabel');
     nickInput.placeholder = t('nickPlaceholder');
-    w3Title.textContent = '⛓️ ' + t('walletBtn');
+    w3Title.textContent = '⛓️ ' + t('accountTitle');
+    tabBtns.profile.textContent = t('tabProfile');
+    tabBtns.quests.textContent = t('tabQuests');
+    tabBtns.shop.textContent = t('tabShop');
+    tabBtns.season.textContent = t('tabSeason');
     tabBtns.wallet.textContent = t('tabWallet');
     tabBtns.leaderboard.textContent = t('tabLeaderboard');
     tabBtns.network.textContent = t('tabNetwork');
@@ -2308,6 +2811,7 @@
   function updateCardTexts() {
     if (phase === 'title') {
       card.style.display = 'block';
+      setTimeout(layoutCard, 0);
       heroBox.style.display = 'block';
       cardLbBox.style.display = 'block';
       cardTitle.textContent = t('title');
@@ -2315,10 +2819,13 @@
       cardStats.innerHTML = '';
       cardPlayBtn.textContent = t('startBtn');
       cardClaimBtn.style.display = 'none';
+      cardClaimOwnBtn.style.display = 'none';
+      cardShareBtn.style.display = 'none';
       cardClaimStatus.textContent = '';
       cardHint.textContent = t('hintControls');
     } else if (phase === 'playing') {
       card.style.display = paused ? 'block' : 'none';
+      setTimeout(layoutCard, 0);
       heroBox.style.display = 'none';
       cardLbBox.style.display = 'none';
       if (paused) {
@@ -2327,11 +2834,14 @@
         cardStats.innerHTML = '';
         cardPlayBtn.textContent = t('playAgainBtn');
         cardClaimBtn.style.display = 'none';
+        cardClaimOwnBtn.style.display = 'none';
+        cardShareBtn.style.display = 'none';
         cardClaimStatus.textContent = '';
         cardHint.textContent = '';
       }
     } else {
       card.style.display = 'block';
+      setTimeout(layoutCard, 0);
       heroBox.style.display = 'block';
       cardLbBox.style.display = 'block';
       cardTitle.textContent = phase === 'won' ? t('wonTitle') : (t('lostTitle') + ' ' + wave + '!');
@@ -2343,17 +2853,27 @@
         + '<span>' + t('timeLabel') + ': ' + formatDuration(elapsed) + '</span>'
         + '<span>' + t('killsLabel') + ': ' + kills + '</span>';
       cardPlayBtn.textContent = t('playAgainBtn');
+      var relayOn = Boolean(web3 && web3.state.setup && web3.state.setup.relay && web3.state.setup.relay.enabled);
       if (score > 0 && !runClaimed) {
         var canRealChain = web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress);
         cardClaimBtn.style.display = 'inline-flex';
-        cardClaimBtn.textContent = canRealChain ? t('claimChainBtn') : t('claimDemoBtn');
+        cardClaimBtn.textContent = canRealChain ? (relayOn ? t('claimGaslessBtn') : t('claimChainBtn')) : t('claimDemoBtn');
+        cardClaimOwnBtn.style.display = canRealChain && relayOn ? 'inline-flex' : 'none';
+        cardClaimOwnBtn.textContent = t('claimOwnBtn');
       } else {
         cardClaimBtn.style.display = 'none';
+        cardClaimOwnBtn.style.display = 'none';
       }
+      cardShareBtn.style.display = runClaimed ? 'inline-flex' : 'none';
+      cardShareBtn.textContent = '📤 ' + t('shareBtn');
+      cardClaimStatus.textContent = claimStatusText;
       if (lastTxExplorerUrl) {
-        cardClaimStatus.innerHTML = claimStatusText + ' <a href="' + lastTxExplorerUrl + '" target="_blank" rel="noreferrer" style="color:#63f7ff;text-decoration:underline">' + t('viewTx') + '</a>';
-      } else {
-        cardClaimStatus.textContent = claimStatusText;
+        // Built with DOM nodes (not innerHTML) so wallet or server error text can never inject markup.
+        var txLink = document.createElement('a');
+        txLink.href = lastTxExplorerUrl; txLink.target = '_blank'; txLink.rel = 'noreferrer';
+        txLink.style.cssText = 'color:#63f7ff;text-decoration:underline;margin-left:6px';
+        txLink.textContent = t('viewTx');
+        cardClaimStatus.appendChild(txLink);
       }
       cardHint.textContent = t('hintControls');
     }
@@ -2364,9 +2884,37 @@
     endedAt = performance.now();
     if (next !== 'playing' && drag) { drag = null; joyBase.style.display = 'none'; }
     dashBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
+    surrenderBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
+    if (next === 'playing') { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); }
     if (next !== 'playing') { bossBarWrap.style.display = 'none'; lvlOverlay.style.display = 'none'; levelUpChoices = null; }
     refreshStaticTexts();
     post({ type: 'state', phase: phase, score: score });
+  }
+
+  /* Playing requires a connected wallet that has signed in (free message signature). */
+  function needsWallet() {
+    return Boolean(web3) && !web3.state.account;
+  }
+  var pendingStart = false;
+  /* A connected wallet is required to play; after connecting, the pending run starts automatically. */
+  function requestStart() {
+    if (needsWallet()) {
+      pendingStart = true;
+      openConnectModal();
+      return;
+    }
+    start();
+  }
+
+  function afterLogin() {
+    refreshStaticTexts();
+    closeConnectModal();
+    if (pendingStart && web3.state.account) {
+      pendingStart = false;
+      start();
+    } else if (w3Overlay.style.display === 'flex') {
+      renderWeb3Modal();
+    }
   }
 
   function start() {
@@ -2383,7 +2931,8 @@
     elapsed = 0; spawnTimer = 0; nextBossAt = R.duration > 0 ? Math.min(R.bossEvery, Math.max(8, R.duration * 0.5)) : R.bossEvery;
     invulnerable = 0; dashCooldown = 0; dashTimer = 0; paused = false; levelUpChoices = null;
     runClaimed = false; claimStatusText = ''; lastTxExplorerUrl = '';
-    fireRateMult = 1; speedStatMult = hSpec.speedMult; magnetMult = 1;
+    telemetry = []; lastCpAt = 0; runHeroShort = hSpec.short;
+    fireRateMult = 1; speedStatMult = hSpec.speedMult; magnetMult = 1 + magnetBonus(magnetLevel());
     upLevels = {};
     upLevels[hSpec.weaponId] = 1;
     wTimers = { dragon: 0.2, lightning: 0.2, shuriken: 0.2, coloa: 0.2, drill: 0.2, orbital: 1.5 };
@@ -2391,96 +2940,585 @@
     for (var i = 0; i < R.maxPickups; i++) addShard(undefined, undefined, 15, false);
     spawnEnemy('stalker'); spawnEnemy('charger'); spawnEnemy('caster');
     blip(520, 0.12, 'triangle', 0.07, 780);
+    if (web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress)) {
+      web3.startRun({ hero: selectedHeroIdx }).catch(function () { /* claim will explain if the anti-cheat server is unreachable */ });
+    }
     setPhase('playing');
   }
 
   function finish(won) {
     if (score > best) { best = score; saveBest(best); }
-    if (score > 0) {
-      saveLocalRun({
-        name: (web3 && web3.state.account) ? window.ARC_WEB3.shortAddr(web3.state.account) : playerName,
-        hero: activeHeroSpec().short,
-        wave: wave,
-        score: score,
-        kills: kills,
-        at: new Date().toISOString(),
-      });
-    }
     blip(won ? 660 : 200, 0.5, won ? 'triangle' : 'sawtooth', 0.06, won ? 990 : 90);
     setPhase(won ? 'won' : 'lost');
   }
   function canRestart() { return performance.now() - endedAt > 500; }
 
   /* 12. WEB3 MODAL */
+  // Contract custom errors reach the wallet as bare 4-byte selectors: translate them for players.
+  var CONTRACT_ERRORS = {
+    '0x78636683': ['You already entered this season.', 'Bạn đã vào mùa giải này rồi.'],
+    '0xdbd05e83': ['This empty season was already rolled over.', 'Mùa trống này đã được chuyển quỹ rồi.'],
+    '0x5cd5d233': ['The run ticket does not match this season or was altered. Play a new run.', 'Vé ván chơi không khớp mùa giải này. Hãy chơi ván mới.'],
+    '0x203d82d8': ['The run ticket expired. Play a new run and save it sooner.', 'Vé ván chơi đã hết hạn. Hãy chơi ván mới và ghi điểm sớm hơn.'],
+    '0x13be252b': ['USDC allowance is too low. Try again to approve it first.', 'Hạn mức USDC chưa đủ. Hãy thử lại để cấp quyền trước.'],
+    '0xf4d678b8': ['Not enough ARCQ for this upgrade.', 'Không đủ ARCQ để nâng cấp.'],
+    '0x40f6b1bc': ['Your hero is already at the maximum level.', 'Tướng của bạn đã đạt cấp tối đa.'],
+    '0xae958a40': ['That rank has no prize.', 'Hạng đó không có thưởng.'],
+    '0x15561365': ['The score is not valid for this contract.', 'Điểm không hợp lệ với contract.'],
+    '0x70d3cfbb': ['You did not join that room.', 'Bạn chưa tham gia phòng đó.'],
+    '0xc4e42d0c': ['That room is closed.', 'Phòng đó đã đóng.'],
+    '0x3fe028f7': ['That room has not ended yet.', 'Phòng đó chưa kết thúc.'],
+    '0x4c06417a': ['That room has winners, so it cannot be refunded.', 'Phòng đó đã có người thắng nên không hoàn phí được.'],
+    '0x7697c5dd': ['You already got your fee back.', 'Bạn đã nhận lại phí rồi.'],
+    '0x6fe6a4c9': ['The entry fee must be between 0.1 and 100 USDC.', 'Phí vào phải từ 0,1 đến 100 USDC.'],
+    '0x76166401': ['A room lasts between 1 hour and 7 days.', 'Phòng kéo dài từ 1 giờ đến 7 ngày.'],
+    '0x4d95c334': ['You already own this skin.', 'Bạn đã sở hữu skin này.'],
+    '0x0c98ead5': ['You do not own this skin yet.', 'Bạn chưa sở hữu skin này.'],
+    '0x4363a3f3': ['That skin does not exist.', 'Skin đó không tồn tại.'],
+    '0x5c79bc39': ['That hero id is not valid.', 'Mã tướng không hợp lệ.'],
+    '0xa4420a95': ['Skins are soulbound and cannot be transferred.', 'Skin gắn chặt vào ví và không chuyển được.'],
+    '0x353cbf17': ['That room does not exist.', 'Phòng đó không tồn tại.'],
+    '0xd4bd01c5': ['The game is paused for new runs and entries. Claims and upgrades still work.', 'Game đang tạm dừng ván mới và vào mùa. Nhận thưởng và nâng cấp vẫn dùng được.'],
+    '0xc2356312': ['This prize was already claimed.', 'Phần thưởng này đã được nhận.'],
+    '0xb6fba8f8': ['This run was already saved.', 'Ván này đã được ghi rồi.'],
+    '0x7221b37b': ['This season has not ended yet.', 'Mùa giải này chưa kết thúc.'],
+    '0xfd828399': ['The USDC transfer failed. Check your USDC balance.', 'Chuyển USDC thất bại. Hãy kiểm tra số dư USDC.'],
+    '0xbdf1ba38': ['There is no prize pool to roll over.', 'Không có quỹ thưởng để chuyển.'],
+    '0x109c167d': ['This season has winners, so its pool cannot be rolled over.', 'Mùa này đã có người thắng nên không chuyển quỹ được.']
+  };
+  function contractErrorText(err) {
+    var blob = '';
+    try { blob = JSON.stringify(err, function (k, v) { return typeof v === 'bigint' ? v.toString() : v; }); } catch (e) { /* circular */ }
+    blob += ' ' + String((err && err.message) || '') + ' ' + String((err && err.data) || '');
+    var keys = Object.keys(CONTRACT_ERRORS);
+    for (var i = 0; i < keys.length; i++) {
+      if (blob.indexOf(keys[i]) !== -1) return CONTRACT_ERRORS[keys[i]][lang === 'vi' ? 1 : 0];
+    }
+    return '';
+  }
+  function friendlyTxError(err) {
+    var msg = (err && err.message) || String(err);
+    if (err && err.code === 4001) return t('cancelled');
+    var known = contractErrorText(err);
+    if (known) return known;
+    if (msg === 'NEED_USDC') return t('needUsdc');
+    if (msg === 'NEED_LOGIN' || msg === 'NO_ACCOUNT') return t('walletRequired');
+    if (msg === 'WC_NOT_CONFIGURED') return t('wcNeedsSetup');
+    if (msg === 'PASSKEY_NOT_CONFIGURED') return t('passkeySetup') + ' ' + window.location.hostname;
+    if (err && err.name === 'NotAllowedError') return t('cancelled');
+    if (err && err.name === 'SecurityError') return t('passkeyDomainErr') + ' ' + window.location.hostname;
+    if (err && err.name === 'InvalidStateError') return t('passkeyExists');
+    if (msg === 'NO_WALLET') return t('needWallet');
+    if (msg === 'NO_CONTRACT') return t('noContractMsg');
+    return msg;
+  }
+
+  function runTx(label, fn) {
+    w3Status.textContent = '⏳ ' + label + '...';
+    return fn().then(function (res) {
+      w3Status.textContent = '✅ ' + label;
+      refreshStaticTexts();
+      renderWeb3Modal();
+      return res;
+    }).catch(function (err) {
+      w3Status.textContent = '⚠️ ' + friendlyTxError(err);
+    });
+  }
+
+  function formatCountdown(endsAtSec) {
+    var left = Math.max(0, endsAtSec - Math.floor(Date.now() / 1000));
+    var h = Math.floor(left / 3600), m = Math.floor((left % 3600) / 60);
+    return h + 'h ' + m + 'm';
+  }
+
+  var SKIN_COLORS = ['', '#ff4d6d', '#ffb703', '#2ecc71', '#9b5de5', '#6ee7ff', '#ffd700'];
+
+  /* Upgrade-NFT icon: the Arc Voxel "A" arch logo (blue to purple to pink) on a tile tinted by level, with one dot per level. */
+  var LOGO_PATH = 'M14 94 L36 94 L38 66 C39 50 44 40 52 40 C60 40 64 50 65 66 L67 94 L90 94 L84 56 C80 26 66 8 50 8 C34 8 20 26 16 56 Z';
+  function levelIconUri(sid) {
+    var c = SKIN_COLORS[sid] || '#6ee7ff';
+    var dots = '';
+    for (var i = 0; i < sid; i++) dots += '<circle cx="' + (50 + (i - (sid - 1) / 2) * 11) + '" cy="91" r="3.6" fill="' + c + '" stroke="#fff" stroke-width="1"/>';
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+      + '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2230a8"/><stop offset=".5" stop-color="#6a2fb0"/><stop offset="1" stop-color="#e0366a"/></linearGradient>'
+      + '<radialGradient id="b" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="' + c + '" stop-opacity=".6"/><stop offset="1" stop-color="#070d20"/></radialGradient></defs>'
+      + '<rect x="2" y="2" width="96" height="96" rx="20" fill="url(#b)" stroke="' + c + '" stroke-width="3"/>'
+      + (window.GAME_LOGO
+        // The exact project logo (vendor/logo.*). A filter turns its white background transparent so only the mark remains.
+        ? '<filter id="k" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1.6 -1.6 -1.6 0 4.2"/></filter>'
+          + '<image href="' + window.GAME_LOGO + '" x="14" y="5" width="72" height="72" preserveAspectRatio="xMidYMid meet" filter="url(#k)"/>'
+        : '<path d="' + LOGO_PATH + '" fill="url(#g)" stroke="rgba(255,255,255,.55)" stroke-width="1.6" transform="translate(15 4) scale(.7)"/>')
+      + dots + '</svg>';
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+  var SKIN_COSTS = [0, 1000, 2000, 3000, 5000, 8000, 12000];
+
+  function panel(parent) {
+    return el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', parent);
+  }
+  function kv(parent, lbl, val) {
+    var r = el('div', 'display:flex;justify-content:space-between;gap:8px', parent);
+    el('span', 'opacity:.75', r).textContent = lbl;
+    el('span', 'font-weight:700;font-family:ui-monospace,monospace;color:#aef9ff;text-align:right;word-break:break-all', r).textContent = val;
+  }
+  function heading(parent, text) { el('div', 'font-weight:800;color:#ffd166', parent).textContent = text; }
+  function hint(parent, text) { el('div', 'opacity:.7;font-size:12px', parent).textContent = text; }
+  function fmtUsdc(v) { return window.ARC_WEB3.formatUnits(v, 6, 2) + ' USDC'; }
+  function arcq(wei) { return window.ARC_WEB3.formatUnits(wei, 18, 1) + ' ARCQ'; }
+  function fmtLeft(secs) {
+    var left = Math.max(0, secs);
+    var d = Math.floor(left / 86400), h = Math.floor((left % 86400) / 3600), m = Math.floor((left % 3600) / 60);
+    return (d ? d + 'd ' : '') + h + 'h ' + m + 'm';
+  }
+
+  /* Profile: balances, badge and skin art, recent saved runs with transaction links. */
+  function renderProfileTab() {
+    var A = window.ARC_WEB3, st = web3.state;
+    if (!st.account) { renderLoginPanel(w3Body); return; }
+    var box = panel(w3Body);
+    heading(box, t('tabProfile'));
+    kv(box, t('walletAddrLabel'), st.account);
+    kv(box, t('usdcBalLabel'), fmtUsdc(st.usdcBalance));
+    if (st.profile) {
+      kv(box, t('arcqBalLabel'), arcq(st.profile.arcqBalanceWei));
+      kv(box, t('badgeLabel'), t('tiers')[st.profile.badgeTier] || t('tiers')[0]);
+      kv(box, t('runsLabel'), st.profile.totalRuns + ' (Best ' + st.profile.bestScore + ')');
+    }
+    kv(box, t('magnetLvLabel'), magnetLevel() + ' / 6 (+' + pct(magnetBonus(magnetLevel())) + '%)');
+    if (st.questState) kv(box, t('streakLabel'), String(st.questState.streak));
+
+    renderBadgeRoadmap(w3Body);
+    var art = panel(w3Body);
+    heading(art, t('badgeArtTitle'));
+    var artRow = el('div', 'display:flex;gap:10px;flex-wrap:wrap;align-items:center', art);
+    artRow.textContent = '...';
+    web3.loadArt().then(function (res) {
+      if (!artRow.isConnected) return;
+      artRow.textContent = '';
+      if (res && res.badge) { var im = el('img', 'width:84px;height:84px;border-radius:12px;background:#050b18', artRow); im.src = res.badge; im.alt = ''; }
+      else el('div', 'opacity:.75', artRow).textContent = t('noBadge');
+      var owned = (web3.state.skinState && web3.state.skinState.owned) || 0;
+      for (var sid = 1; sid <= 6; sid++) {
+        if ((owned & (1 << (sid - 1))) === 0) continue;
+        var sk = el('img', 'width:64px;height:64px;border-radius:12px', artRow); sk.src = levelIconUri(sid); sk.alt = t('levelWord') + ' ' + sid; sk.title = t('levelWord') + ' ' + sid + ' · ' + (t('skinNames')[sid] || '');
+      }
+    });
+
+    var hist = panel(w3Body);
+    heading(hist, t('recentRuns'));
+    var list = el('div', 'display:flex;flex-direction:column;gap:4px;font-family:ui-monospace,monospace', hist);
+    list.textContent = '...';
+    web3.loadHistory().then(function (res) {
+      if (!list.isConnected) return;
+      list.textContent = '';
+      (res.history || []).forEach(function (r) {
+        var line = el('div', 'display:flex;justify-content:space-between;gap:8px', list);
+        el('span', '', line).textContent = r.score + ' pts · W' + r.wave + ' · ' + ((HEROES[r.hero] && HEROES[r.hero].short) || '—') + (r.roomId ? ' · room #' + r.roomId : '');
+        var url = explorerTx(r.txHash);
+        if (url) { var a = el('a', 'color:#4ade80;text-decoration:none', line); a.href = url; a.target = '_blank'; a.rel = 'noreferrer'; a.textContent = 'tx ↗'; }
+      });
+      if (!(res.history || []).length) list.textContent = t('noRuns');
+    });
+  }
+
+  /* Daily quests are paid automatically when a run is saved. */
+  function renderQuestsTab() {
+    var st = web3.state;
+    if (!st.account) { renderLoginPanel(w3Body); return; }
+    var q = st.questState || { streak: 0, runsToday: 0, mask: 0 };
+    var box = panel(w3Body);
+    heading(box, t('questsTitle'));
+    kv(box, t('streakLabel'), String(q.streak));
+    kv(box, t('runsTodayLabel'), String(q.runsToday));
+    var defs = [
+      [0, t('questFirst'), t('questFirstR')],
+      [1, t('questThree'), t('questThreeR')],
+      [2, t('questBig'), t('questBigR')]
+    ];
+    defs.forEach(function (d) {
+      var done = (q.mask & (1 << d[0])) !== 0;
+      var row = el('div', 'display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:10px;background:' + (done ? 'rgba(74,222,128,.12)' : 'rgba(120,230,255,.06)'), box);
+      var left = el('div', 'display:flex;flex-direction:column', row);
+      el('span', 'font-weight:700', left).textContent = (done ? '✅ ' : '⬜ ') + d[1];
+      el('span', 'font-size:12px;opacity:.7', left).textContent = d[2];
+      el('span', 'color:' + (done ? '#7dffb1' : '#ffd166') + ';font-weight:800', row).textContent = done ? t('questDone') : '';
+    });
+    hint(box, t('questHint'));
+  }
+
+  /* Badge roadmap: what each badge needs, how far the player is, and tips to climb. */
+  var SCORE_DIVISOR = 20; // in-game score / 20 = onchain points (same rule the server applies)
+  var BADGE_STEPS = [
+    { tier: 1, pts: 300, icon: '🔰' }, { tier: 2, pts: 700, icon: '🛡️' }, { tier: 3, pts: 1500, icon: '⚔️' }, { tier: 4, pts: 3000, icon: '🏰' },
+    { tier: 5, pts: 6000, icon: '🔥' }, { tier: 6, pts: 12000, icon: '🗿' }, { tier: 7, pts: 25000, icon: '⚡' }, { tier: 8, pts: 40000, icon: '🌟' },
+  ];
+  var CHAMPION_TIER = 9;
+  var MILESTONES = [
+    { key: 'msRuns5', icon: '🎮', ok: function (p) { return p.totalRuns >= 5; } },
+    { key: 'msRuns25', icon: '🏅', ok: function (p) { return p.totalRuns >= 25; } },
+    { key: 'msRuns100', icon: '🛡️', ok: function (p) { return p.totalRuns >= 100; } },
+    { key: 'msGems500', icon: '💎', ok: function (p) { return p.totalGems >= 500; } },
+    { key: 'msGems5000', icon: '👛', ok: function (p) { return p.totalGems >= 5000; } },
+    { key: 'msCombo5', icon: '🔗', ok: function (p) { return p.maxCombo >= 5; } },
+    { key: 'msCombo10', icon: '⚡', ok: function (p) { return p.maxCombo >= 10; } },
+    { key: 'msStreak3', icon: '📅', ok: function (p, qs) { return Boolean(qs) && qs.streak >= 3; } },
+    { key: 'msStreak7', icon: '🗓️', ok: function (p, qs) { return Boolean(qs) && qs.streak >= 7; } },
+  ];
+  function tierName(i) { return String((t('tiers')[i] || '')).replace(/\s*\(.*\)\s*$/, ''); }
+  function fmtN(n) { return Number(n).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US'); }
+  function fill(str, vars) { return String(str).replace(/\{(\w+)\}/g, function (m, k) { return vars[k] === undefined ? m : vars[k]; }); }
+  function badgeBest() { return web3 && web3.state.account && web3.state.profile ? Number(web3.state.profile.bestScore) : 0; }
+  function badgeGoalText() {
+    var best = badgeBest();
+    for (var i = 0; i < BADGE_STEPS.length; i++) {
+      var step = BADGE_STEPS[i];
+      if (best < step.pts) {
+        if (!(web3 && web3.state.account) || best === 0) return i === 0 ? t('badgeFirstGoal') : '';
+        return fill(t('badgeNextGoal'), { tier: tierName(step.tier), n: fmtN(step.pts - best), g: fmtN((step.pts - best) * SCORE_DIVISOR) });
+      }
+    }
+    return t('badgeAllScore');
+  }
+  function renderBadgeRoadmap(parent) {
+    var st = web3.state;
+    var best = badgeBest();
+    var tier = st.profile ? st.profile.badgeTier : 0;
+    var box = panel(parent);
+    heading(box, t('badgeRoadmapTitle'));
+    var next = null;
+    BADGE_STEPS.forEach(function (step) {
+      var done = best >= step.pts; // score tiers depend on the best run only: the Champion tier (9) must not tick them all
+      if (!done && !next) next = step;
+      var row = el('div', 'display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:' + (done ? 'rgba(74,222,128,.12)' : 'rgba(120,230,255,.06)') + ';border:1px solid ' + (next === step ? '#ffd166' : 'transparent'), box);
+      el('span', 'font-size:20px;flex:none;width:26px;text-align:center', row).textContent = step.icon;
+      var col = el('div', 'display:flex;flex-direction:column;flex:1;min-width:0', row);
+      el('span', 'font-weight:800', col).textContent = tierName(step.tier);
+      el('span', 'font-size:12px;opacity:.75', col).textContent = fill(t('badgeReq'), { n: fmtN(step.pts), g: fmtN(step.pts * SCORE_DIVISOR) });
+      el('span', 'font-weight:800;color:' + (done ? '#7dffb1' : '#ffd166'), row).textContent = done ? '✅ ' + t('badgeEarned') : '';
+    });
+    var champ = tier >= CHAMPION_TIER;
+    var crow = el('div', 'display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:' + (champ ? 'rgba(74,222,128,.12)' : 'rgba(120,230,255,.06)'), box);
+    el('span', 'font-size:20px;flex:none;width:26px;text-align:center', crow).textContent = '👑';
+    var ccol = el('div', 'display:flex;flex-direction:column;flex:1;min-width:0', crow);
+    el('span', 'font-weight:800', ccol).textContent = tierName(CHAMPION_TIER);
+    el('span', 'font-size:12px;opacity:.75', ccol).textContent = t('badgeChampionReq');
+    el('span', 'font-weight:800;color:#7dffb1', crow).textContent = champ ? '✅ ' + t('badgeEarned') : '';
+    if (next) { // progress toward the next score badge (the first step starts from zero)
+      var prevPts = next.tier === 1 ? 0 : BADGE_STEPS[next.tier - 2].pts;
+      var pct = Math.max(0, Math.min(100, Math.round(((best - prevPts) / (next.pts - prevPts)) * 100)));
+      var bar = el('div', 'height:6px;border-radius:99px;background:rgba(120,230,255,.16);overflow:hidden;margin-top:2px', box);
+      el('div', 'height:100%;width:' + pct + '%;background:linear-gradient(90deg,#38f2ff,#ffd166)', bar);
+    }
+    el('div', 'color:#ffd166;font-weight:700;font-size:12.5px', box).textContent = badgeGoalText();
+    if (st.profile) {
+      heading(box, t('milestonesTitle'));
+      var grid = el('div', 'display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px', box);
+      MILESTONES.forEach(function (m) {
+        var d = m.ok(st.profile, st.questState);
+        el('div', 'font-size:12px;padding:4px 8px;border-radius:8px;background:' + (d ? 'rgba(74,222,128,.12)' : 'rgba(120,230,255,.05)') + ';opacity:' + (d ? '1' : '.7'), grid).textContent = (d ? '✅ ' : m.icon + ' ') + t(m.key);
+      });
+    }
+    heading(box, t('badgeTipsTitle'));
+    (t('badgeTips') || []).forEach(function (tip) { el('div', 'font-size:12.5px;opacity:.88;line-height:1.4', box).textContent = '• ' + tip; });
+  }
+
+  function skinTintHex() {
+    var ss = web3 && web3.state.account && web3.state.skinState;
+    return ss && ss.equipped ? SKIN_COLORS[ss.equipped] : '';
+  }
+
+  /* Upgrade-NFT shop: soulbound NFTs paid by burning ARCQ. Each NFT owned is one level; each level widens the pickup range. */
+  function renderShopTab() {
+    var st = web3.state;
+    if (!st.account) { renderLoginPanel(w3Body); return; }
+    var ss = st.skinState || { owned: 0, equipped: 0 };
+    var bal = st.profile ? st.profile.arcqBalanceWei : 0n;
+    var lvl = magnetLevel();
+    var nextId = 0;
+    for (var n = 1; n <= 6 && !nextId; n++) if ((ss.owned & (1 << (n - 1))) === 0) nextId = n;
+    var box = panel(w3Body);
+    heading(box, t('shopTitle'));
+    kv(box, t('arcqBalLabel'), arcq(bal));
+    kv(box, t('magnetLvLabel'), lvl + ' / 6');
+    kv(box, t('magnetBonusLabel'), '+' + pct(magnetBonus(lvl)) + '%');
+    hint(box, t('shopHint'));
+    for (var id = 1; id <= 6; id++) {
+      (function (sid) {
+        var owned = (ss.owned & (1 << (sid - 1))) !== 0;
+        var isNext = sid === nextId;
+        var row = el('div', 'display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;background:rgba(120,230,255,.06);border:1px solid ' + (isNext ? '#ffd166' : 'transparent') + ';opacity:' + (owned || isNext ? '1' : '.7'), box);
+        var ico = el('img', 'width:44px;height:44px;border-radius:10px;flex:none;filter:' + (owned || isNext ? 'none' : 'grayscale(.75) brightness(.8)'), row);
+        ico.src = levelIconUri(sid); ico.alt = '';
+        var txt = el('div', 'display:flex;flex-direction:column;flex:1;min-width:0', row);
+        el('span', 'font-weight:800', txt).textContent = t('levelWord') + ' ' + sid + ' · ' + t('skinNames')[sid];
+        el('span', 'font-size:12px;opacity:.75', txt).textContent = '+' + pct(MAGNET_STEPS[sid - 1]) + '% ' + t('magnetShort') + ' (' + t('totalWord') + ' +' + pct(magnetBonus(sid)) + '%) · ' + (owned ? (ss.equipped === sid ? t('equippedLabel') : t('ownedLabel')) : SKIN_COSTS[sid].toLocaleString() + ' ARCQ');
+        var b = el('button', '', row); b.className = 'avq-btn' + (owned && ss.equipped !== sid ? ' pri' : '');
+        if (!owned) {
+          b.textContent = isNext ? t('buyBtn') : '🔒 ' + t('lockedBtn');
+          b.disabled = !isNext || bal < BigInt(SKIN_COSTS[sid]) * 10n ** 18n;
+          b.onclick = function () { runTx(t('buyBtn') + ' ' + t('levelWord') + ' ' + sid, function () { return web3.buySkin(sid); }); };
+        } else if (ss.equipped === sid) {
+          b.textContent = t('unequipBtn');
+          b.onclick = function () { runTx(t('unequipBtn'), function () { return web3.equipSkin(0); }); };
+        } else {
+          b.textContent = t('equipBtn');
+          b.onclick = function () { runTx(t('equipBtn') + ' ' + t('skinNames')[sid], function () { return web3.equipSkin(sid); }); };
+        }
+      })(id);
+    }
+  }
+
+
+  function renderLoginPanel(parent) {
+    var b = el('button', 'align-self:flex-start', parent); b.className = 'avq-btn pri'; b.textContent = t('connectWalletShort');
+    b.onclick = function () { closeWeb3Modal(); openConnectModal(); };
+  }
+
+  function openConnectModal() {
+    cnOverlay.style.display = 'flex';
+    cnStatus.textContent = '';
+    renderConnectModal();
+  }
+  function closeConnectModal() { cnOverlay.style.display = 'none'; }
+
+  function walletBadge(parent, w) {
+    if (w.icon) {
+      var img = el('img', 'width:38px;height:38px;border-radius:10px;flex:none', parent);
+      img.src = w.icon; img.alt = '';
+      return img;
+    }
+    var b = el('div', 'width:38px;height:38px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;background:' + (w.color || '#3b82f6'), parent);
+    b.textContent = (w.name || '?').charAt(0);
+    return b;
+  }
+
+  function connectWith(factory, label) {
+    cnStatus.textContent = '⏳ ' + label + '...';
+    factory().then(function () { cnStatus.textContent = ''; afterLogin(); })
+      .catch(function (err) { cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
+  }
+
+  function renderConnectModal() {
+    var st = web3.state;
+    cnBody.innerHTML = '';
+    var head = el('div', 'display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center', cnBody);
+    var logo = el('div', 'width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#1e3a8a,#0ea5e9);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(14,165,233,.35);overflow:hidden', head);
+    if (window.GAME && window.GAME.assets && window.GAME.assets.hero) {
+      var li = el('img', 'width:52px;height:52px;object-fit:contain', logo); li.src = window.GAME.assets.hero; li.alt = '';
+    } else {
+      logo.textContent = '⛓️';
+    }
+    el('div', 'font-size:22px;font-weight:900;color:#eefaff', head).textContent = t('connectTitle');
+    el('div', 'opacity:.75;font-size:13px', head).textContent = t('connectSub');
+
+    // Passkey wallet: a smart account opened with fingerprint, face or Windows Hello (no extension, no seed phrase, no gas)
+    var pBox = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(99,247,255,.07);border:1px solid rgba(99,247,255,.35)', cnBody);
+    el('div', 'font-weight:900;font-size:14px;color:#63f7ff', pBox).textContent = '🔐 ' + t('passkeyTitle');
+    el('div', 'font-size:12.5px;opacity:.85;line-height:1.45', pBox).textContent = t('passkeyNote');
+    if (!web3.passkeyEnabled()) {
+      var setupBox = el('div', 'padding:8px 10px;border-radius:10px;background:rgba(255,209,102,.08);border:1px dashed rgba(255,209,102,.45);font-size:12px;line-height:1.5;color:#ffe9a8', pBox);
+      setupBox.textContent = t('passkeySetup') + ' ' + window.location.hostname;
+    } else {
+      var nameIn = el('input', 'width:100%;padding:8px 10px;font-size:13px;box-sizing:border-box', pBox);
+      nameIn.className = 'avq-input'; nameIn.maxLength = 32; nameIn.placeholder = t('passkeyNamePh'); nameIn.value = playerName || '';
+      var pBtns = el('div', 'display:flex;gap:8px;flex-wrap:wrap', pBox);
+      var bNew = el('button', '', pBtns); bNew.className = 'avq-btn pri'; bNew.textContent = '✨ ' + t('passkeyCreateBtn');
+      bNew.onclick = function () { connectWith(function () { return web3.registerPasskey(nameIn.value); }, t('passkeyWorking')); };
+      var bOld = el('button', '', pBtns); bOld.className = 'avq-btn'; bOld.textContent = '🔑 ' + t('passkeyLoginBtn');
+      bOld.onclick = function () { connectWith(function () { return web3.loginPasskey(); }, t('passkeyWorking')); };
+    }
+
+    // Other wallets (installed ones connect directly, others link to their install page)
+    el('div', 'font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.65;margin-top:4px', cnBody).textContent = t('yourWallets');
+    var grid = el('div', 'display:grid;grid-template-columns:1fr 1fr;gap:8px', cnBody);
+    var CARD = 'display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:#091224;border:1px solid rgba(120,230,255,.25);color:#eefaff;cursor:pointer;text-align:left;font:inherit;min-width:0';
+    web3.listWalletOptions().then(function (opts) {
+      if (!grid.isConnected) return;
+      opts.forEach(function (w) {
+        var c = el('button', CARD, grid);
+        walletBadge(c, w);
+        var txt = el('div', 'display:flex;flex-direction:column;min-width:0', c);
+        el('span', 'font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis', txt).textContent = w.name;
+        el('span', 'font-size:11px;opacity:.7;color:' + (w.installed ? '#7dffb1' : '#aef9ff'), txt).textContent = w.installed ? t('installedInBrowser') : (t('installLink') + ' ↗');
+        c.onclick = function () {
+          if (w.installed) { connectWith(function () { return web3.connectBrowserWallet(w); }, w.name); }
+          else if (w.url) { window.open(w.url, '_blank', 'noopener'); }
+        };
+      });
+      if (!opts.some(function (w) { return w.installed; })) {
+        var inFrame = false;
+        try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
+        var note = el('div', 'grid-column:1 / -1;padding:10px 12px;border-radius:12px;background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.4);font-size:12px;line-height:1.5;color:#ffe9a8', grid);
+        note.textContent = t('noWalletDetected') + (inFrame ? ' ' + t('noWalletInFrame') : '');
+        var again = el('button', 'margin-top:6px;display:block', note); again.className = 'avq-btn'; again.textContent = t('detectAgain');
+        again.onclick = function () { renderConnectModal(); };
+      }
+    });
+    var wcOn = Boolean(st.setup && st.setup.walletConnectProjectId);
+    if (!wcOn) return; // WalletConnect stays hidden until WALLETCONNECT_PROJECT_ID is configured
+    var wc = el('button', CARD + ';grid-column:1 / -1;justify-content:space-between;' + (wcOn ? '' : 'opacity:.75'), cnBody);
+    var wcLeft = el('div', 'display:flex;align-items:center;gap:10px', wc);
+    walletBadge(wcLeft, { name: 'W', color: '#3b99fc' });
+    var wcTxt = el('div', 'display:flex;flex-direction:column', wcLeft);
+    el('span', 'font-weight:800;font-size:13px', wcTxt).textContent = t('wcTitle');
+    el('span', 'font-size:11px;opacity:.7', wcTxt).textContent = wcOn ? t('wcDesc') : t('wcNeedsSetup');
+    el('span', 'font-size:20px;opacity:.6', wc).textContent = '›';
+    wc.onclick = function () {
+      if (!wcOn) { cnStatus.textContent = '⚠️ ' + t('wcNeedsSetup'); return; }
+      connectWith(function () { return web3.connectWalletConnectWallet(); }, t('wcTitle'));
+    };
+  }
+
+  function renderSeasonTab() {
+    var A = window.ARC_WEB3, st = web3.state;
+    if (!st.account) renderLoginPanel(w3Body);
+    var box = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
+    function row(parent, lbl, val) {
+      var r = el('div', 'display:flex;justify-content:space-between;gap:8px', parent);
+      el('span', 'opacity:.75', r).textContent = lbl;
+      el('span', 'font-weight:700;font-family:ui-monospace,monospace;color:#aef9ff;text-align:right', r).textContent = val;
+    }
+    el('div', 'font-weight:800;color:#ffd166', box).textContent = t('seasonTitle');
+    if (!A.isValidAddress(st.contractAddress)) {
+      el('div', 'opacity:.9', box).textContent = t('noContractMsg');
+      return;
+    }
+    var season = st.season, ps = st.playerState;
+    if (season) {
+      row(box, t('seasonLabel'), '#' + (season.id + 1));
+      row(box, t('poolLabel'), A.formatUnits(season.poolUsdc, 6, 2) + ' USDC');
+      row(box, t('entrantsLabel'), String(season.entrants));
+      row(box, t('endsInLabel'), formatCountdown(season.endsAt));
+    }
+    if (st.account) row(box, t('usdcBalLabel'), A.formatUnits(st.usdcBalance, 6, 2) + ' USDC');
+    if (ps) {
+      el('div', 'margin-top:2px;color:' + (ps.entered ? '#7dffb1' : '#ffd166'), box).textContent = ps.entered ? t('enteredLabel') : t('notEnteredLabel');
+    }
+    el('div', 'opacity:.7;font-size:12px', box).textContent = t('seasonHint');
+    var btns = el('div', 'display:flex;gap:8px;flex-wrap:wrap;align-items:center', box);
+    var bEnter = el('button', '', btns); bEnter.className = 'avq-btn pri'; bEnter.textContent = t('enterBtn');
+    bEnter.disabled = !st.account || Boolean(ps && ps.entered);
+    bEnter.onclick = function () { runTx(t('enterBtn'), function () { return web3.enterSeason(); }); };
+    if (st.network.faucetUrl) {
+      var fl = el('a', 'color:#63f7ff;text-decoration:underline;font-weight:700', btns);
+      fl.href = st.network.faucetUrl; fl.target = '_blank'; fl.rel = 'noreferrer'; fl.textContent = t('faucetLink');
+    }
+
+    // Prizes from ended seasons
+    var prizeBox = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
+    el('div', 'font-weight:800;color:#ffd166', prizeBox).textContent = t('prizesTitle');
+    var prizeList = el('div', 'display:flex;flex-direction:column;gap:6px', prizeBox);
+    prizeList.textContent = '...';
+    if (!season || season.id === 0) { prizeList.textContent = t('noPrizes'); return; }
+    var ids = [];
+    for (var sid = season.id - 1; sid >= 0 && ids.length < 3; sid--) ids.push(sid);
+    Promise.all(ids.map(function (id) { return web3.getPrizeStatus(id).catch(function () { return null; }); })).then(function (list) {
+      if (!prizeList.isConnected) return;
+      prizeList.textContent = '';
+      var any = false;
+      list.forEach(function (ps2) {
+        if (!ps2) return;
+        if (ps2.board.length === 0 && ps2.poolUsdc > 0n) {
+          any = true;
+          var rr = el('div', 'display:flex;justify-content:space-between;gap:8px;align-items:center', prizeList);
+          el('span', '', rr).textContent = '#' + (ps2.id + 1) + ' · ' + A.formatUnits(ps2.poolUsdc, 6, 2) + ' USDC';
+          var bRo = el('button', '', rr); bRo.className = 'avq-btn'; bRo.textContent = t('rolloverBtn');
+          bRo.onclick = function () { runTx(t('rolloverBtn'), function () { return web3.rolloverEmptySeason(ps2.id); }); };
+          return;
+        }
+        ps2.board.slice(0, 3).forEach(function (entry, rank) {
+          if (ps2.claimedMask & (1 << rank)) return;
+          any = true;
+          var r2 = el('div', 'display:flex;justify-content:space-between;gap:8px;align-items:center', prizeList);
+          el('span', 'font-family:ui-monospace,monospace', r2).textContent = '#' + (ps2.id + 1) + ' · Top ' + (rank + 1) + ' · ' + A.shortAddr(entry.player) + ' · ' + entry.bestScore + ' pts';
+          var bC = el('button', '', r2); bC.className = 'avq-btn'; bC.textContent = t('claimPrizeBtn');
+          bC.onclick = function () { runTx(t('claimPrizeBtn'), function () { return web3.claimPrize(ps2.id, rank); }); };
+        });
+      });
+      if (!any) prizeList.textContent = t('noPrizes');
+    });
+  }
+
   function renderWeb3Modal() {
     Object.keys(tabBtns).forEach(function (k) { tabBtns[k].className = k === activeTab ? 'avq-btn pri' : 'avq-btn'; });
     w3Body.innerHTML = '';
     if (!web3) {
       el('div', 'opacity:.9', w3Body).textContent = lang === 'vi'
-        ? 'Đang chạy bản offline (CSP chặn mạng). Hãy chạy `node studio-games/arc-voxel-quest/serve-dapp.mjs` để mở dapp/index.html kết nối ví MetaMask/Rabby & Arc L1.'
-        : 'Running offline sandbox build (network disabled by CSP). Run `node studio-games/arc-voxel-quest/serve-dapp.mjs` to open dapp/index.html with live EVM wallet & Arc L1 RPC.';
+        ? 'Đang chạy bản offline (CSP chặn mạng). Hãy chạy `bun server.mjs` để mở game kết nối ví MetaMask/Rabby & Arc L1.'
+        : 'Running offline sandbox build (network disabled by CSP). Run `bun server.mjs` to open the game with a live EVM wallet & Arc L1 RPC.';
       return;
     }
     var st = web3.state, demo = web3.getDemoVault(), tiers = t('tiers');
-    if (activeTab === 'wallet') {
-      if (!web3.hasWallet()) {
-        var warn = el('div', 'padding:10px 12px;border-radius:10px;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.4)', w3Body);
-        el('div', 'font-weight:800;color:#ffd166', warn).textContent = t('noWalletTitle');
-        el('div', 'margin-top:4px;opacity:.9', warn).textContent = t('noWalletDesc');
-      }
+    if (activeTab === 'profile') {
+      renderProfileTab();
+    } else if (activeTab === 'quests') {
+      renderQuestsTab();
+    } else if (activeTab === 'shop') {
+      renderShopTab();
+    } else if (activeTab === 'season') {
+      renderSeasonTab();
+    } else if (activeTab === 'wallet') {
+      if (!st.account) renderLoginPanel(w3Body);
       var infoBox = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
       function row(lbl, val) {
         var r = el('div', 'display:flex;justify-content:space-between;gap:8px', infoBox);
         el('span', 'opacity:.75', r).textContent = lbl;
-        el('span', 'font-weight:700;font-family:ui-monospace,monospace;color:#aef9ff', r).textContent = val;
+        el('span', 'font-weight:700;font-family:ui-monospace,monospace;color:#aef9ff;text-align:right;word-break:break-all', r).textContent = val;
       }
       row(t('networkLabel'), st.network.chainName + ' (' + st.network.chainIdDec + ')');
-      row(t('accountLabel'), st.account ? window.ARC_WEB3.shortAddr(st.account) : '—');
-      row(t('gasBalLabel'), st.account ? (window.ARC_WEB3.formatUnits(st.nativeBalanceWei, 18, 4) + ' ' + st.network.nativeCurrency.symbol) : '—');
+      if (st.account) {
+        row(t('walletLabel'), st.walletName || '—');
+        row(t('walletAddrLabel'), st.account);
+        row(t('gasBalLabel'), window.ARC_WEB3.formatUnits(st.usdcBalance, 6, 2) + ' USDC');
+        if (st.kind === 'passkey') {
+          el('div', 'opacity:.8;font-size:12px', infoBox).textContent = t('passkeyGasNote');
+        } else {
+          if (st.usdcBalance === 0n) el('div', 'color:#ffd166;font-weight:700', infoBox).textContent = t('noGasWarn');
+          el('div', 'opacity:.7;font-size:12px', infoBox).textContent = t('fundHint');
+        }
+      }
       if (st.profile) {
         row(t('arcqBalLabel'), window.ARC_WEB3.formatUnits(st.profile.arcqBalanceWei, 18, 1) + ' ARCQ');
         row(t('badgeLabel'), tiers[st.profile.badgeTier] || tiers[0]);
         row(t('runsLabel'), String(st.profile.totalRuns) + ' (Best ' + st.profile.bestScore + ')');
-      } else {
-        row('Demo Vault ARCQ', demo.totalArcq + ' ARCQ');
-        row('Demo ' + t('badgeLabel'), tiers[demo.badgeTier] || tiers[0]);
-        row('Demo Runs', demo.totalRuns + ' (Best ' + demo.bestScore + ')');
       }
-      var btns = el('div', 'display:flex;gap:8px;flex-wrap:wrap', w3Body);
-      var bConnect = el('button', '', btns); bConnect.className = 'avq-btn pri'; bConnect.textContent = t('connectWallet');
-      bConnect.onclick = async function () {
-        w3Status.textContent = '...';
-        try { await web3.connectWallet(); w3Status.textContent = '✅ ' + window.ARC_WEB3.shortAddr(web3.state.account); refreshStaticTexts(); renderWeb3Modal(); }
-        catch (err) { w3Status.textContent = '⚠️ ' + (err && err.message === 'NO_WALLET' ? t('noWalletTitle') : ((err && err.message) || err)); }
-      };
-      var bSwitch = el('button', '', btns); bSwitch.className = 'avq-btn'; bSwitch.textContent = t('switchArc');
-      bSwitch.onclick = async function () {
-        w3Status.textContent = '...';
-        try { await web3.switchOrAddNetwork(); w3Status.textContent = '✅ ' + web3.state.network.chainName; await web3.refreshChainState().catch(function () {}); renderWeb3Modal(); }
-        catch (err) { w3Status.textContent = '⚠️ ' + ((err && err.message) || err); }
-      };
-      var bRefresh = el('button', '', btns); bRefresh.className = 'avq-btn'; bRefresh.textContent = t('refreshChain');
-      bRefresh.onclick = async function () {
-        w3Status.textContent = '...';
-        try { await web3.refreshChainState(); w3Status.textContent = '✅ OK'; renderWeb3Modal(); renderEmbeddedLeaderboard(); }
-        catch (err) { w3Status.textContent = '⚠️ ' + ((err && err.message) || err); }
-      };
-      if (st.network.erc20Usdc) {
-        var bWatch = el('button', '', btns); bWatch.className = 'avq-btn'; bWatch.textContent = t('watchUsdcBtn');
-        bWatch.onclick = async function () { try { await web3.watchUsdcToken(); } catch (err) { w3Status.textContent = '⚠️ ' + ((err && err.message) || err); } };
+      var btns = el('div', 'display:flex;gap:8px;flex-wrap:wrap;align-items:center', w3Body);
+      if (st.account) {
+        var bCopy = el('button', '', btns); bCopy.className = 'avq-btn pri'; bCopy.textContent = t('copyBtn');
+        bCopy.onclick = function () {
+          try { navigator.clipboard.writeText(st.account); w3Status.textContent = '✅ ' + t('copied'); }
+          catch (err) { w3Status.textContent = st.account; }
+        };
+        var bRefresh = el('button', '', btns); bRefresh.className = 'avq-btn'; bRefresh.textContent = t('refreshChain');
+        bRefresh.onclick = async function () {
+          w3Status.textContent = '...';
+          try { await web3.refreshChainState(); await web3.refreshBoard(true); w3Status.textContent = '✅ OK'; renderWeb3Modal(); renderEmbeddedLeaderboard(); }
+          catch (err) { w3Status.textContent = '⚠️ ' + ((err && err.message) || err); }
+        };
       }
       if (st.network.faucetUrl) {
-        var fLink = el('a', 'color:#63f7ff;text-decoration:underline;font-weight:700;align-self:center', btns);
+        var fLink = el('a', 'color:#63f7ff;text-decoration:underline;font-weight:700', btns);
         fLink.href = st.network.faucetUrl; fLink.target = '_blank'; fLink.rel = 'noreferrer'; fLink.textContent = t('faucetLink');
       }
+      if (st.session) {
+        var bOut = el('button', '', btns); bOut.className = 'avq-btn'; bOut.textContent = t('logoutBtn');
+        bOut.onclick = function () { web3.logout().then(function () { refreshStaticTexts(); renderWeb3Modal(); }); };
+      }
     } else if (activeTab === 'leaderboard') {
-      var useChain = window.ARC_WEB3.isValidAddress(st.contractAddress) && st.leaderboard.length > 0;
-      el('div', 'font-weight:800;color:#ffd166', w3Body).textContent = useChain ? t('lbModeChain') : t('lbModeDemo');
-      var listBox = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
-      getMergedLeaderboard().forEach(function (entry, idx) {
-        var r = el('div', 'display:flex;justify-content:space-between;font-family:ui-monospace,monospace', listBox);
-        r.innerHTML = '<span>#' + (idx + 1) + ' ' + entry.name + ' (' + entry.hero + ')</span><span style="color:#ffd166">W' + entry.wave + ' · ' + entry.score + ' pts</span>';
+      el('div', 'font-weight:800;color:#ffd166', w3Body).textContent = t('lbModeChain');
+      var filters = el('div', 'display:flex;gap:6px', w3Body);
+      [['all', t('lbAll')], ['season', t('lbSeasonF')]].forEach(function (f) {
+        var fb = el('button', '', filters); fb.className = 'avq-btn' + (st.boardScope === f[0] ? ' pri' : ''); fb.textContent = f[1];
+        fb.onclick = function () { web3.refreshBoard(true, f[0]).then(function () { renderWeb3Modal(); renderEmbeddedLeaderboard(); }); };
       });
+      var listBox = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
+      var lbRows = getMergedLeaderboard();
+      lbRows.forEach(function (entry, idx) {
+        var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace', listBox);
+        var link = entry.url ? ' <a href="' + entry.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">tx ↗</a>' : '';
+        r.innerHTML = '<span>#' + (idx + 1) + ' ' + entry.name + (entry.wave ? ' · W' + entry.wave : '') + (entry.heroName ? ' · ' + entry.heroName : '') + '</span><span style="color:#ffd166">' + entry.score + ' pts' + link + '</span>';
+      });
+      if (!lbRows.length) el('div', 'opacity:.75', listBox).textContent = boardSyncNote() || t('lbEmpty');
     } else {
       el('div', 'font-weight:700', w3Body).textContent = t('contractLabel');
       var cInput = el('input', '', w3Body); cInput.className = 'avq-input'; cInput.placeholder = '0x...'; cInput.value = st.contractAddress || '';
@@ -2516,16 +3554,19 @@
     refreshStaticTexts();
     if (levelUpChoices) renderLevelUpModal();
     if (w3Overlay.style.display === 'flex') renderWeb3Modal();
+    if (cnOverlay.style.display === 'flex') renderConnectModal();
   };
   soundBtn.onclick = function () { muted = !muted; refreshStaticTexts(); };
-  web3Btn.onclick = openWeb3Modal;
-  cardWeb3Btn.onclick = openWeb3Modal;
+  seasonPill.onclick = function () { activeTab = 'season'; if (web3 && web3.state.account) openWeb3Modal(); else openConnectModal(); };
+  web3Btn.onclick = function () { if (!web3 || web3.state.account) openWeb3Modal(); else openConnectModal(); };
   w3Close.onclick = closeWeb3Modal;
+  cnClose.onclick = function () { pendingStart = false; closeConnectModal(); };
+  cnOverlay.addEventListener('click', function (e) { if (e.target === cnOverlay) { pendingStart = false; closeConnectModal(); } });
   w3Overlay.addEventListener('click', function (e) { if (e.target === w3Overlay) closeWeb3Modal(); });
   Object.keys(tabBtns).forEach(function (k) { tabBtns[k].onclick = function () { activeTab = k; renderWeb3Modal(); }; });
-  cardPlayBtn.onclick = function () { start(); };
+  cardPlayBtn.onclick = function () { requestStart(); };
   dashBtn.addEventListener('pointerdown', function (e) { e.stopPropagation(); triggerPulseDash(); });
-  cardClaimBtn.onclick = async function () {
+  async function doClaim(freeGas) {
     if (score <= 0 || runClaimed) return;
     if (!web3) {
       runClaimed = true;
@@ -2541,21 +3582,73 @@
       updateCardTexts();
       return;
     }
+    if (!freeGas && web3.state.kind !== 'passkey' && web3.state.usdcBalance === 0n) { // passkey wallets never pay gas
+      claimStatusText = '⚠️ ' + t('needGas');
+      updateCardTexts();
+      return;
+    }
     cardClaimBtn.disabled = true;
-    claimStatusText = t('claiming');
+    cardClaimOwnBtn.disabled = true;
+    claimStatusText = t(freeGas ? 'claimingFree' : (web3.state.kind === 'passkey' ? 'claimingPasskey' : 'claimingWallet'));
     updateCardTexts();
+    var run = { score: score, gems: gems, maxCombo: maxCombo, wave: wave, elapsed: Math.floor(elapsed), telemetry: telemetry };
     try {
-      var txRes = await web3.submitRunOnChain({ score: score, gems: gems, maxCombo: maxCombo });
+      var txRes = freeGas ? await web3.submitRunGasless(run) : await web3.submitRunOnChain(run);
       runClaimed = true;
-      claimStatusText = t('claimedOk') + ' (+' + score + ' ARCQ)';
+      claimStatusText = t('claimedOk') + ' (+' + ((txRes.points || 0) * 0.2).toFixed(1).replace(/\.0$/u, '') + ' ARCQ, ' + (txRes.points || 0) + ' pts)';
       lastTxExplorerUrl = txRes.explorerUrl || '';
-      renderEmbeddedLeaderboard();
+      web3.refreshBoard(true).then(renderEmbeddedLeaderboard);
     } catch (err) {
-      claimStatusText = '⚠️ ' + ((err && err.message) || err);
+      claimStatusText = '⚠️ ' + friendlyTxError(err);
     } finally {
       cardClaimBtn.disabled = false;
+      cardClaimOwnBtn.disabled = false;
       updateCardTexts();
     }
+  }
+  cardClaimBtn.onclick = function () { doClaim(Boolean(web3 && web3.state.setup && web3.state.setup.relay && web3.state.setup.relay.enabled)); };
+  cardClaimOwnBtn.onclick = function () { doClaim(false); };
+
+  /* Share card: a PNG with the score and a link to the onchain transaction. */
+  function makeShareCard() {
+    var c = document.createElement('canvas');
+    c.width = 1080; c.height = 1080;
+    var g = c.getContext('2d');
+    var bg = g.createLinearGradient(0, 0, 1080, 1080);
+    bg.addColorStop(0, '#0b1a3d'); bg.addColorStop(1, '#0b6a8f');
+    g.fillStyle = bg; g.fillRect(0, 0, 1080, 1080);
+    g.fillStyle = 'rgba(99,247,255,.12)';
+    for (var i = 0; i < 9; i++) g.fillRect(60 + i * 110, 880 - ((i * 53) % 260), 80, 260 + ((i * 53) % 260));
+    g.textAlign = 'center';
+    g.fillStyle = '#63f7ff'; g.font = '900 56px system-ui,sans-serif'; g.fillText('ARC VOXEL QUEST', 540, 150);
+    g.fillStyle = '#eefaff'; g.font = '700 40px system-ui,sans-serif'; g.fillText('Survived on Arc Testnet', 540, 215);
+    g.fillStyle = '#ffd166'; g.font = '900 210px system-ui,sans-serif'; g.fillText(String(score), 540, 500);
+    g.fillStyle = '#aef9ff'; g.font = '700 46px system-ui,sans-serif';
+    g.fillText('Wave ' + wave + '  ·  ' + formatDuration(elapsed) + '  ·  ' + kills + ' kills', 540, 590);
+    g.fillText((runHeroShort || activeHeroSpec().short), 540, 655);
+    var pts = Math.min(50000, Math.floor(score / 20));
+    g.fillStyle = '#7dffb1'; g.font = '800 44px system-ui,sans-serif'; g.fillText('Saved onchain: ' + pts + ' pts', 540, 760);
+    g.fillStyle = '#eefaff'; g.font = '600 32px ui-monospace,monospace';
+    g.fillText(web3 && web3.state.account ? window.ARC_WEB3.shortAddr(web3.state.account) : '', 540, 830);
+    if (lastTxExplorerUrl) { g.fillStyle = '#9fb7d9'; g.font = '500 24px ui-monospace,monospace'; g.fillText(lastTxExplorerUrl.replace(/^https?:\/\//u, '').slice(0, 64), 540, 1000); }
+    return c;
+  }
+  cardShareBtn.onclick = function () {
+    var text = 'I scored ' + score + ' (wave ' + wave + ') in Arc Voxel Quest on Arc Testnet.' + (lastTxExplorerUrl ? ' Verified onchain: ' + lastTxExplorerUrl : '');
+    makeShareCard().toBlob(function (blob) {
+      if (!blob) return;
+      var file = new File([blob], 'arc-voxel-score.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+        navigator.share({ files: [file], text: text }).catch(function () { /* cancelled */ });
+        return;
+      }
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'arc-voxel-score.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      try { navigator.clipboard.writeText(text); } catch (e) { /* clipboard unavailable */ }
+      claimStatusText = t('shareCopied');
+      updateCardTexts();
+    }, 'image/png');
   };
 
   /* 13. INPUT */
@@ -2563,6 +3656,7 @@
   var KEYMAP = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right' };
   window.addEventListener('keydown', function (event) {
     if (document.activeElement === nickInput) return;
+    if (cnOverlay.style.display === 'flex') { if (event.code === 'Escape') closeConnectModal(); return; }
     if (w3Overlay.style.display === 'flex') { if (event.code === 'Escape') closeWeb3Modal(); return; }
     if (levelUpChoices) {
       if (event.code === 'Digit1' && levelUpChoices[0]) applyUpgrade(levelUpChoices[0]);
@@ -2576,7 +3670,7 @@
       event.preventDefault(); triggerPulseDash(); return;
     }
     if (KEYMAP[event.code]) { keys[KEYMAP[event.code]] = true; event.preventDefault(); }
-    if (phase !== 'playing' && canRestart() && (event.code === 'Enter' || event.code === 'Space')) start();
+    if (phase !== 'playing' && canRestart() && (event.code === 'Enter' || event.code === 'Space')) requestStart();
   });
   window.addEventListener('keyup', function (event) { if (KEYMAP[event.code]) keys[KEYMAP[event.code]] = false; });
   window.addEventListener('blur', function () { keys = {}; });
@@ -2584,8 +3678,8 @@
   var drag = null;
   canvas.addEventListener('pointerdown', function (event) {
     canvas.focus();
-    if (w3Overlay.style.display === 'flex' || levelUpChoices) return;
-    if (phase !== 'playing') { if (canRestart()) start(); return; }
+    if (w3Overlay.style.display === 'flex' || cnOverlay.style.display === 'flex' || levelUpChoices) return;
+    if (phase !== 'playing') { if (canRestart()) requestStart(); return; }
     if (!drag) {
       drag = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0 };
       joyBase.style.display = 'block';
@@ -2634,6 +3728,11 @@
 
     if (phase === 'playing' && !paused && !levelUpChoices) {
       elapsed += dt;
+      // Telemetry for the server's plausibility check: a checkpoint every few seconds, sparser in very long runs.
+      if (elapsed - lastCpAt >= 5 + Math.floor(elapsed / 600) * 5 && telemetry.length < 390) {
+        lastCpAt = Math.floor(elapsed);
+        telemetry.push({ t: lastCpAt, s: score, k: kills, g: gems, w: wave });
+      }
       if (R.duration > 0) timeLeft = Math.max(0, timeLeft - dt);
       invulnerable = Math.max(0, invulnerable - dt);
       dashCooldown = Math.max(0, dashCooldown - dt);
@@ -3130,13 +4229,14 @@
       var cTier = getThreatTier(wave);
       waveEl.textContent = t('waveShort') + ' ' + wave + ' · ' + (lang === 'vi' ? cTier.nameVi : cTier.nameEn);
       waveEl.style.color = cTier.col;
+      if (music) music.setWave(wave);
       lvlEl.textContent = t('lvlShort') + ' ' + level;
       killsEl.textContent = '⚔ ' + kills;
       var curMult = Math.min(10, 1 + Math.floor(streak / 4));
       multBadge.style.display = curMult > 1 ? 'inline' : 'none';
       multBadge.textContent = '×' + curMult;
       xpBar.style.width = clamp((xp / xpNeed) * 100, 0, 100) + '%';
-      timerPill.textContent = R.duration > 0 ? formatDuration(Math.ceil(timeLeft)) : ('∞ ' + formatDuration(elapsed));
+      timeEl.textContent = '⏱ ' + (R.duration > 0 ? formatDuration(Math.ceil(timeLeft)) : formatDuration(elapsed));
       dashBtn.textContent = dashCooldown > 0 ? Math.ceil(dashCooldown) + 's' : t('dashBtn');
       dashBtn.disabled = dashCooldown > 0;
       if (phase === 'playing' && !levelUpChoices && tutorialStage > 0) {
@@ -3156,6 +4256,32 @@
     requestAnimationFrame(frame);
   }
   setPhase('title');
+  if (web3) {
+    web3.onChange = function () { refreshStaticTexts(); if (w3Overlay.style.display === 'flex') renderWeb3Modal(); if (cnOverlay.style.display === 'flex') renderConnectModal(); };
+    web3.restoreSession().then(function (restored) { if (restored) refreshStaticTexts(); });
+    web3.refreshBoard(false).then(renderEmbeddedLeaderboard);
+    function checkPrizes() {
+      var st = web3.state;
+      if (!st.account || !st.season || st.season.id === 0) { prizeAlert = false; return; }
+      var ids = [];
+      for (var sid = st.season.id - 1; sid >= 0 && ids.length < 3; sid--) ids.push(sid);
+      Promise.all(ids.map(function (id) { return web3.getPrizeStatus(id).catch(function () { return null; }); })).then(function (list) {
+        var me = st.account.toLowerCase();
+        prizeAlert = list.some(function (ps) {
+          if (!ps) return false;
+          if (ps.board.length === 0) return ps.poolUsdc > 0n;
+          return ps.board.slice(0, 3).some(function (e, rank) { return e.player.toLowerCase() === me && !(ps.claimedMask & (1 << rank)); });
+        });
+        refreshStaticTexts();
+      });
+    }
+    setInterval(function () {
+      if (phase === 'playing') return;
+      web3.refreshChainState().then(function () { refreshStaticTexts(); checkPrizes(); }).catch(function () { /* next tick */ });
+    }, 45000);
+    web3.refreshChainState().then(function () { refreshStaticTexts(); checkPrizes(); }).catch(function () { /* optional */ });
+    setInterval(function () { if (phase !== 'playing') web3.refreshBoard(false).then(renderEmbeddedLeaderboard); }, 20000);
+  }
   requestAnimationFrame(frame);
 
   function heroOnScreen() {

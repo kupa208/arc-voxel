@@ -1,36 +1,63 @@
-# Arc Voxel · Sinh Tồn Vô Tận (Arc L1 Endless 3D GameFi)
+# Arc Voxel Quest
 
-Game hành động **3D Voxel Roguelite vòng lặp vô tận (`∞`)** song ngữ **Tiếng Anh / Tiếng Việt**, nhân vật **Arc Việt Nam Contributors**, **12 bản đồ cộng đồng Arc toàn cầu** cùng **Bảng Xếp Hạng trực tiếp** và tích hợp Web3 **Arc Testnet (`5042002` / `0x4cef52`)**.
+A 3D voxel survival game (Arc Voxel Quest) on **Arc Testnet** where your best runs live onchain: connect a wallet, play, save your score as a transaction, climb the leaderboard, win daily USDC seasons, and buy soulbound upgrade NFTs with ARCQ (each level widens your item pickup range).
 
-## Điểm nổi bật
+Built with [Arc Studio](https://studio.arc.io)
 
-- **5 Nhân vật mặc định (Arc Việt Nam Contributors)**:
-  - **Toàn Nhữ** (*Technical Speaker*) — Cầu lửa Arc Core nổ lan (`4 HP`)
-  - **Xuân Hải** (*Technical Speaker*) — Song Điện Côn sét chuyền & Lướt cực nhanh (`3 HP`)
-  - **Elias J** (*Technical Speaker*) — Hút ngọc cực xa & Tên năng lượng bám đích (`4 HP`)
-  - **Lily Hoang** (*Event Organizer*) — Phi tiêu sóng âm 3D xuyên thấu đa hướng (`3 HP`)
-  - **Kien Trinh** (*Event Organizer*) — Mũi khoan Hộ Thành xuyên phá & giáp dày (`6 HP`)
-- **12 Bản đồ Cộng đồng Arc Toàn cầu** (mỗi map có địa hình, kiến trúc, hình khối quái 3D & Boss riêng biệt):
-  - `🇻🇳 Vietnam` (Thủy Quái · Trâu Vàng · Đèn Lồng · Boss **Kim Quy Thần Vương**)
-  - `🇸🇬 Singapore`, `🇰🇷 Korea`, `🇦🇪 UAE`, `🇮🇳 India`, `🇫🇷 France`, `🇧🇷 Brasil`, `🇦🇷 Argentina`, `🇹🇷 Türkiye`, `🇧🇩 Bangladesh`, `🇳🇬 Nigeria`, `🇰🇪 Kenya`
-- **Lộ trình độ khó Vô Tận 5 tầng**: `W1-2 Khởi Động` -> `W3-4 Áp Lực` -> `W5-7 Quái Tinh Anh` -> `W8-10 Quá Tải` -> `W11+ Vô Cực Omega`.
-- **Hiệu ứng kỹ năng 3D & điều khiển mượt**: Phóng cầu lửa, sét zíc-zắc, phi tiêu xoay, tên bám, cột sáng Thiên Lôi, lưỡi kiếm Plasma, cùng kỹ năng chủ động `Space` / `LƯỚT` bất tử thoáng chốc & xóa đạn địch.
-- **Tích hợp Web3 Arc L1**: Smart Contract [ArcVoxelGameFi.sol](./contracts/ArcVoxelGameFi.sol) (ERC-20 `ARCQ` + ERC-721 `ArcExplorerBadge` `ARCB` + Top 10 On-Chain) & client không phụ thuộc [arc-web3.js](./web3/arc-web3.js).
+## What you can do
 
-## Cấu trúc thư mục
+- **Play** an endless run with 5 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
+- **Connect** MetaMask, OKX, Rabby, Coinbase, Trust, Bitget, Phantom, Rainbow, Zerion or Brave. Arc Testnet is added for you.
+- **Save a run onchain** for free (the game pays the gas) or with your own wallet. Only runs with a transaction appear on the leaderboard, each with a link to its transaction.
+- **Daily seasons:** enter for 1 USDC, the top 3 split the pool.
+- **Daily quests and streaks** pay ARCQ automatically when you save a run.
+- **Hero upgrades** and **skins** (soulbound NFTs) burn ARCQ. Badge NFTs show your best tier.
+- **Share** your score as an image with a link to your transaction.
 
-- `dapp/index.html`: Bản Web3 dApp hoàn chỉnh (đã nhúng sẵn Three.js & Arc Web3, sẵn sàng deploy lên Vercel / Cloudflare Pages / GitHub Pages).
-- `dist/index.html`: Bản offline tự chạy (chỉ 1 file HTML, có thể mở trực tiếp).
-- `contracts/`: Smart contract `ArcVoxelGameFi.sol` và hướng dẫn deploy [DEPLOY_ARC.md](./contracts/DEPLOY_ARC.md).
-- `web3/`: Cấu hình mạng `web3-config.json` (Arc Testnet) và thư viện `arc-web3.js`.
-- `game.js`, `game.json`, `serve-dapp.mjs`, `build-dapp.mjs`, `tests/verify-all.mjs`.
+## Tech stack
 
-## Chạy thử Local & Deploy Contract
+Three.js game in plain JavaScript, a Bun server (anti-cheat tickets, free-gas relayer, onchain leaderboard indexer), and a Solidity contract (`contracts/ArcVoxelGameFi.sol`) on Arc Testnet.
+
+## Development
+
+Prerequisites: [Bun](https://bun.sh), and [Foundry](https://getfoundry.sh) if you change the contract.
 
 ```bash
-# Chạy máy chủ Web3 dApp tại http://127.0.0.1:4173/
-node serve-dapp.mjs 4173
+bun install
+bun run build     # bundles the WalletConnect helper and rebuilds index.html
+bun start         # http://localhost:5173
 ```
 
-Hướng dẫn deploy Smart Contract lên Arc Testnet xem chi tiết tại [contracts/DEPLOY_ARC.md](./contracts/DEPLOY_ARC.md).
-Khi host lên **Vercel / Cloudflare Pages / GitHub Pages**, đặt thư mục gốc phục vụ web là `dapp` (lưu ý: MetaMask/Rabby chỉ hoạt động trên `http://` hoặc `https://`, không chạy qua `file://`).
+The game page needs the server (login, anti-cheat tickets, leaderboard), so host it where Bun runs. A `Dockerfile` is included.
+
+### Environment variables
+
+Put these in `.env.local` (git-ignored). Never commit them.
+
+| Name | Purpose |
+| --- | --- |
+| `GAME_SIGNER_PRIVATE_KEY` | Required. Signs run tickets the contract accepts. |
+| `RELAYER_PRIVATE_KEY` | Optional. Hot wallet that pays gas for free saves. Fund it with a little testnet USDC. |
+| `CIRCLE_CLIENT_KEY` | Optional. A Circle Modular Wallets Client Key (starts with `TEST_CLIENT_KEY:`). Enables passkey wallets: players create a wallet with a fingerprint, face or Windows Hello and confirm each transaction with it, with gas sponsored. In Circle Console set the key's Allowed Domain and the Passkey Domain Name to your game's hostname. |
+| `WALLETCONNECT_PROJECT_ID` | Optional. Shows the WalletConnect row for phone wallets. |
+| `RPC_PROXY_BASE_URL`, `RPC_PROXY_TOKEN`, `RPC_PROXY_CHAINS` | Optional outside Arc Studio. Provided by Arc Studio for RPC access. |
+| `RPC_URL_Arc_Testnet` | Optional. Your own RPC endpoint for the leaderboard indexer. |
+| `PORT` | Optional. Server port (default 5173). |
+
+### Tests
+
+```bash
+bun run test:local    # starts a local chain and the server, runs the full game flow (needs Foundry's anvil)
+forge build           # compile the contract
+```
+
+### Operations
+
+- `GET /api/health` reports indexer status and whether the relayer wallet is funded.
+- `bun scripts/backup.mjs` copies the server's non-secret state to `backups/`.
+- `bun scripts/guardian.mjs status | pause | unpause | set-guardian | set-signer` manage the contract's admin role. See `DEPLOY_ARC.md`.
+
+## Notes
+
+- The anti-cheat checks that a run is plausible; it cannot prove honest play. Do not put real value in prize pools.
+- Older files in the repository root (`build-dapp.mjs`, `serve-dapp.mjs`, `verify-all.mjs`) belong to the first version of the project and are not used any more.

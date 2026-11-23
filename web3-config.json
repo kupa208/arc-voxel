@@ -1,6 +1,6 @@
 {
   "defaultNetwork": "arc-testnet",
-  "defaultContract": "",
+  "defaultContract": "0xed4b23b962ce958d5f68cc779fe68eaa935986ae",
   "networks": {
     "arc-testnet": {
       "chainId": "0x4cef52",
@@ -12,14 +12,16 @@
         "decimals": 18
       },
       "rpcUrls": [
-        "https://rpc.testnet.arc.network",
-        "https://testnet-rpc.arc.network"
+        "https://rpc.testnet.arc.io",
+        "https://rpc.blockdaemon.testnet.arc.io",
+        "https://rpc.drpc.testnet.arc.io"
       ],
       "blockExplorerUrls": [
-        "https://testnet.arcscan.app/"
+        "https://explorer.testnet.arc.io/"
       ],
       "faucetUrl": "https://faucet.circle.com/",
       "erc20Usdc": "0x3600000000000000000000000000000000000000"
     }
-  }
+  },
+  "deployTxHash": "0x2e7394ccf4471099cdf5e06e82d8840f8fff2d9c56e4a587aab071dc2a4f59ff"
 }
