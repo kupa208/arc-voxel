@@ -599,7 +599,7 @@ contract ArcVoxelGameFi {
         if (block.timestamp > r.deadline) revert Expired();
         if (usedRun[r.runId]) revert RunAlreadyUsed();
         if (r.score == 0 || r.score > MAX_SCORE_PER_RUN) revert InvalidScore();
-        if (r.hero >= 5) revert InvalidHero();
+        if (r.hero >= 8) revert InvalidHero();
         if (r.player == address(0)) revert ZeroAddress();
         if (_recover(_runDigest(r), signature) != signer) revert BadSignature();
         if (r.roomId != 0) _validateRoomRun(r.roomId, r.player);

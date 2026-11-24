@@ -6,13 +6,14 @@ Built with [Arc Studio](https://studio.arc.io)
 
 ## What you can do
 
-- **Play** an endless run with 5 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
+- **Play** an endless run with 8 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
 - **Connect** MetaMask, OKX, Rabby, Coinbase, Trust, Bitget, Phantom, Rainbow, Zerion or Brave. Arc Testnet is added for you.
 - **Sign in with email:** enter your Gmail (or any email), type the one-time code Circle sends you, set a PIN once and your Arc wallet is created. Gas is sponsored, and you approve each transaction with your PIN. If you lose the PIN nobody can recover the wallet.
 - **Save a run onchain** for free (the game pays the gas) or with your own wallet. Only runs with a transaction appear on the leaderboard, each with a link to its transaction.
 - **Daily seasons:** enter for 1 USDC, the top 3 split the pool.
 - **Daily quests and streaks** pay ARCQ automatically when you save a run.
 - **Hero upgrades** and **skins** (soulbound NFTs) burn ARCQ. Badge NFTs show your best tier.
+- **Nickname:** set a 3-16 character nickname (Wallet & Stats tab, or the box above the hero list) so the leaderboard shows your name instead of your wallet address. It is tied to your wallet and unique per player.
 - **Share** your score as an image with a link to your transaction.
 
 ## Tech stack
@@ -29,7 +30,16 @@ bun run build     # bundles the WalletConnect helper and rebuilds index.html
 bun start         # http://localhost:5173
 ```
 
-The game page needs the server (login, anti-cheat tickets, leaderboard), so host it where Bun runs. A `Dockerfile` is included.
+The game page needs the server (login, anti-cheat tickets, leaderboard). Host it where Bun runs (a `Dockerfile` is included) or deploy it to Vercel (see below).
+
+### Deploy to Vercel
+
+The whole game runs on Vercel: the page is static (`public/`) and one serverless function (`api/index.mjs`) serves the API. Sign-in sessions and runs are signed tokens, so the function keeps nothing in memory, and the leaderboard is refreshed from the chain on demand.
+
+1. Run `bun run build` after any change to the game or `web3-config.json` (Vercel only copies the prebuilt page).
+2. Import the repository in Vercel (no framework preset; `vercel.json` sets the build and routes).
+3. Add the environment variables below in the Vercel project settings: `GAME_SIGNER_PRIVATE_KEY` (required), plus `CIRCLE_API_KEY` and `CIRCLE_EMAIL_OTP=on` for email sign-in.
+4. Recommended: add the **Upstash Redis** integration from the Vercel Marketplace (free plan available). It sets `KV_REST_API_URL` and `KV_REST_API_TOKEN`, which keep nicknames and the leaderboard cache across restarts. Without it, nicknames are lost whenever the function restarts.
 
 ### Environment variables
 
@@ -45,12 +55,17 @@ Put these in `.env.local` (git-ignored). Never commit them.
 | `RPC_PROXY_BASE_URL`, `RPC_PROXY_TOKEN`, `RPC_PROXY_CHAINS` | Optional outside Arc Studio. Provided by Arc Studio for RPC access. |
 | `RPC_URL_Arc_Testnet` | Optional. Your own RPC endpoint for the leaderboard indexer. |
 | `PORT` | Optional. Server port (default 5173). |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Optional. Upstash Redis for nicknames and the leaderboard cache on hosts without a disk (set by Vercel's Upstash integration). `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` also work. |
+| `TOKEN_SECRET` | Optional. Secret for signed sign-in sessions on Vercel. Defaults to a value derived from `GAME_SIGNER_PRIVATE_KEY`. |
+| `GAME_STATELESS` | Optional. Set to `1` to run the Bun server in the same stateless mode as Vercel. |
+| `GAME_NICKNAME_FILE` | Optional. Where leaderboard nicknames are stored (default `.data/nicknames.json`). |
 
 ### Tests
 
 ```bash
 bun run test:local    # starts a local chain and the server, runs the full game flow (needs Foundry's anvil)
 bun run test:email    # email sign-in backend checks (no network or keys needed)
+bun run test:vercel   # Vercel entry point checks under Node (no network or keys needed)
 forge build           # compile the contract
 ```
 

@@ -15,9 +15,11 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { keccak256, toFunctionSelector, toHex } from 'viem'
+import { kv, kvEnabled } from './kv.mjs'
 
 const root = dirname(fileURLToPath(import.meta.url))
-const DATA_FILE = process.env.GAME_DATA_FILE || join(root, '.data', 'leaderboard.json')
+const DATA_FILE = process.env.GAME_DATA_FILE || (process.env.VERCEL ? '/tmp/leaderboard.json' : join(root, '.data', 'leaderboard.json'))
+const kvKey = (contract) => `arcvoxel:index:${String(contract).toLowerCase()}`
 const CHAIN_KEY = 'Arc_Testnet'
 const TOPIC = keccak256(toHex('RunSubmitted(address,uint256,uint256,uint256,uint256,uint256,uint8,uint256,uint8,uint256)'))
 const MAX_RANGE = 2000
@@ -100,12 +102,18 @@ async function deployBlock(cfg) {
 
 async function load(contract) {
   try {
-    const saved = JSON.parse(await readFile(DATA_FILE, 'utf8'))
+    // With shared storage the scan progress survives cold starts on hosts without a disk.
+    const raw = kvEnabled ? await kv('GET', kvKey(contract)) : await readFile(DATA_FILE, 'utf8')
+    const saved = JSON.parse(raw)
     if (saved.contract?.toLowerCase() === contract.toLowerCase()) db = { seasons: {}, history: {}, ...saved }
   } catch { /* first run */ }
 }
 
 async function save() {
+  if (kvEnabled) {
+    await kv('SET', kvKey(db.contract), JSON.stringify(db))
+    return
+  }
   await mkdir(dirname(DATA_FILE), { recursive: true })
   await writeFile(DATA_FILE, JSON.stringify(db))
 }
@@ -114,7 +122,10 @@ function better(entry, run) {
   return !entry || run.score > entry.score
 }
 
+let changed = false
+let savedScanned = -1
 function apply(log) {
+  changed = true
   const player = '0x' + log.topics[1].slice(26).toLowerCase()
   const season = Number(BigInt(log.topics[2]))
   const word = (i) => BigInt('0x' + log.data.slice(2 + i * 64, 2 + (i + 1) * 64))
@@ -166,7 +177,12 @@ async function scanOnce() {
     }
   }
   lastScanOkAt = Date.now()
-  await save()
+  // Shared storage is written only when a run was indexed or the scan moved far ahead, to keep writes low.
+  if (!kvEnabled || changed || db.scanned - savedScanned > 5000) {
+    await save()
+    changed = false
+    savedScanned = db.scanned
+  }
 }
 
 /** Scans up to the chain head. Concurrent callers share one scan. */

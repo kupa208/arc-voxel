@@ -1,13 +1,27 @@
 {
-  "contractAddress": "0xed4b23b962ce958d5f68cc779fe68eaa935986ae",
+  "contractAddress": "0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/ArcVoxelGameFi.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/ArcVoxelGameFi.sol/ArcVoxelGameFi.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0xed4b23b962ce958d5f68cc779fe68eaa935986ae"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
+      "txHash": "0xd5fc7d463c1145f857a8e579ba7698eb20f89f3778608e49cc96bf88fbebc09a",
+      "deployedAt": "2026-11-24T11:54:13.456Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x31f25c2974bb39a03aeef183f1d708ef01d8074c",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x31f25c2974bb39a03aeef183f1d708ef01d8074c",
+      "txHash": "0x183b513ea54fa96d3b39f24ae9bec3eda2472642c0d60ec1b98b20472de74153",
+      "deployedAt": "2026-11-24T11:40:48.608Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0xed4b23b962ce958d5f68cc779fe68eaa935986ae",

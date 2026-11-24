@@ -11,3 +11,4 @@ contracts/out/
 contracts/cache/
 .data/
 backups/
+public/

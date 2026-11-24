@@ -28,9 +28,14 @@ import { createPublicClient, createWalletClient, decodeFunctionResult, defineCha
 import { privateKeyToAccount } from 'viem/accounts'
 import { verifyTelemetry } from './anticheat.mjs'
 import { createEmailWallet, EmailError } from './email-wallet.mjs'
+import { getNickname, NicknameError, nicknamesFor, setNickname } from './nicknames.mjs'
+import { createTokens } from './tokens.mjs'
 import { chainCall, getBoard, getPlayer, indexerStatus, indexerRpcUrl, readConfigPublic, readStartTime, scanNow, startIndexer } from './indexer.mjs'
 
 const root = dirname(fileURLToPath(import.meta.url))
+// Stateless mode (Vercel, or GAME_STATELESS=1): the server keeps nothing in memory between requests.
+// Sessions and runs are signed tokens, the leaderboard is refreshed on demand, and nicknames live in shared storage.
+const STATELESS = Boolean(process.env.VERCEL) || process.env.GAME_STATELESS === '1'
 const port = Number(process.argv[2] || process.env.PORT || 5173)
 
 const CHAIN_ID = BigInt(process.env.GAME_CHAIN_ID || 5042002) // Arc Testnet; override only for local tests
@@ -49,7 +54,7 @@ const SIG_TTL_SECONDS = 10 * 60
 const MAX_SESSIONS = 5_000
 const SEASON_LENGTH_S = 86_400 // matches ArcVoxelGameFi.SEASON_LENGTH
 const REFRESH_MIN_GAP_MS = 2_000
-const HEROES = 5 // number of playable heroes (contract hero id < 5)
+const HEROES = 8 // number of playable heroes (contract hero id < 8)
 const MAX_ROOM_ID = 1_000_000_000
 const RELAY_PER_PLAYER_PER_DAY = 10
 const RELAY_PER_DAY = 300
@@ -62,6 +67,7 @@ if (!pk || !/^0x[0-9a-fA-F]{64}$/.test(pk)) {
   process.exit(1)
 }
 const signer = privateKeyToAccount(pk)
+const tokens = createTokens(process.env.TOKEN_SECRET || pk)
 // Optional gasless relayer: a separate hot wallet that pays gas to save runs for players. Fund it with a little USDC.
 const relayerPk = process.env.RELAYER_PRIVATE_KEY || ''
 const relayer = /^0x[0-9a-fA-F]{64}$/.test(relayerPk) ? privateKeyToAccount(relayerPk) : null
@@ -70,6 +76,25 @@ const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID || '' // opt
 const testAuth = process.env.GAME_TEST_AUTH === '1' // local anvil tests only: allows creating a session without a signature
 if (testAuth) console.warn('WARNING: GAME_TEST_AUTH is on. Never enable it on a public server.')
 let lastRefreshAt = 0
+let lastScanReqAt = 0
+let scanInFlight = null
+/** Brings the leaderboard up to date. A server that runs continuously scans in the background, so it only scans on request right after a save. A stateless one scans when its data is older than a few seconds. */
+async function refreshBoardIfNeeded(requested) {
+  const now = Date.now()
+  if (STATELESS) {
+    if (scanInFlight) { await scanInFlight; return }
+    if (now - lastScanReqAt > (requested ? 2_000 : 8_000)) {
+      lastScanReqAt = now
+      scanInFlight = scanNow().finally(() => { scanInFlight = null })
+      await scanInFlight
+    }
+    return
+  }
+  if (requested && now - lastRefreshAt > REFRESH_MIN_GAP_MS) {
+    lastRefreshAt = now
+    await scanNow() // right after a player records a score
+  }
+}
 const clientErrWindow = { at: 0, n: 0 }
 // Passkey wallets: Circle Modular Wallets (smart accounts signed with a device passkey; Circle's Gas Station pays the gas).
 // The client key is meant for browsers and is limited to the allowed domain set in Circle Console.
@@ -148,6 +173,14 @@ async function contractAddress() {
   return cfg.defaultContract
 }
 
+async function fileResponse(file, type, cache) {
+  try {
+    return new Response(await readFile(file), { headers: { 'content-type': type, 'cache-control': cache } })
+  } catch {
+    return new Response('Not found', { status: 404 })
+  }
+}
+
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -156,6 +189,7 @@ function json(body, status = 200) {
 }
 
 function newSession(data) {
+  if (STATELESS) return tokens.sign('s', data, LOGIN_TTL_MS)
   const now = Date.now()
   for (const [id, s] of sessions) if (s.exp < now) sessions.delete(id)
   while (sessions.size >= MAX_SESSIONS) sessions.delete(sessions.keys().next().value)
@@ -165,6 +199,11 @@ function newSession(data) {
 }
 
 function sessionOf(body) {
+  if (STATELESS) {
+    const d = tokens.verify('s', body?.session)
+    if (!d || !d.address) throw new HttpError(401, 'Please connect your wallet')
+    return d
+  }
   const s = sessions.get(String(body?.session || ''))
   if (!s || s.exp < Date.now()) throw new HttpError(401, 'Please connect your wallet')
   return s
@@ -206,19 +245,27 @@ function handleWalletStatus(body) {
 
 /* ---------- browser wallet sign-in (personal_sign, free, no gas) ---------- */
 
+/** The sign-in message. In stateless mode the nonce and time come from a 5-minute bucket, so the server can rebuild the same message at login without storing it. */
+function signInMessage(address, issuedMs, nonce) {
+  return [
+    'Sign in to Arc Voxel Quest',
+    '',
+    'This proves you own this wallet. It costs no gas and sends no transaction.',
+    `Wallet: ${address}`,
+    `Network: Arc Testnet (${CHAIN_ID})`,
+    `Nonce: ${nonce}`,
+    `Issued: ${new Date(issuedMs).toISOString()}`,
+  ].join('\n')
+}
+const bucketOf = (ms) => Math.floor(ms / CHALLENGE_TTL_MS)
+const bucketMessage = (address, bucket) => signInMessage(address, bucket * CHALLENGE_TTL_MS, tokens.code(`${address.toLowerCase()}|${bucket}`))
+
 function handleWalletNonce(url) {
   const raw = String(url.searchParams.get('player') || '')
   if (!isAddress(raw)) throw new HttpError(400, 'Invalid wallet address')
   const now = Date.now()
-  const message = [
-    'Sign in to Arc Voxel Quest',
-    '',
-    'This proves you own this wallet. It costs no gas and sends no transaction.',
-    `Wallet: ${raw}`,
-    `Network: Arc Testnet (${CHAIN_ID})`,
-    `Nonce: ${randomHex(16)}`,
-    `Issued: ${new Date(now).toISOString()}`,
-  ].join('\n')
+  if (STATELESS) return json({ message: bucketMessage(raw.toLowerCase(), bucketOf(now)) })
+  const message = signInMessage(raw, now, randomHex(16))
   for (const [a, c] of challenges) if (c.exp < now) challenges.delete(a)
   while (challenges.size >= MAX_SESSIONS) challenges.delete(challenges.keys().next().value)
   challenges.set(raw.toLowerCase(), { message, exp: now + CHALLENGE_TTL_MS })
@@ -243,6 +290,13 @@ async function verifyWalletSignature(address, message, signature) {
 async function handleWalletLogin(body) {
   const player = String(body.player || '').toLowerCase()
   if (!isAddress(player) || typeof body.signature !== 'string' || body.signature.length > 20_000) throw new HttpError(400, 'Bad request')
+  if (STATELESS) {
+    const b = bucketOf(Date.now())
+    let ok = await verifyWalletSignature(player, bucketMessage(player, b), body.signature)
+    if (!ok) ok = await verifyWalletSignature(player, bucketMessage(player, b - 1), body.signature)
+    if (!ok) throw new HttpError(401, 'Signature does not match this wallet. If it expired, try again.')
+    return json({ session: newSession({ address: player }), address: player })
+  }
   const ch = challenges.get(player)
   if (!ch || ch.exp < Date.now()) throw new HttpError(400, 'Sign-in expired. Try again.')
   if (!(await verifyWalletSignature(player, ch.message, body.signature))) throw new HttpError(401, 'Signature does not match this wallet')
@@ -253,6 +307,7 @@ async function handleWalletLogin(body) {
 /* ---------- anti-cheat runs ---------- */
 
 function prune(now) {
+  if (STATELESS) return
   for (const [id, r] of runs) if (now - r.startedAt > MAX_SESSION_SECONDS * 1000) runs.delete(id)
   while (runs.size > MAX_SESSIONS) runs.delete(runs.keys().next().value)
 }
@@ -270,10 +325,12 @@ async function handleRunStart(body) {
   if (roomId === null || hero === null) throw new HttpError(400, 'Invalid room or hero')
   const now = Date.now()
   prune(now)
-  for (const [id, r] of runs) if (r.player === s.address) runs.delete(id)
+  if (!STATELESS) for (const [id, r] of runs) if (r.player === s.address) runs.delete(id)
   const runId = keccak256(toHex(crypto.getRandomValues(new Uint8Array(32))))
-  runs.set(runId, { player: s.address, startedAt: now, roomId, hero })
-  return json({ runId })
+  const run = { player: s.address, startedAt: now, roomId, hero }
+  if (STATELESS) return json({ runId, runToken: tokens.sign('r', { runId, ...run }, MAX_SESSION_SECONDS * 1000) })
+  runs.set(runId, run)
+  return json({ runId, runToken: tokens.sign('r', { runId, ...run }, MAX_SESSION_SECONDS * 1000) })
 }
 
 /** Validates a finished run and returns a ticket signed for the contract. Throws HttpError when rejected. */
@@ -281,7 +338,11 @@ async function issueTicket(s, body) {
   const runId = String(body.runId || '')
   const prior = issued.get(runId)
   if (prior && prior.player === s.address && Number(prior.deadline) * 1000 > Date.now()) return prior
-  const run = runs.get(runId)
+  let run = runs.get(runId)
+  if (STATELESS) {
+    const d = tokens.verify('r', body.runToken)
+    run = d && d.runId === runId ? d : null
+  }
   if (!run) throw new HttpError(400, 'No active run. Press Play, then finish your run.')
   if (run.player !== s.address) throw new HttpError(400, 'Wallet mismatch')
 
@@ -387,6 +448,7 @@ function rejectLog(player, reason, detail) {
 
 /** Changes whenever a lazily loaded vendor bundle changes, so browsers never keep serving an old copy. */
 function assetVersion() {
+  if (STATELESS) return String(process.env.VERCEL_DEPLOYMENT_ID || process.env.VERCEL_GIT_COMMIT_SHA || '0').slice(0, 24)
   try { return ['passkey.js', 'walletconnect.js', 'circle-sdk.js'].map((f) => Math.floor(statSync(join(root, 'vendor', f)).mtimeMs / 1000)).join('-') } catch { return '0' }
 }
 
@@ -469,6 +531,7 @@ async function route(req, url, srv) {
   const body = m === 'POST' ? await req.json().catch(() => ({})) : {}
 
   if (m === 'GET' && p === '/api/health') {
+    if (STATELESS) await refreshBoardIfNeeded(false)
     const idx = indexerStatus()
     const relayerOk = relayer ? (await relayerBalanceUsdc().catch(() => 0n)) >= RELAYER_MIN_BALANCE : false
     return json({ ok: !idx.stalled, signer: signer.address, indexer: idx, relayer: { enabled: Boolean(relayer), funded: relayerOk }, uptimeS: Math.floor(process.uptime()) })
@@ -481,39 +544,45 @@ async function route(req, url, srv) {
     return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
   }
   if (m === 'GET' && p === '/vendor/circle-sdk.js') {
-    return new Response(Bun.file(join(root, 'vendor', 'circle-sdk.js')), {
-      headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache' },
-    })
+    return fileResponse(join(root, 'vendor', 'circle-sdk.js'), 'text/javascript; charset=utf-8', 'no-cache')
   }
   if (m === 'POST' && p.startsWith('/api/email/')) return handleEmail(p, body, clientIp(req, srv))
   if (m === 'GET' && p === '/api/leaderboard') {
-    if (url.searchParams.get('refresh') === '1' && Date.now() - lastRefreshAt > REFRESH_MIN_GAP_MS) {
-      lastRefreshAt = Date.now()
-      await scanNow() // right after a player records a score
-    }
+    await refreshBoardIfNeeded(url.searchParams.get('refresh') === '1')
     const scope = url.searchParams.get('scope') === 'season' ? 'season' : 'all'
     const season = Number(url.searchParams.get('season') ?? -1)
-    return json(getBoard(scope, Number.isFinite(season) ? season : -1))
+    const board = getBoard(scope, Number.isFinite(season) ? season : -1)
+    const names = await nicknamesFor(board.entries.map((e) => e.player))
+    return json({ ...board, entries: board.entries.map((e) => ({ ...e, nickname: names[e.player.toLowerCase()] || '' })) })
+  }
+  if (m === 'GET' && p === '/api/nickname') {
+    const addr = String(url.searchParams.get('address') || '')
+    if (!isAddress(addr)) throw new HttpError(400, 'Invalid address')
+    return json({ nickname: await getNickname(addr) })
+  }
+  if (m === 'POST' && p === '/api/profile/nickname') {
+    const s = sessionOf(body)
+    try {
+      return json({ nickname: await setNickname(s.address, body.nickname) })
+    } catch (err) {
+      if (err instanceof NicknameError) throw new HttpError(400, err.message)
+      throw err
+    }
   }
   if (m === 'GET' && p === '/api/player') {
     const addr = String(url.searchParams.get('address') || '')
     if (!isAddress(addr)) throw new HttpError(400, 'Invalid address')
+    await refreshBoardIfNeeded(false)
     return json(getPlayer(addr))
   }
   if (m === 'GET' && p === '/vendor/walletconnect.js') {
-    return new Response(Bun.file(join(root, 'vendor', 'walletconnect.js')), {
-      headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache' },
-    })
+    return fileResponse(join(root, 'vendor', 'walletconnect.js'), 'text/javascript; charset=utf-8', 'no-cache')
   }
   if (m === 'GET' && p === '/vendor/passkey.js') {
-    return new Response(Bun.file(join(root, 'vendor', 'passkey.js')), {
-      headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache' },
-    })
+    return fileResponse(join(root, 'vendor', 'passkey.js'), 'text/javascript; charset=utf-8', 'no-cache')
   }
   if (m === 'GET' && (p === '/' || p === '/index.html')) {
-    return new Response(Bun.file(join(root, 'index.html')), {
-      headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' },
-    })
+    return fileResponse(join(root, 'index.html'), 'text/html; charset=utf-8', 'no-store')
   }
 
   if (testAuth && m === 'POST' && p === '/api/test/session') {
@@ -531,7 +600,7 @@ async function route(req, url, srv) {
   if (m === 'GET' && p === '/api/auth/nonce') return handleWalletNonce(url)
   if (m === 'POST' && p === '/api/auth/wallet') return handleWalletLogin(body)
   if (m === 'POST' && p === '/api/auth/logout') {
-    sessions.delete(String(body.session || ''))
+    if (!STATELESS) sessions.delete(String(body.session || ''))
     return json({ ok: true })
   }
   if (m === 'POST' && p === '/api/wallet/status') return handleWalletStatus(body)
@@ -549,24 +618,27 @@ async function route(req, url, srv) {
   return new Response('Not found', { status: 404 })
 }
 
-Bun.serve({
-  port,
-  hostname: '0.0.0.0',
-  maxRequestBodySize: 64 * 1024,
-  async fetch(req, srv) {
-    try {
-      const res = await route(req, new URL(req.url), srv)
-      if (req.method === 'POST') saveState()
-      return res
-    } catch (err) {
-      if (err instanceof HttpError) return json({ error: err.message }, err.status)
-      if (err instanceof EmailError) return json({ error: err.message, code: err.code }, err.status)
-      console.error('[server]', redact(err).slice(0, 400))
-      return json({ error: 'Server error' }, 500)
-    }
-  },
-})
+/** Handles one request. `srv` only needs requestIP(req), used for per-IP limits. */
+export async function handle(req, srv) {
+  try {
+    if (Number(req.headers.get('content-length') || 0) > 64 * 1024) return json({ error: 'Request too large' }, 413)
+    const res = await route(req, new URL(req.url), srv)
+    if (req.method === 'POST' && !STATELESS) saveState()
+    return res
+  } catch (err) {
+    if (err instanceof HttpError) return json({ error: err.message }, err.status)
+    if (err instanceof EmailError) return json({ error: err.message, code: err.code }, err.status)
+    console.error('[server]', redact(err).slice(0, 400))
+    return json({ error: 'Server error' }, 500)
+  }
+}
 
-loadState()
-startIndexer()
-console.log(`Arc Voxel Quest running on http://0.0.0.0:${port} (signer ${signer.address})`)
+// A long-running Bun process serves the whole game. On Vercel, api/index.mjs imports `handle` instead.
+if (!process.env.VERCEL && typeof Bun !== 'undefined') {
+  Bun.serve({ port, hostname: '0.0.0.0', maxRequestBodySize: 64 * 1024, fetch: (req, srv) => handle(req, srv) })
+  if (!STATELESS) {
+    loadState()
+    startIndexer()
+  }
+  console.log(`Arc Voxel Quest running on http://0.0.0.0:${port} (signer ${signer.address})${STATELESS ? ' [stateless]' : ''}`)
+}

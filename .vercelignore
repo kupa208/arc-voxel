@@ -1,0 +1,9 @@
+.data
+backups
+contracts/out
+contracts/cache
+contracts/test
+contracts/test-integration
+docs
+arc-studio-plans
+*.log

@@ -103,12 +103,12 @@ async function main() {
     const s = await post('/api/run/start', { session: tokens[w.account.address], hero: 1, ...extra })
     await sleep(wait_s * 1000)
     const cps = tele ?? telemetry(score, wait_s)
-    return post(path, { session: tokens[w.account.address], runId: s.body.runId, score, gems: cps.length ? cps[cps.length - 1].g : 0, maxCombo: 3, wave: 1 + Math.floor(wait_s / 20), elapsed: wait_s, telemetry: cps })
+    return post(path, { session: tokens[w.account.address], runId: s.body.runId, runToken: s.body.runToken, score, gems: cps.length ? cps[cps.length - 1].g : 0, maxCombo: 3, wave: 1 + Math.floor(wait_s / 20), elapsed: wait_s, telemetry: cps })
   }
 
   // anti-cheat server (short and impossible runs)
   const sShort = await post('/api/run/start', { session: tokens[carol.account.address] })
-  const early = await post('/api/run/finish', { session: tokens[carol.account.address], runId: sShort.body.runId, score: 100, gems: 1, maxCombo: 1, wave: 1, elapsed: 1, telemetry: [{ t: 5, s: 100, k: 1, g: 0, w: 1 }] })
+  const early = await post('/api/run/finish', { session: tokens[carol.account.address], runId: sShort.body.runId, runToken: sShort.body.runToken, score: 100, gems: 1, maxCombo: 1, wave: 1, elapsed: 1, telemetry: [{ t: 5, s: 100, k: 1, g: 0, w: 1 }] })
   ok('server rejects too-short run', early.status === 400, early.body.error)
   const noTele = await runVia('/api/run/finish', dave, 6000, 11, [])
   ok('server rejects a run without telemetry', noTele.status === 422, noTele.body.error)

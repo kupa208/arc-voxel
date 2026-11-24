@@ -347,6 +347,7 @@
       leaderboard: [],
       board: [],
       boardInfo: null,
+      nickname: '',
       boardScope: 'all',
       questState: null,
       skinState: null,
@@ -365,6 +366,7 @@
       email: '',
       setup: null,
       runId: '',
+      runToken: '',
       busy: false,
     };
 
@@ -400,6 +402,7 @@
       if (state.account) {
         // Native balance is the same USDC pool as the ERC-20 view; it is only kept for gas checks.
         jobs.push(rpcFetch('eth_getBalance', [state.account, 'latest']).then(function (h) { state.nativeBalanceWei = BigInt(h || '0x0'); }));
+        jobs.push(fetch('/api/nickname?address=' + encodeURIComponent(state.account)).then(function (r) { return r.json(); }).then(function (j) { state.nickname = (j && j.nickname) || ''; }).catch(function () { /* keep the last nickname */ }));
         if (usdc) {
           jobs.push(call(usdc, encodeCall('balanceOf(address)', [state.account])).then(function (h) { state.usdcBalance = readWord(h, 0); }));
           if (hasC) {
@@ -539,11 +542,21 @@
       state.profile = null;
       state.playerState = null;
       state.runId = '';
+      state.runToken = '';
       state.usdcBalance = 0n;
       state.usdcAllowance = 0n;
       saveStorageJson(LS_AUTH, null);
       saveStorageJson(LS_PASSKEY, null);
       notify();
+    }
+
+    /* Nickname shown on the leaderboard (kept on the game server, tied to this wallet's sign-in). Empty clears it. */
+    async function setNickname(name) {
+      if (!state.session) throw new Error('Please connect your wallet');
+      var r = await apiPost('/api/profile/nickname', { session: state.session, nickname: String(name || '') });
+      state.nickname = r.nickname || '';
+      notify();
+      return state.nickname;
     }
 
     async function apiPost(path, body) {
@@ -1159,12 +1172,13 @@
       opts = opts || {};
       var r = await apiPost('/api/run/start', { session: state.session, roomId: opts.roomId || 0, hero: opts.hero || 0 });
       state.runId = r.runId;
+      state.runToken = r.runToken || '';
       return r.runId;
     }
 
     function runPayload(run) {
       return {
-        session: state.session, runId: state.runId, score: run.score, gems: run.gems, maxCombo: run.maxCombo,
+        session: state.session, runId: state.runId, runToken: state.runToken, score: run.score, gems: run.gems, maxCombo: run.maxCombo,
         wave: run.wave, elapsed: run.elapsed, telemetry: run.telemetry || [],
       };
     }
@@ -1176,6 +1190,7 @@
       var before = state.profile ? state.profile.totalRuns : 0;
       var res = await sendAction('submit-run', Object.assign({ session: state.session }, runPayload(run)), function () { return state.profile && state.profile.totalRuns > before; });
       state.runId = '';
+      state.runToken = '';
       return res;
     }
 
@@ -1186,6 +1201,7 @@
       var before = state.profile ? state.profile.totalRuns : 0;
       var out = await apiPost('/api/run/relay', runPayload(run));
       state.runId = '';
+      state.runToken = '';
       await waitFor(function () { return state.profile && state.profile.totalRuns > before; });
       var explorerBase = ((state.network.blockExplorerUrls && state.network.blockExplorerUrls[0]) || '').replace(/\/+$/u, '');
       state.lastTxHash = out.txHash;
@@ -1357,6 +1373,7 @@
       logout: logout,
       refreshChainState: refreshChainState,
       refreshBoard: refreshBoard,
+      setNickname: setNickname,
       submitRunOnChain: submitRunOnChain,
       submitRunGasless: submitRunGasless,
       loadHistory: loadHistory,

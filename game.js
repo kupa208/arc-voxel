@@ -20,7 +20,7 @@
     reportError((reason && reason.message) || reason || 'unhandled rejection');
   });
 
-  /* 1. HERO ROSTER (5 Arc Viet Nam Contributors - Matched to Portrait) */
+  /* 1. HERO ROSTER (8 Arc Viet Nam Contributors) */
   var HEROES = [
     {
       id: 'toan_nhu',
@@ -114,6 +114,63 @@
         [-1.3, 1, -0.8, 1.3, 2, 1.3, '#1f2937'], [1.3, 1, -0.8, 1.3, 2, 1.3, '#1f2937'],
         [0, 3.2, 0, 4.6, 2.9, 3.8, '#111827'], [0, 6.3, 0.2, 4.0, 3.3, 3.5, '#f5ceb0'],
         [2.8, 2.2, 0.9, 1.05, 0.7, 1.05, '#f43f5e', true],
+      ],
+    },
+    {
+      id: 'hieu_nguyen',
+      short: 'Hieu Nguyen',
+      nameEn: 'Hieu Nguyen · Chapter Manager',
+      nameVi: 'Hieu Nguyen · Chapter Manager',
+      tagEn: 'Forest Green Polo & Wire Glasses · Arc Chain Lightning, balanced (4 HP)',
+      tagVi: 'Kính gọng mảnh · Polo xanh lá · Sét chuyền cân bằng (4 HP)',
+      weaponId: 'lightning',
+      hp: 4,
+      speedMult: 1.1,
+      magnet: 4.4,
+      dashCd: 1.8,
+      color: '#22c55e',
+      boxes: [
+        [-1.0, 1, -0.7, 1.0, 2, 1.0, '#1f2937'], [1.0, 1, -0.7, 1.0, 2, 1.0, '#1f2937'],
+        [0, 3.1, 0, 3.6, 2.7, 3.3, '#15803d'], [0, 6.1, 0.2, 3.6, 3.1, 3.3, '#f5d0b0'],
+        [2.3, 2.1, 1.4, 0.9, 0.9, 1.1, '#86efac', true],
+      ],
+    },
+    {
+      id: 'quoc_vuong',
+      short: 'Quoc Vuong',
+      nameEn: 'Quoc Vuong · Chapter Manager',
+      nameVi: 'Quoc Vuong · Chapter Manager',
+      tagEn: 'Brown Polo & Dark Frames · Heavy Dragon Fireballs (5 HP)',
+      tagVi: 'Kính gọng đen · Polo nâu · Cầu lửa rồng nặng (5 HP)',
+      weaponId: 'dragon',
+      hp: 5,
+      speedMult: 0.98,
+      magnet: 3.7,
+      dashCd: 2.1,
+      color: '#d97706',
+      boxes: [
+        [-1.1, 1, -0.8, 1.1, 2, 1.1, '#1c1917'], [1.1, 1, -0.8, 1.1, 2, 1.1, '#1c1917'],
+        [0, 3.1, 0, 3.9, 2.8, 3.4, '#5b3a2e'], [0, 6.1, 0.2, 3.8, 3.2, 3.4, '#f3c9a6'],
+        [2.5, 2.1, 1.4, 0.95, 0.95, 1.1, '#fbbf24', true],
+      ],
+    },
+    {
+      id: 'miley_nguyen',
+      short: 'Miley Nguyen',
+      nameEn: 'Miley Nguyen · Chapter Manager',
+      nameVi: 'Miley Nguyen · Chapter Manager',
+      tagEn: 'Striped Shirt & Long Dark Hair · Homing Arc Bolts, fast dash (3 HP)',
+      tagVi: 'Tóc dài đen · Áo sơ mi kẻ sọc · Tên bám đích, lướt nhanh (3 HP)',
+      weaponId: 'coloa',
+      hp: 3,
+      speedMult: 1.2,
+      magnet: 5.0,
+      dashCd: 1.6,
+      color: '#a78bfa',
+      boxes: [
+        [-1.0, 1, -0.7, 1.0, 2, 1.0, '#1e293b'], [1.0, 1, -0.7, 1.0, 2, 1.0, '#1e293b'],
+        [0, 3.1, 0, 3.4, 2.7, 3.2, '#f1f5f9'], [0, 6.1, 0.2, 3.6, 3.1, 3.3, '#ffe3d1'],
+        [2.2, 2.1, 1.4, 0.85, 0.85, 1.1, '#c4b5fd', true],
       ],
     },
   ];
@@ -578,6 +635,12 @@
       noContractMsg: 'Set the game contract in the L1 & Contract tab.',
       cancelled: 'Cancelled in wallet.',
       tabWallet: 'Wallet & Stats',
+      nickBoxTitle: 'Leaderboard nickname',
+      nickBoxHint: '3-16 characters. Shown on the leaderboard instead of your wallet address. Leave empty to remove it.',
+      nickSaveBtn: 'Save nickname',
+      nickSavedMsg: 'Nickname saved',
+      nickLoginMsg: 'Connect a wallet to set a leaderboard nickname.',
+      nickLabel: 'Nickname',
       tabLeaderboard: 'Full Rankings',
       tabNetwork: 'L1 & Contract',
       connectWallet: 'Connect Wallet',
@@ -852,6 +915,12 @@
       noContractMsg: 'Hãy đặt địa chỉ contract ở tab Mạng L1 & Contract.',
       cancelled: 'Đã hủy trong ví.',
       tabWallet: 'Ví & Chỉ số',
+      nickBoxTitle: 'Biệt danh trên bảng xếp hạng',
+      nickBoxHint: '3-16 ký tự. Hiện trên bảng xếp hạng thay cho địa chỉ ví. Để trống để xóa.',
+      nickSaveBtn: 'Lưu biệt danh',
+      nickSavedMsg: 'Đã lưu biệt danh',
+      nickLoginMsg: 'Hãy kết nối ví để đặt biệt danh trên bảng xếp hạng.',
+      nickLabel: 'Biệt danh',
       tabLeaderboard: 'Bảng Xếp Hạng',
       tabNetwork: 'Mạng L1 & Contract',
       connectWallet: 'Kết nối ví',
@@ -1338,6 +1407,27 @@
       coat: '#111827', coatDark: '#1f2937', inner: '#18181b', pants: '#090d16',
       boot: '#18181b', trim: '#f43f5e', glow: '#f43f5e', scarf: '#18181b',
       shortSleeve: true, capeStyle: 'none', width: 1.08, collar: true, mic: true, smile: 'calm', weapon: 'drill_lance'
+    },
+    hieu_nguyen: {
+      skin: '#f5d0b0', blush: '#e39a82', brow: '#111827', eye: '#22c55e',
+      hair: '#111827', hairStyle: 'neat_short', glasses: 'wire',
+      coat: '#15803d', coatDark: '#14532d', inner: '#166534', pants: '#1f2937',
+      boot: '#111827', trim: '#86efac', glow: '#4ade80', scarf: '#15803d',
+      shortSleeve: true, capeStyle: 'none', width: 1.0, collar: true, mic: true, smile: 'warm', weapon: 'twin_tonfa'
+    },
+    quoc_vuong: {
+      skin: '#f3c9a6', blush: '#df8f76', brow: '#111827', eye: '#d97706',
+      hair: '#1c1917', hairStyle: 'side_part', glasses: 'thick',
+      coat: '#5b3a2e', coatDark: '#3f2a21', inner: '#6b4636', pants: '#1c1917',
+      boot: '#1c1917', trim: '#fbbf24', glow: '#f59e0b', scarf: '#5b3a2e',
+      shortSleeve: true, capeStyle: 'none', width: 1.04, collar: true, smile: 'calm', weapon: 'dragon_halberd'
+    },
+    miley_nguyen: {
+      skin: '#ffe3d1', blush: '#f2a0a8', brow: '#1c1917', eye: '#6d28d9',
+      hair: '#1c1917', hair2: '#292524', hairStyle: 'long_chestnut',
+      coat: '#f1f5f9', coatDark: '#94a3b8', inner: '#ffffff', pants: '#1e293b',
+      boot: '#334155', trim: '#a78bfa', glow: '#a78bfa', scarf: '#334155',
+      shortSleeve: false, capeStyle: 'long_hair', width: 0.9, collar: true, smile: 'coral', weapon: 'coloa_crossbow'
     }
   };
 
@@ -2076,10 +2166,13 @@
     var base = ((web3 && web3.state.network.blockExplorerUrls && web3.state.network.blockExplorerUrls[0]) || '').replace(/\/+$/u, '');
     return base && hash ? base + '/tx/' + hash : '';
   }
+  function escHtml(v) {
+    return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
   function getMergedLeaderboard() {
     if (!web3) return [];
     return web3.state.board.map(function (e) {
-      return { name: window.ARC_WEB3.shortAddr(e.player), score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
+      return { name: e.nickname || window.ARC_WEB3.shortAddr(e.player), addr: window.ARC_WEB3.shortAddr(e.player), hasNick: !!e.nickname, score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
     });
   }
   function boardSyncNote() {
@@ -2258,10 +2351,26 @@
   var heroBoxLbl = el('div', 'font-weight:800;font-size:12px;color:#ffd166', heroTopRow);
   var nickInput = el('input', 'width:170px;padding:4px 8px;font-size:12px', heroTopRow); nickInput.className = 'avq-input';
   nickInput.value = playerName;
-  nickInput.onchange = function () {
-    playerName = nickInput.value.trim().slice(0, 18) || 'Player';
-    nickInput.value = playerName;
+  nickInput.maxLength = 16;
+  var nickNote = el('div', 'flex-basis:100%;font-size:11px;min-height:14px;text-align:right', heroTopRow);
+  /* Saves the nickname locally and, when a wallet is connected, on the leaderboard server. */
+  function saveNickname(value) {
+    var clean = String(value || '').trim().slice(0, 16);
+    playerName = clean || 'Player';
     try { window.localStorage.setItem('arc-voxel-quest:nick', playerName); } catch (e) { /* ignore */ }
+    if (!web3 || !web3.state.session) return Promise.resolve({ ok: true, local: true });
+    return web3.setNickname(clean).then(function () {
+      return web3.refreshBoard(true).then(function () { renderEmbeddedLeaderboard(); return { ok: true }; });
+    }).catch(function (err) { return { ok: false, message: (err && err.message) || String(err) }; });
+  }
+  nickInput.onchange = function () {
+    nickNote.style.color = '#aef9ff';
+    nickNote.textContent = '...';
+    saveNickname(nickInput.value).then(function (res) {
+      nickInput.value = playerName;
+      nickNote.style.color = res.ok ? '#7dffb1' : '#ff9a9a';
+      nickNote.textContent = res.ok ? (res.local ? '' : '✅ ' + t('nickSavedMsg')) : '⚠️ ' + res.message;
+    });
   };
   var heroMainRow = el('div', 'display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center', heroBox);
   var heroPreviewBox = el('div', 'width:102px;height:110px;border-radius:14px;border:1px solid rgba(56,242,255,.38);background:radial-gradient(circle at 50% 42%,rgba(56,242,255,.22),rgba(7,12,28,.95));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;box-shadow:inset 0 0 18px rgba(56,242,255,.15)', heroMainRow);
@@ -2400,7 +2509,7 @@
     var html = '<tr><th>#</th><th>' + t('lbColPlayer') + '</th><th>' + t('lbColScore') + '</th><th>' + t('lbColTx') + '</th></tr>';
     rows.forEach(function (r, idx) {
       var link = r.url ? '<a href="' + r.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">↗</a>' : '—';
-      html += '<tr><td>' + (idx + 1) + '</td><td style="font-weight:700">' + r.name + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
+      html += '<tr><td>' + (idx + 1) + '</td><td style="font-weight:700" title="' + escHtml(r.addr) + '">' + escHtml(r.name) + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
     });
     if (!rows.length) html += '<tr><td colspan="4" style="opacity:.75;text-align:center;padding:8px">' + (boardSyncNote() || t('lbEmpty')) + '</td></tr>';
     cardLbTable.innerHTML = html;
@@ -3135,6 +3244,33 @@
     return (d ? d + 'd ' : '') + h + 'h ' + m + 'm';
   }
 
+  /* Nickname box: the name shown on the leaderboard instead of the wallet address. */
+  function renderNicknameBox(parent) {
+    var st = web3.state;
+    var box = panel(parent);
+    heading(box, t('nickBoxTitle'));
+    if (!st.session) { el('div', 'opacity:.8;font-size:12px', box).textContent = t('nickLoginMsg'); return; }
+    var row = el('div', 'display:flex;gap:8px;align-items:center;flex-wrap:wrap', box);
+    var inp = el('input', 'flex:1;min-width:140px', row); inp.className = 'avq-input';
+    inp.maxLength = 16; inp.placeholder = t('nickPlaceholder'); inp.value = st.nickname || '';
+    var btn = el('button', '', row); btn.className = 'avq-btn pri'; btn.textContent = t('nickSaveBtn');
+    var note = el('div', 'font-size:12px;min-height:16px', box);
+    el('div', 'opacity:.7;font-size:12px', box).textContent = t('nickBoxHint');
+    function save() {
+      btn.disabled = true; note.style.color = '#aef9ff'; note.textContent = '...';
+      saveNickname(inp.value).then(function (res) {
+        btn.disabled = false;
+        if (res.ok) {
+          nickInput.value = playerName;
+          note.style.color = '#7dffb1'; note.textContent = '✅ ' + t('nickSavedMsg');
+        } else { note.style.color = '#ff9a9a'; note.textContent = '⚠️ ' + res.message; }
+      });
+    }
+    btn.onclick = save;
+    inp.onkeydown = function (ev) { if (ev.key !== 'Escape') ev.stopPropagation(); if (ev.key === 'Enter') save(); };
+    inp.onkeyup = function (ev) { ev.stopPropagation(); };
+  }
+
   /* Profile: balances, badge and skin art, recent saved runs with transaction links. */
   function renderProfileTab() {
     var A = window.ARC_WEB3, st = web3.state;
@@ -3142,6 +3278,7 @@
     var box = panel(w3Body);
     heading(box, t('tabProfile'));
     kv(box, t('walletAddrLabel'), st.account);
+    if (st.nickname) kv(box, t('nickLabel'), st.nickname);
     kv(box, t('usdcBalLabel'), fmtUsdc(st.usdcBalance));
     if (st.profile) {
       kv(box, t('arcqBalLabel'), arcq(st.profile.arcqBalanceWei));
@@ -3588,6 +3725,7 @@
         row(t('badgeLabel'), tiers[st.profile.badgeTier] || tiers[0]);
         row(t('runsLabel'), String(st.profile.totalRuns) + ' (Best ' + st.profile.bestScore + ')');
       }
+      if (st.account) renderNicknameBox(w3Body);
       var btns = el('div', 'display:flex;gap:8px;flex-wrap:wrap;align-items:center', w3Body);
       if (st.account) {
         var bCopy = el('button', '', btns); bCopy.className = 'avq-btn pri'; bCopy.textContent = t('copyBtn');
@@ -3622,7 +3760,7 @@
       lbRows.forEach(function (entry, idx) {
         var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace', listBox);
         var link = entry.url ? ' <a href="' + entry.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">tx ↗</a>' : '';
-        r.innerHTML = '<span>#' + (idx + 1) + ' ' + entry.name + (entry.wave ? ' · W' + entry.wave : '') + (entry.heroName ? ' · ' + entry.heroName : '') + '</span><span style="color:#ffd166">' + entry.score + ' pts' + link + '</span>';
+        r.innerHTML = '<span title="' + escHtml(entry.addr) + '">#' + (idx + 1) + ' ' + escHtml(entry.name) + (entry.hasNick ? ' <span style="opacity:.55;font-size:11px">' + escHtml(entry.addr) + '</span>' : '') + (entry.wave ? ' · W' + entry.wave : '') + (entry.heroName ? ' · ' + escHtml(entry.heroName) : '') + '</span><span style="color:#ffd166">' + entry.score + ' pts' + link + '</span>';
       });
       if (!lbRows.length) el('div', 'opacity:.75', listBox).textContent = boardSyncNote() || t('lbEmpty');
     } else {
@@ -4363,7 +4501,13 @@
   }
   setPhase('title');
   if (web3) {
-    web3.onChange = function () { refreshStaticTexts(); if (w3Overlay.style.display === 'flex') renderWeb3Modal(); if (cnOverlay.style.display === 'flex') renderConnectModal(); };
+    web3.onChange = function () {
+      var serverNick = web3.state.nickname;
+      if (serverNick && serverNick !== playerName && document.activeElement !== nickInput) {
+        playerName = serverNick; nickInput.value = serverNick;
+        try { window.localStorage.setItem('arc-voxel-quest:nick', playerName); } catch (e) { /* ignore */ }
+      }
+      refreshStaticTexts(); if (w3Overlay.style.display === 'flex') renderWeb3Modal(); if (cnOverlay.style.display === 'flex') renderConnectModal(); };
     web3.restoreSession().then(function (restored) { if (restored) refreshStaticTexts(); });
     web3.refreshBoard(false).then(renderEmbeddedLeaderboard);
     function checkPrizes() {

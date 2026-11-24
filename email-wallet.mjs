@@ -251,7 +251,7 @@ export function createEmailWallet(deps) {
       const w = await arcWallet(userToken)
       if (!w || w.address !== s.address) throw new EmailError(401, 'Your sign-in expired. Sign in with email again.', 155104)
       const client = await deps.getClient()
-      const res = await client.listTransactions({ userToken, blockchain: BLOCKCHAIN, walletIds: [w.walletId], pageSize: 3, order: 'DESC' })
+      const res = await client.listTransactions({ userToken, walletIds: [w.walletId], pageSize: 3, order: 'DESC' })
       const t = ((res && res.data && res.data.transactions) || [])[0]
       return t ? { id: t.id, state: t.state, txHash: t.txHash || '' } : { id: '', state: '', txHash: '' }
     } catch (err) {
