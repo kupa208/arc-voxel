@@ -2,11 +2,13 @@
  * Checks the Vercel entry point (api/index.mjs) with the stateless server, under plain Node (the Vercel runtime).
  * Needs no chain and no keys: run `node contracts/test-integration/vercel-handler.mjs`.
  */
+import { rmSync } from 'node:fs'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 process.env.VERCEL = '1'
 process.env.GAME_SIGNER_PRIVATE_KEY = generatePrivateKey()
 process.env.GAME_NICKNAME_FILE = '/tmp/vercel-test-nicks.json'
+rmSync(process.env.GAME_NICKNAME_FILE, { force: true }) // start from an empty nickname store
 delete process.env.KV_REST_API_URL
 delete process.env.UPSTASH_REDIS_REST_URL
 

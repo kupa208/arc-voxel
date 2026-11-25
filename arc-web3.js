@@ -1013,7 +1013,7 @@
       return out;
     }
 
-    async function getEmailSdk(loginConfigs) {
+    async function getEmailSdk(loginConfigs, skipDeviceId) {
       var cfg = emailConfig();
       if (emailCtx && emailCtx.sdk) return emailCtx.sdk;
       if (!root.ARC_CIRCLE) {
@@ -1034,7 +1034,9 @@
         if (!waiter) return;
         if (error) waiter.reject(error); else waiter.resolve(result);
       });
-      var deviceId = await sdk.getDeviceId(); // opens the session with Circle's hosted frame; execute() fails silently without it
+      // Right after Google sends the player back, the SDK is already checking the page address by itself. Asking for the
+      // device id at the same time would switch off its message listener, so resumeGoogleLogin asks for it afterwards.
+      var deviceId = skipDeviceId ? '' : await sdk.getDeviceId(); // opens the session with Circle's hosted frame; execute() fails silently without it
       emailCtx = Object.assign(emailCtx || {}, { sdk: sdk, deviceId: deviceId });
       return sdk;
     }
@@ -1174,12 +1176,19 @@
           setTimeout(function () { reject(new Error('Google sign-in did not finish. Try again.')); }, 60000);
         });
         emailCtx = null;
-        await getEmailSdk(googleLoginConfigs(saved));
+        await getEmailSdk(googleLoginConfigs(saved), true);
         var login = await waiting;
+        emailCtx.deviceId = await emailCtx.sdk.getDeviceId(); // the PIN window needs this session
         root.sessionStorage.removeItem(SS_SOCIAL);
         try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* keep the hash */ }
         return await finishLogin(login, step, { email: '', provider: 'google' });
       } catch (err) {
+        // Only names are reported (never token values) so a failed sign-in can be diagnosed from the server log.
+        try {
+          var keys = String(root.location.hash || '').replace(/^#/u, '').split('&').map(function (kv) { return kv.split('=')[0]; }).filter(Boolean).join(',');
+          reportClientError('google sign-in failed: ' + String((err && err.message) || err).slice(0, 120) + ' | code=' + ((err && err.code) || '') + ' | hash=' + keys
+            + ' | provider=' + root.localStorage.getItem('socialLoginProvider') + ' | state=' + Boolean(root.localStorage.getItem('state')));
+        } catch (e) { /* diagnostics only */ }
         root.sessionStorage.removeItem(SS_SOCIAL);
         try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* ignore */ }
         throw wrapEmailError(err);

@@ -3510,9 +3510,7 @@
       .catch(function (err) { cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
   }
 
-  /* Sign in with email: Circle emails a one-time code, the player enters it (and sets a PIN the first time) in Circle's window. */
-  var emailStage = 'input', emailTyped = '';
-  var EMAIL_RESTART_CODES = [155130, 155131, 155132, 155141, 155146];
+  /* Wallet tab: shows a masked email for wallets created earlier with an emailed code. */
   function maskEmail(addr) {
     var parts = String(addr || '').split('@');
     if (parts.length !== 2) return '';
@@ -3530,48 +3528,6 @@
     };
   }
 
-  function renderEmailBox(parent) {
-    if (web3.googleEnabled()) renderGoogleBox(parent);
-    if (!web3.emailEnabled()) return;
-    var box = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.4)', parent);
-    el('div', 'font-weight:900;font-size:14px;color:#ffd166', box).textContent = '✉️ ' + t('emailTitle');
-    el('div', 'font-size:12.5px;opacity:.85;line-height:1.45', box).textContent = t('emailNote');
-    var inp = el('input', 'width:100%;padding:8px 10px;font-size:13px;box-sizing:border-box', box);
-    inp.className = 'avq-input'; inp.type = 'email'; inp.maxLength = 254; inp.autocomplete = 'email'; inp.placeholder = t('emailPh'); inp.value = emailTyped;
-    inp.disabled = emailStage === 'sent';
-    inp.oninput = function () { emailTyped = inp.value; };
-    var row = el('div', 'display:flex;gap:8px;flex-wrap:wrap', box);
-    if (emailStage === 'input') {
-      var bSend = el('button', '', row); bSend.className = 'avq-btn pri'; bSend.textContent = '📨 ' + t('emailSendBtn');
-      bSend.onclick = function () {
-        var addr = String(inp.value || '').trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(addr)) { cnStatus.textContent = '⚠️ ' + t('emailBad'); return; }
-        emailTyped = addr;
-        bSend.disabled = true;
-        cnStatus.textContent = '⏳ ' + t('emailSending') + '...';
-        web3.requestEmailCode(addr).then(function () {
-          emailStage = 'sent'; cnStatus.textContent = ''; renderConnectModal();
-        }).catch(function (err) { bSend.disabled = false; cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
-      };
-    } else {
-      el('div', 'font-size:12.5px;color:#7dffb1;line-height:1.45;width:100%', row).textContent = fill(t('emailSent'), { email: emailTyped });
-      var bEnter = el('button', '', row); bEnter.className = 'avq-btn pri'; bEnter.textContent = '🔑 ' + t('emailEnterBtn');
-      bEnter.onclick = function () {
-        cnStatus.textContent = '⏳ ' + t('emailWaitCode') + '...';
-        web3.verifyEmailCode(function (step) {
-          cnStatus.textContent = '⏳ ' + t(step === 'pin' ? 'emailWaitPin' : step === 'wallet' ? 'emailWaitWallet' : 'emailWaitCode') + '...';
-        }).then(function () {
-          emailStage = 'input'; cnStatus.textContent = ''; afterLogin();
-        }).catch(function (err) {
-          cnStatus.textContent = '⚠️ ' + friendlyTxError(err);
-          if (err && EMAIL_RESTART_CODES.indexOf(err.emailCode) !== -1) { emailStage = 'input'; renderConnectModal(); }
-        });
-      };
-      var bOther = el('button', '', row); bOther.className = 'avq-btn'; bOther.textContent = t('emailOtherBtn');
-      bOther.onclick = function () { emailStage = 'input'; cnStatus.textContent = ''; renderConnectModal(); };
-    }
-  }
-
   function renderConnectModal() {
     var st = web3.state;
     cnBody.innerHTML = '';
@@ -3585,7 +3541,7 @@
     el('div', 'font-size:22px;font-weight:900;color:#eefaff', head).textContent = t('connectTitle');
     el('div', 'opacity:.75;font-size:13px', head).textContent = t('connectSub');
 
-    if (web3.emailEnabled() || web3.googleEnabled()) renderEmailBox(cnBody);
+    if (web3.googleEnabled()) renderGoogleBox(cnBody);
 
     // Other wallets (installed ones connect directly, others link to their install page)
     el('div', 'font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.65;margin-top:4px', cnBody).textContent = t('yourWallets');
