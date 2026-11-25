@@ -464,7 +464,6 @@
       passkeyDomainErr: 'This passkey belongs to a different address than the game. In Circle Console, set the Passkey Domain Name to:',
       passkeyExists: 'That passkey already exists on this device. Press "Use an existing passkey" instead.',
       googleBtn: 'Continue with Google',
-      googleNote: 'Pick your Google account. No code to type. You set a PIN once and your Arc wallet is created. Gas is free.',
       googleOpening: 'Opening Google',
       googleFinishing: 'Finishing your Google sign-in',
       googleLabel: 'Google account',
@@ -557,7 +556,9 @@
       wonTitle: 'Run Complete!',
       lostTitle: 'Defeated in Wave',
       pausedTitle: 'Paused',
-      pausedBody: 'Press P to resume.',
+      pausedBody: 'Press P or tap Resume to continue.',
+      resumeBtn: 'Resume',
+      pauseTitle: 'Pause',
       hintControls: 'WASD / Arrows / Drag to move · Space / DASH to dodge i-frame & smash · 1-3 for Upgrades',
       tutStep1: 'Dodge red charge lines & magenta bullets! Stay off the water edge!',
       tutStep2: 'SPACE / DASH grants brief invulnerability & clears projectiles!',
@@ -749,7 +750,6 @@
       passkeyDomainErr: 'Passkey này thuộc về một địa chỉ khác với game. Trong Circle Console, hãy đặt Passkey Domain Name là:',
       passkeyExists: 'Passkey này đã có trên thiết bị. Hãy bấm "Dùng passkey có sẵn".',
       googleBtn: 'Tiếp tục với Google',
-      googleNote: 'Chọn tài khoản Google của bạn, không cần nhập mã. Bạn đặt PIN một lần và ví Arc được tạo. Miễn phí gas.',
       googleOpening: 'Đang mở Google',
       googleFinishing: 'Đang hoàn tất đăng nhập Google',
       googleLabel: 'Tài khoản Google',
@@ -842,7 +842,9 @@
       wonTitle: 'Hoàn Thành Lượt Đấu!',
       lostTitle: 'Thất Thủ Tại Wave',
       pausedTitle: 'Tạm dừng',
-      pausedBody: 'Bấm P để tiếp tục.',
+      pausedBody: 'Bấm P hoặc nút Tiếp tục để chơi tiếp.',
+      resumeBtn: 'Tiếp tục',
+      pauseTitle: 'Tạm dừng',
       hintControls: 'WASD / Mũi tên / Kéo để né · Space / LƯỚT để bất tử thoáng chốc & phá đạn · 1-3 chọn thẻ',
       tutStep1: 'Né vạch húc đỏ & đạn tím! Đừng bước ra mép nước kẻo mất máu!',
       tutStep2: 'Bấm SPACE / LƯỚT để né sát thương & thổi bay đạn địch!',
@@ -979,6 +981,7 @@
   try {
     var savedLang = window.localStorage.getItem('arc-voxel-quest:lang');
     if (savedLang === 'en' || savedLang === 'vi') lang = savedLang;
+    else if (!/^vi\b/iu.test(String(window.navigator.language || 'vi'))) lang = 'en'; // first visit: follow the browser language
     var savedHero = Number(window.localStorage.getItem('arc-voxel-quest:hero-idx'));
     if (Number.isInteger(savedHero) && savedHero >= 0 && savedHero < HEROES.length) selectedHeroIdx = savedHero;
     var savedMap = Number(window.localStorage.getItem('arc-voxel-quest:map-idx'));
@@ -1038,7 +1041,7 @@
     window.__gameState = function () { return { phase: 'error', score: 0, renderer: 'none' }; };
     return;
   }
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(window.innerWidth < 820 ? 1.5 : 2, window.devicePixelRatio || 1)); // a lower cap on phones keeps the game smooth
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -2182,7 +2185,7 @@
   function getMergedLeaderboard() {
     if (!web3) return [];
     return web3.state.board.map(function (e) {
-      return { name: e.nickname || window.ARC_WEB3.shortAddr(e.player), addr: window.ARC_WEB3.shortAddr(e.player), hasNick: !!e.nickname, score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
+      return { mine: Boolean(web3.state.account) && String(e.player).toLowerCase() === String(web3.state.account).toLowerCase(), name: e.nickname || window.ARC_WEB3.shortAddr(e.player), addr: window.ARC_WEB3.shortAddr(e.player), hasNick: !!e.nickname, score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
     });
   }
   function boardSyncNote() {
@@ -2239,6 +2242,7 @@
   var rightGroup = el('div', 'display:flex;align-items:center;gap:6px;flex-wrap:wrap', topBar);
   var langBtn = el('button', '', rightGroup); langBtn.className = 'avq-btn'; stopPtr(langBtn);
   var soundBtn = el('button', '', rightGroup); soundBtn.className = 'avq-btn'; stopPtr(soundBtn);
+  var pauseBtn = el('button', 'display:none', rightGroup); pauseBtn.className = 'avq-btn'; pauseBtn.textContent = '⏸'; stopPtr(pauseBtn);
   var web3Btn = el('button', '', rightGroup); web3Btn.className = 'avq-btn'; stopPtr(web3Btn);
   var seasonPill = el('button', 'display:none', rightGroup); seasonPill.className = 'avq-btn'; stopPtr(seasonPill);
   var surrenderBtn = el('button', 'display:none', rightGroup); surrenderBtn.className = 'avq-btn'; stopPtr(surrenderBtn);
@@ -2519,7 +2523,7 @@
     var html = '<tr><th>#</th><th>' + t('lbColPlayer') + '</th><th>' + t('lbColScore') + '</th><th>' + t('lbColTx') + '</th></tr>';
     rows.forEach(function (r, idx) {
       var link = r.url ? '<a href="' + r.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">↗</a>' : '—';
-      html += '<tr><td>' + (idx + 1) + '</td><td style="font-weight:700" title="' + escHtml(r.addr) + '">' + escHtml(r.name) + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
+      html += '<tr' + (r.mine ? ' style="background:rgba(56,242,255,.16)"' : '') + '><td>' + (idx + 1) + '</td><td style="font-weight:700" title="' + escHtml(r.addr) + '">' + escHtml(r.name) + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
     });
     if (!rows.length) html += '<tr><td colspan="4" style="opacity:.75;text-align:center;padding:8px">' + (boardSyncNote() || t('lbEmpty')) + '</td></tr>';
     cardLbTable.innerHTML = html;
@@ -2947,6 +2951,7 @@
     langBtn.textContent = lang === 'vi' ? '🌐 VI' : '🌐 EN';
     soundBtn.textContent = muted ? '🔇' : '🔊';
     soundBtn.title = muted ? t('soundOff') : t('soundOn');
+    pauseBtn.title = t('pauseTitle');
     var connected = web3 && web3.state.account;
     var web3Label = connected ? ('🟢 ' + window.ARC_WEB3.shortAddr(web3.state.account) + (prizeAlert ? ' 🏆' : '')) : ('🔌 ' + t('connectWalletShort'));
     web3Btn.textContent = web3Label;
@@ -3005,7 +3010,7 @@
         cardTitle.textContent = t('pausedTitle');
         cardBody.textContent = t('pausedBody');
         cardStats.innerHTML = '';
-        cardPlayBtn.textContent = t('playAgainBtn');
+        cardPlayBtn.textContent = t('resumeBtn');
         cardClaimBtn.style.display = 'none';
         cardClaimOwnBtn.style.display = 'none';
         cardShareBtn.style.display = 'none';
@@ -3058,6 +3063,7 @@
     if (next !== 'playing' && drag) { drag = null; joyBase.style.display = 'none'; }
     dashBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     surrenderBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
+    pauseBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     if (next === 'playing') { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); }
     if (next !== 'playing') { bossBarWrap.style.display = 'none'; lvlOverlay.style.display = 'none'; levelUpChoices = null; }
     refreshStaticTexts();
@@ -3741,6 +3747,7 @@
       lbRows.forEach(function (entry, idx) {
         var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace', listBox);
         var link = entry.url ? ' <a href="' + entry.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">tx ↗</a>' : '';
+        if (entry.mine) r.style.cssText += ';background:rgba(56,242,255,.16);border-radius:8px;padding:2px 6px';
         r.innerHTML = '<span title="' + escHtml(entry.addr) + '">#' + (idx + 1) + ' ' + escHtml(entry.name) + (entry.hasNick ? ' <span style="opacity:.55;font-size:11px">' + escHtml(entry.addr) + '</span>' : '') + (entry.wave ? ' · W' + entry.wave : '') + (entry.heroName ? ' · ' + escHtml(entry.heroName) : '') + '</span><span style="color:#ffd166">' + entry.score + ' pts' + link + '</span>';
       });
       if (!lbRows.length) el('div', 'opacity:.75', listBox).textContent = boardSyncNote() || t('lbEmpty');
@@ -3789,7 +3796,19 @@
   cnOverlay.addEventListener('click', function (e) { if (e.target === cnOverlay) { pendingStart = false; closeConnectModal(); } });
   w3Overlay.addEventListener('click', function (e) { if (e.target === w3Overlay) closeWeb3Modal(); });
   Object.keys(tabBtns).forEach(function (k) { tabBtns[k].onclick = function () { activeTab = k; renderWeb3Modal(); }; });
-  cardPlayBtn.onclick = function () { requestStart(); };
+  /* Pausing from the keyboard (P), the pause button, or automatically when the tab is hidden. */
+  function setPaused(value) {
+    if (phase !== 'playing' || paused === value) return;
+    paused = value;
+    updateCardTexts();
+    musicSync();
+  }
+  pauseBtn.onclick = function () { setPaused(!paused); };
+  document.addEventListener('visibilitychange', function () { if (document.hidden && !levelUpChoices) setPaused(true); });
+  cardPlayBtn.onclick = function () {
+    if (phase === 'playing' && paused) { setPaused(false); return; } // the pause card resumes the run instead of restarting it
+    requestStart();
+  };
   dashBtn.addEventListener('pointerdown', function (e) { e.stopPropagation(); triggerPulseDash(); });
   async function doClaim(freeGas) {
     if (score <= 0 || runClaimed) return;
@@ -3890,7 +3909,7 @@
       return;
     }
     if (event.code === 'KeyM') { muted = !muted; refreshStaticTexts(); return; }
-    if (phase === 'playing' && event.code === 'KeyP') { paused = !paused; updateCardTexts(); return; }
+    if (phase === 'playing' && event.code === 'KeyP') { setPaused(!paused); return; }
     if (phase === 'playing' && (event.code === 'Space' || event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
       event.preventDefault(); triggerPulseDash(); return;
     }

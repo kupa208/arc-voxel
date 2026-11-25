@@ -591,6 +591,7 @@ async function route(req, url, srv) {
   if (m === 'GET' && p === '/vendor/passkey.js') {
     return fileResponse(join(root, 'vendor', 'passkey.js'), 'text/javascript; charset=utf-8', 'no-cache')
   }
+  if (m === 'GET' && p === '/og.png') return fileResponse(join(root, 'vendor', 'og.png'), 'image/png', 'public, max-age=3600')
   if (m === 'GET' && (p === '/' || p === '/index.html')) {
     return fileResponse(join(root, 'index.html'), 'text/html; charset=utf-8', 'no-store')
   }
