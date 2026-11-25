@@ -95,3 +95,8 @@ The game page needs the API from `server.mjs`, so host it where a Bun server can
 
 ### Hosting
 `bun server.mjs` serves the game, the API and the indexer. A `Dockerfile` is included (port 7860 by default); pass `GAME_SIGNER_PRIVATE_KEY` and optionally `RELAYER_PRIVATE_KEY` as environment variables. Keep `.data/` on a persistent volume or run `bun scripts/backup.mjs` regularly. If you redeploy the contract, update `defaultContract` and `deployTxHash` in `web3-config.json`, run `bun run build`, and restart.
+
+### Current deployment (Arc Testnet)
+- `ArcVoxelGameFi`: `0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b` (deploy tx `0xd5fc7d46...bc09a`, hero ids 0-7).
+- Signer: `0x5303d1b9e5d810D692D1fFaEE6bF86CCE8c417Cf` (key in `GAME_SIGNER_PRIVATE_KEY`).
+- Guardian: `0x756229A590AA74e02f7F8808d72516DF035b834F`, a separate wallet (set with `setGuardian`, tx `0xc59335ce...3d2f6`). `scripts/guardian.mjs` can no longer pause or rotate the signer from this server: do it from the guardian wallet.

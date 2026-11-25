@@ -121,13 +121,13 @@
       short: 'Hieu Nguyen',
       nameEn: 'Hieu Nguyen · Chapter Manager',
       nameVi: 'Hieu Nguyen · Chapter Manager',
-      tagEn: 'Forest Green Polo & Wire Glasses · Arc Chain Lightning, balanced (4 HP)',
-      tagVi: 'Kính gọng mảnh · Polo xanh lá · Sét chuyền cân bằng (4 HP)',
-      weaponId: 'lightning',
+      tagEn: 'Forest Green Polo & Wire Glasses · Sonic Pulse: close-range shockwave that pushes mobs back (4 HP)',
+      tagVi: 'Kính gọng mảnh · Polo xanh lá · Sóng âm cận chiến đẩy lùi quái (4 HP)',
+      weaponId: 'pulse',
       hp: 4,
-      speedMult: 1.1,
-      magnet: 4.4,
-      dashCd: 1.8,
+      speedMult: 1.04,
+      magnet: 4.2,
+      dashCd: 1.9,
       color: '#22c55e',
       boxes: [
         [-1.0, 1, -0.7, 1.0, 2, 1.0, '#1f2937'], [1.0, 1, -0.7, 1.0, 2, 1.0, '#1f2937'],
@@ -140,9 +140,9 @@
       short: 'Quoc Vuong',
       nameEn: 'Quoc Vuong · Chapter Manager',
       nameVi: 'Quoc Vuong · Chapter Manager',
-      tagEn: 'Brown Polo & Dark Frames · Heavy Dragon Fireballs (5 HP)',
-      tagVi: 'Kính gọng đen · Polo nâu · Cầu lửa rồng nặng (5 HP)',
-      weaponId: 'dragon',
+      tagEn: 'Brown Polo & Dark Frames · Returning Boomerang that hits twice (5 HP)',
+      tagVi: 'Kính gọng đen · Polo nâu · Boomerang bay đi bay về, trúng hai lần (5 HP)',
+      weaponId: 'boomerang',
       hp: 5,
       speedMult: 0.98,
       magnet: 3.7,
@@ -159,13 +159,13 @@
       short: 'Miley Nguyen',
       nameEn: 'Miley Nguyen · Chapter Manager',
       nameVi: 'Miley Nguyen · Chapter Manager',
-      tagEn: 'Striped Shirt & Long Dark Hair · Homing Arc Bolts, fast dash (3 HP)',
-      tagVi: 'Tóc dài đen · Áo sơ mi kẻ sọc · Tên bám đích, lướt nhanh (3 HP)',
-      weaponId: 'coloa',
+      tagEn: 'Striped Shirt & Long Dark Hair · Proximity Mines for kiting, fast dash (3 HP)',
+      tagVi: 'Tóc dài đen · Áo sơ mi kẻ sọc · Mìn cảm biến để thả khi chạy, lướt nhanh (3 HP)',
+      weaponId: 'mines',
       hp: 3,
-      speedMult: 1.2,
+      speedMult: 1.18,
       magnet: 5.0,
-      dashCd: 1.6,
+      dashCd: 1.7,
       color: '#a78bfa',
       boxes: [
         [-1.0, 1, -0.7, 1.0, 2, 1.0, '#1e293b'], [1.0, 1, -0.7, 1.0, 2, 1.0, '#1e293b'],
@@ -681,6 +681,9 @@
         shuriken: { name: 'Cyclone Shuriken', desc: 'Piercing spinning blades in wide volleys.' },
         coloa: { name: 'Co Loa Wave Arrows', desc: 'Homing energy bolts curving into targets.' },
         drill: { name: 'Bamboo Drill Lance', desc: 'Heavy piercing lance knocking back elites.' },
+        pulse: { name: 'Sonic Pulse', desc: 'Shockwave around you: damages and pushes back every mob in range.' },
+        boomerang: { name: 'Returning Boomerang', desc: 'Flies out and comes back, hitting mobs on both passes. Lv.4 throws two.' },
+        mines: { name: 'Proximity Mines', desc: 'Drops mines as you move. They blast mobs that step close.' },
         blades: { name: 'Orbiting Plasma Blades', desc: 'Spinning barrier slicing foes & melee threats.' },
         orbital: { name: 'Arc Orbital Strike', desc: 'Calls down orbital beams on dense packs.' },
         overclock: { name: 'Overclock Core', desc: '+20% Fire Rate & -18% Dash Cooldown.' },
@@ -967,6 +970,9 @@
         shuriken: { name: 'Phi Tiêu Lốc Xoáy', desc: 'Ném phi tiêu xuyên thấu nhiều quái.' },
         coloa: { name: 'Cung Tên Cổ Loa', desc: 'Mũi tên tự đuổi bám mục tiêu.' },
         drill: { name: 'Mũi Khoan Tre', desc: 'Mũi khoan hạng nặng đẩy lùi quái tinh anh.' },
+        pulse: { name: 'Sóng Âm', desc: 'Sóng xung quanh bạn: gây sát thương và đẩy lùi mọi quái trong tầm.' },
+        boomerang: { name: 'Boomerang Quay Về', desc: 'Bay ra rồi quay về, trúng quái cả hai lượt. Lv.4 ném hai cái.' },
+        mines: { name: 'Mìn Cảm Biến', desc: 'Thả mìn khi di chuyển. Quái bước lại gần sẽ bị nổ.' },
         blades: { name: 'Kiếm Plasma Hộ Thân', desc: 'Lưỡi kiếm xoay quanh chém quái áp sát.' },
         orbital: { name: 'Thiên Lôi Arc', desc: 'Giáng sét hủy diệt xuống cụm đông địch.' },
         overclock: { name: 'Ép Xung Năng Lượng', desc: '+20% Tốc độ bắn & -18% Hồi chiêu Lướt.' },
@@ -1426,21 +1432,21 @@
       hair: '#111827', hairStyle: 'neat_short', glasses: 'wire',
       coat: '#15803d', coatDark: '#14532d', inner: '#166534', pants: '#1f2937',
       boot: '#111827', trim: '#86efac', glow: '#4ade80', scarf: '#15803d',
-      shortSleeve: true, capeStyle: 'none', width: 1.0, collar: true, mic: true, smile: 'warm', weapon: 'twin_tonfa'
+      shortSleeve: true, capeStyle: 'none', width: 1.0, collar: true, mic: true, smile: 'warm', weapon: 'pulse_amp'
     },
     quoc_vuong: {
       skin: '#f3c9a6', blush: '#df8f76', brow: '#111827', eye: '#d97706',
       hair: '#1c1917', hairStyle: 'side_part', glasses: 'thick',
       coat: '#5b3a2e', coatDark: '#3f2a21', inner: '#6b4636', pants: '#1c1917',
       boot: '#1c1917', trim: '#fbbf24', glow: '#f59e0b', scarf: '#5b3a2e',
-      shortSleeve: true, capeStyle: 'none', width: 1.04, collar: true, smile: 'calm', weapon: 'dragon_halberd'
+      shortSleeve: true, capeStyle: 'none', width: 1.04, collar: true, smile: 'calm', weapon: 'boomerang_blade'
     },
     miley_nguyen: {
       skin: '#ffe3d1', blush: '#f2a0a8', brow: '#1c1917', eye: '#6d28d9',
       hair: '#1c1917', hair2: '#292524', hairStyle: 'long_chestnut',
       coat: '#f1f5f9', coatDark: '#94a3b8', inner: '#ffffff', pants: '#1e293b',
       boot: '#334155', trim: '#a78bfa', glow: '#a78bfa', scarf: '#334155',
-      shortSleeve: false, capeStyle: 'long_hair', width: 0.9, collar: true, smile: 'coral', weapon: 'coloa_crossbow'
+      shortSleeve: false, capeStyle: 'long_hair', width: 0.9, collar: true, smile: 'coral', weapon: 'mine_case'
     }
   };
 
@@ -1492,6 +1498,25 @@
         [0, 0.1, 1.7, 0.96, 0.96, 0.88, glowCol, true],
         [0, 0.1, 2.4, 0.68, 0.68, 0.72, '#fda4af', true],
         [0, 0.1, 2.95, 0.38, 0.38, 0.65, '#ffd166', true]
+      );
+    } else if (kind === 'pulse_amp') {
+      boxes.push(
+        [0, 0.2, 0.5, 0.9, 0.9, 0.7, '#14532d'],
+        [0, 0.2, 0.9, 0.7, 0.7, 0.12, glowCol, true],
+        [0, 0.2, 0.92, 0.3, 0.3, 0.14, '#ecfdf5', true]
+      );
+    } else if (kind === 'boomerang_blade') {
+      boxes.push(
+        [0, 0.2, 0.9, 0.38, 0.22, 2.0, '#7c2d12'],
+        [0.62, 0.2, 1.78, 1.3, 0.22, 0.38, '#7c2d12'],
+        [0, 0.3, 0.9, 0.18, 0.26, 1.9, glowCol, true],
+        [0.62, 0.3, 1.78, 1.2, 0.26, 0.18, glowCol, true]
+      );
+    } else if (kind === 'mine_case') {
+      boxes.push(
+        [0, 0.2, 0.55, 0.9, 0.5, 0.9, '#312e81'],
+        [0, 0.5, 0.55, 0.5, 0.14, 0.5, glowCol, true],
+        [0, 0.62, 0.55, 0.18, 0.18, 0.18, '#ede9fe', true]
       );
     } else if (kind === 'stage_mic') {
       boxes.push(
@@ -2499,8 +2524,8 @@
 
   var upLevels = {};
   var fireRateMult = 1, speedStatMult = 1, magnetMult = 1;
-  var wTimers = { dragon: 0, lightning: 0, shuriken: 0, coloa: 0, drill: 0, orbital: 0 };
-  var enemies = [], pickups = [], projectiles = [], enemyBullets = [], hazards = [], bolts = [], strikes = [], fxRings = [];
+  var wTimers = { dragon: 0, lightning: 0, shuriken: 0, coloa: 0, drill: 0, orbital: 0, pulse: 0, boomerang: 0, mines: 0 };
+  var enemies = [], pickups = [], projectiles = [], enemyBullets = [], hazards = [], bolts = [], strikes = [], fxRings = [], mines = [];
 
   function saveBest(val) {
     try { window.localStorage.setItem('arc-voxel-quest:best', String(val)); } catch (e) { /* ignore */ }
@@ -2674,8 +2699,9 @@
     hazards.forEach(function (hz) { scene.remove(hz.mesh); hz.mesh.material.dispose(); });
     bolts.forEach(function (bl) { scene.remove(bl.line); disposeNode(bl.line); });
     strikes.forEach(function (st) { scene.remove(st.mesh); st.mesh.material.dispose(); });
+    mines.forEach(function (mn) { scene.remove(mn.mesh); disposeNode(mn.mesh); });
     fxRings.forEach(function (fx) { scene.remove(fx.mesh); disposeNode(fx.mesh); });
-    enemies = []; pickups = []; projectiles = []; enemyBullets = []; hazards = []; bolts = []; strikes = []; fxRings = [];
+    enemies = []; pickups = []; projectiles = []; enemyBullets = []; hazards = []; bolts = []; strikes = []; fxRings = []; mines = [];
     syncBladesMesh(0);
   }
 
@@ -2696,7 +2722,7 @@
   }
 
   /* 10. UPGRADES & COMBAT */
-  var UPGRADE_POOL = ['dragon', 'lightning', 'shuriken', 'coloa', 'drill', 'blades', 'orbital', 'overclock', 'magnet', 'vitality'];
+  var UPGRADE_POOL = ['dragon', 'lightning', 'shuriken', 'coloa', 'drill', 'pulse', 'boomerang', 'mines', 'blades', 'orbital', 'overclock', 'magnet', 'vitality'];
   function openLevelUp() {
     var available = UPGRADE_POOL.filter(function (id) { return (upLevels[id] || 0) < 5; });
     if (available.length === 0) return;
@@ -2819,6 +2845,11 @@
       tip.position.z = 0.55;
       mesh.add(shaft, tip);
       mesh.rotation.y = Math.atan2(vx, vz);
+    } else if (k === 'boomerang') {
+      var bm1 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.16, 0.3), new THREE.MeshBasicMaterial({ color: colorHex }));
+      var bm2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.16, 1.1), new THREE.MeshBasicMaterial({ color: '#fde68a' }));
+      bm2.position.set(0.6, 0, 0.5);
+      mesh.add(bm1, bm2);
     } else {
       var d1 = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.65), new THREE.MeshBasicMaterial({ color: colorHex }));
       var d2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.55), new THREE.MeshBasicMaterial({ color: '#ffd166' }));
@@ -3114,7 +3145,7 @@
     fireRateMult = 1; speedStatMult = hSpec.speedMult; magnetMult = 1 + magnetBonus(magnetLevel());
     upLevels = {};
     upLevels[hSpec.weaponId] = 1;
-    wTimers = { dragon: 0.2, lightning: 0.2, shuriken: 0.2, coloa: 0.2, drill: 0.2, orbital: 1.5 };
+    wTimers = { dragon: 0.2, lightning: 0.2, shuriken: 0.2, coloa: 0.2, drill: 0.2, orbital: 1.5, pulse: 0.3, boomerang: 0.3, mines: 0.4 };
     hero.x = 0; hero.z = 0; hero.vx = hero.vz = 0;
     for (var i = 0; i < R.maxPickups; i++) addShard(undefined, undefined, 15, false);
     spawnEnemy('stalker'); spawnEnemy('charger'); spawnEnemy('caster');
@@ -4084,6 +4115,74 @@
         wTimers.orbital = Math.max(1.1, 2.5 - upLevels.orbital * 0.28);
         spawnOrbitalStrike(upLevels.orbital);
       }
+      // Sonic Pulse: a shockwave around the hero, fired only when something is in range
+      if (upLevels.pulse && wTimers.pulse <= 0) {
+        var lvP = upLevels.pulse, rP = 3.4 + lvP * 0.45, dP = 3.0 + lvP * 0.8, nearP = 0;
+        for (var ep0 = 0; ep0 < enemies.length; ep0++) if (Math.hypot(enemies[ep0].x - hero.x, enemies[ep0].z - hero.z) <= rP + enemies[ep0].radius) nearP++;
+        if (!nearP) {
+          wTimers.pulse = 0.2;
+        } else {
+          wTimers.pulse = Math.max(0.7, 1.5 - lvP * 0.15);
+          for (var ep = enemies.length - 1; ep >= 0; ep--) {
+            var enP = enemies[ep], dxP = enP.x - hero.x, dzP = enP.z - hero.z, dstP = Math.hypot(dxP, dzP) || 1;
+            if (dstP <= rP + enP.radius) damageEnemy(enP, dP, (dxP / dstP) * 1.5, (dzP / dstP) * 1.5);
+          }
+          spawnFxRing(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.2, hero.z, '#4ade80', 0.8, rP * 1.15, 0.34, false);
+          blip(320, 0.08, 'sine', 0.05, 540);
+        }
+      }
+      // Returning Boomerang: flies out, turns back to the hero, and hits on both passes (Lv.4 throws two)
+      if (upLevels.boomerang && wTimers.boomerang <= 0) {
+        var lvB = upLevels.boomerang, tgtB = nearestEnemy(16);
+        wTimers.boomerang = Math.max(0.8, 1.55 - lvB * 0.14);
+        var aB0 = tgtB ? Math.atan2(tgtB.x - hero.x, tgtB.z - hero.z) : hero.facing;
+        var nBoom = lvB >= 4 ? 2 : 1;
+        for (var bmi = 0; bmi < nBoom; bmi++) {
+          var aBm = aB0 + bmi * Math.PI;
+          spawnProjectile(Math.sin(aBm) * 12, Math.cos(aBm) * 12, 2.6 + lvB * 0.75, '#d97706', 99, false, false, 'boomerang');
+          projectiles[projectiles.length - 1].life = 2.6;
+        }
+        blip(380, 0.06, 'triangle', 0.03, 300);
+      }
+      // Proximity Mines: dropped where the hero walks, armed after a moment, blast when a mob steps close
+      if (upLevels.mines && wTimers.mines <= 0) {
+        var lvM = upLevels.mines, tooClose = false;
+        for (var mj = 0; mj < mines.length; mj++) if (Math.hypot(mines[mj].x - hero.x, mines[mj].z - hero.z) < 1.4) tooClose = true;
+        if (tooClose || mines.length >= 4 + lvM) {
+          wTimers.mines = 0.3;
+        } else {
+          wTimers.mines = Math.max(0.9, 1.9 - lvM * 0.2);
+          var mineMesh = new THREE.Group();
+          mineMesh.add(new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.22, 0.9), new THREE.MeshBasicMaterial({ color: '#4c1d95' })));
+          var mineCore = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.4), new THREE.MeshBasicMaterial({ color: '#c4b5fd', transparent: true, opacity: 0.9 }));
+          mineCore.position.set(0, 0.2, 0);
+          mineMesh.add(mineCore);
+          mineMesh.position.set(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.15, hero.z);
+          scene.add(mineMesh);
+          mines.push({ x: hero.x, z: hero.z, life: 10, arm: 0.5, dmg: 4.2 + lvM * 1.1, radius: 2.8 + lvM * 0.25, mesh: mineMesh });
+        }
+      }
+      for (var mi = mines.length - 1; mi >= 0; mi--) {
+        var mn = mines[mi];
+        mn.life -= dt; mn.arm -= dt;
+        mn.mesh.children[1].material.opacity = 0.55 + Math.sin(tNow * 8 + mi) * 0.35;
+        var boom = false;
+        if (mn.arm <= 0) {
+          for (var me = 0; me < enemies.length; me++) {
+            if (Math.hypot(enemies[me].x - mn.x, enemies[me].z - mn.z) < 1.5 + enemies[me].radius) { boom = true; break; }
+          }
+        }
+        if (boom) {
+          var my = (groundAt(mn.x, mn.z) || 1) + 0.25;
+          burst(mn.x, my + 0.7, mn.z, 16);
+          spawnFxRing(mn.x, my, mn.z, '#a78bfa', 0.8, mn.radius * 1.2, 0.34, false);
+          blip(240, 0.14, 'sawtooth', 0.05, 110);
+          for (var mk = enemies.length - 1; mk >= 0; mk--) {
+            if (Math.hypot(enemies[mk].x - mn.x, enemies[mk].z - mn.z) <= mn.radius + enemies[mk].radius) damageEnemy(enemies[mk], mn.dmg, (enemies[mk].x - mn.x) * 0.3, (enemies[mk].z - mn.z) * 0.3);
+          }
+        }
+        if (boom || mn.life <= 0) { scene.remove(mn.mesh); disposeNode(mn.mesh); mines.splice(mi, 1); }
+      }
 
       if (upLevels.blades) {
         bladeGroup.rotation.y = tNow * (3.5 + upLevels.blades * 0.35);
@@ -4116,9 +4215,17 @@
             pr.mesh.rotation.y = Math.atan2(pr.vx, pr.vz);
           }
         }
+        if (pr.kind === 'boomerang' && pr.life < 1.6) {
+          if (!pr.returning) { pr.returning = true; pr.hitIds = []; } // can hit every mob again on the way back
+          var dxR = hero.x - pr.x, dzR = hero.z - pr.z, dR = Math.hypot(dxR, dzR) || 1;
+          pr.vx = lerp(pr.vx, (dxR / dR) * 15, dt * 8);
+          pr.vz = lerp(pr.vz, (dzR / dR) * 15, dt * 8);
+          if (dR < 1.1) pr.life = 0;
+        }
         pr.x += pr.vx * dt; pr.z += pr.vz * dt;
         pr.mesh.position.set(pr.x, (groundAt(pr.x, pr.z) || 1) + 0.9, pr.z);
         if (pr.kind === 'shuriken') pr.mesh.rotation.y += dt * 16;
+        else if (pr.kind === 'boomerang') pr.mesh.rotation.y += dt * 18;
         else if (pr.kind === 'drill') pr.mesh.rotation.z += dt * 20;
         else if (pr.kind === 'dragon') { pr.mesh.rotation.x += dt * 8; pr.mesh.rotation.y += dt * 8; }
         var dead = pr.life <= 0 || Math.abs(pr.x) > N || Math.abs(pr.z) > N;
