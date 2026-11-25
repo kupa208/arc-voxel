@@ -10,6 +10,7 @@ Built with [Arc Studio](https://studio.arc.io)
 - **Connect** MetaMask, OKX, Rabby, Coinbase, Trust, Bitget, Phantom, Rainbow, Zerion or Brave. Arc Testnet is added for you.
 - **Sign in with email:** enter your Gmail (or any email), type the one-time code Circle sends you, set a PIN once and your Arc wallet is created. Gas is sponsored, and you approve each transaction with your PIN. If you lose the PIN nobody can recover the wallet.
 - **Save a run onchain** for free (the game pays the gas) or with your own wallet. Only runs with a transaction appear on the leaderboard, each with a link to its transaction.
+- **Sign in with Google (optional):** one tap on "Continue with Google", no code to type. You still set a PIN once. It needs a Google OAuth client ID (see `GOOGLE_CLIENT_ID`). A Google sign-in creates its own wallet, separate from an email-code wallet of the same address.
 - **Daily seasons:** enter for 1 USDC, the top 3 split the pool.
 - **Daily quests and streaks** pay ARCQ automatically when you save a run.
 - **Hero upgrades** and **skins** (soulbound NFTs) burn ARCQ. Badge NFTs show your best tier.
@@ -51,6 +52,7 @@ Put these in `.env.local` (git-ignored). Never commit them.
 | `RELAYER_PRIVATE_KEY` | Optional. Hot wallet that pays gas for free saves. Fund it with a little testnet USDC. |
 | `CIRCLE_API_KEY` | Optional. A Circle Standard Developer API Key. Needed for email sign-in. It stays on the server. |
 | `CIRCLE_EMAIL_OTP` | Optional. Set to `on` to show "Sign in with email". Before turning it on, add an SMTP email provider (SendGrid, Mailgun, Amazon SES or Resend; Mailtrap only captures mail) in Circle Console under Wallets, User Controlled, Configurator, Authentication Methods, Email OTP. |
+| `GOOGLE_CLIENT_ID` | Optional. Google OAuth client ID (Web application) that enables "Continue with Google". Needs `CIRCLE_API_KEY`. In Google Cloud add your game address to Authorized JavaScript origins and Authorized redirect URIs, and add the same client ID in Circle Console under Wallets, User Controlled, Configurator, Authentication Methods, Social Logins. |
 | `WALLETCONNECT_PROJECT_ID` | Optional. Shows the WalletConnect row for phone wallets. |
 | `RPC_PROXY_BASE_URL`, `RPC_PROXY_TOKEN`, `RPC_PROXY_CHAINS` | Optional outside Arc Studio. Provided by Arc Studio for RPC access. |
 | `RPC_URL_Arc_Testnet` | Optional. Your own RPC endpoint for the leaderboard indexer. |

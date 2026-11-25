@@ -19,6 +19,7 @@ const TOKEN = 'user-token-'.padEnd(40, 'x')
 const calls: any[] = []
 let initialized = false
 const fake = {
+  async createDeviceTokenForSocialLogin(i: any) { calls.push(['social', i]); return { data: { deviceToken: 'sdt', deviceEncryptionKey: 'sdek' } } },
   async createDeviceTokenForEmailLogin(i: any) { calls.push(['otp', i]); return { data: { deviceToken: 'dt', deviceEncryptionKey: 'dek', otpToken: 'otp' } } },
   async listWallets(i: any) {
     calls.push(['list', i])
@@ -57,6 +58,9 @@ async function main() {
   let blocked = false
   for (let i = 0; i < 12; i++) { try { await ew.requestOtp({ email: `p${i}@gmail.com`, deviceId: 'device-123456' }, '9.9.9.9') } catch (e: any) { if (e.status === 429) blocked = true } }
   ok('one network cannot request unlimited codes', blocked)
+  const soc = await ew.requestSocialToken({ deviceId: 'device-123456' }, '3.3.3.3')
+  ok('google sign-in returns the device token pair', soc.deviceToken === 'sdt' && soc.deviceEncryptionKey === 'sdek')
+  ok('google sign-in without a device id is refused', await rejects(ew.requestSocialToken({ deviceId: '' }, '3.3.3.3'), 400))
   ok('missing device id is refused', await rejects(ew.requestOtp({ email: 'x@gmail.com', deviceId: '' }, '2.2.2.2'), 400))
 
   // initialize: new player gets the PIN challenge, existing gets the wallet

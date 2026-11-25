@@ -348,6 +348,7 @@
       board: [],
       boardInfo: null,
       nickname: '',
+      provider: '',
       boardScope: 'all',
       questState: null,
       skinState: null,
@@ -539,6 +540,7 @@
       state.account = '';
       state.walletId = '';
       state.email = '';
+      state.provider = '';
       state.profile = null;
       state.playerState = null;
       state.runId = '';
@@ -627,12 +629,15 @@
           return true;
         }
         if (saved.kind === 'email') {
-          if (!state.setup || !state.setup.email || !state.setup.email.enabled) return false;
+          var okEmail = state.setup && state.setup.email && state.setup.email.enabled;
+          var okGoogle = state.setup && state.setup.google && state.setup.google.enabled;
+          if (!okEmail && !okGoogle) return false;
           var stM = await apiPost('/api/wallet/status', { session: state.session });
           var tokens = loadEmailTokens(); // kept for this browser tab only; without them the player can look around but must sign in again to approve
           emailCtx = { userToken: tokens ? tokens.userToken : '', encryptionKey: tokens ? tokens.encryptionKey : '', email: saved.email || '' };
           state.kind = 'email';
-          state.walletName = 'Email wallet';
+          state.provider = saved.provider || '';
+          state.walletName = saved.provider === 'google' ? 'Google wallet' : 'Email wallet';
           state.email = saved.email || '';
           state.account = String(stM.address).toLowerCase();
           await refreshChainState().catch(function () {});
@@ -993,8 +998,10 @@
 
     function emailConfig() {
       var e = state.setup && state.setup.email;
-      if (!e || !e.enabled || !e.appId) throw new Error('EMAIL_NOT_CONFIGURED');
-      return e;
+      if (e && e.enabled && e.appId) return e;
+      var g = state.setup && state.setup.google;
+      if (g && g.enabled && g.appId) return g; // Google sign-in uses the same Circle app
+      throw new Error('EMAIL_NOT_CONFIGURED');
     }
 
     /* Keeps Circle error codes on the error so the game can show a clear message. A closed PIN window is a plain cancel. */
@@ -1006,7 +1013,7 @@
       return out;
     }
 
-    async function getEmailSdk() {
+    async function getEmailSdk(loginConfigs) {
       var cfg = emailConfig();
       if (emailCtx && emailCtx.sdk) return emailCtx.sdk;
       if (!root.ARC_CIRCLE) {
@@ -1021,7 +1028,7 @@
           throw new Error('Could not load email sign-in (' + why + ')');
         }
       }
-      var sdk = new root.ARC_CIRCLE.W3SSdk({ appSettings: { appId: cfg.appId } }, function (error, result) {
+      var sdk = new root.ARC_CIRCLE.W3SSdk(loginConfigs ? { appSettings: { appId: cfg.appId }, loginConfigs: loginConfigs } : { appSettings: { appId: cfg.appId } }, function (error, result) {
         var waiter = emailLoginWaiter;
         emailLoginWaiter = null;
         if (!waiter) return;
@@ -1059,6 +1066,41 @@
 
     /* Step 2: the player enters the code in Circle's window. First sign-in also sets a PIN and creates the wallet.
        `onStep` is called with 'code', 'pin' and 'wallet' so the game can say what is happening. */
+    /* After Circle confirmed who the player is (code or Google): create or open the wallet, set a PIN the first time, and open a game session. */
+    async function finishLogin(login, step, meta) {
+      var sdk = emailCtx.sdk;
+      emailCtx.userToken = login.userToken;
+      emailCtx.encryptionKey = login.encryptionKey;
+      emailCtx.otpReady = false;
+      step('wallet');
+      var init = await apiPost('/api/email/initialize', { userToken: login.userToken });
+      if (init.challengeId) {
+        step('pin');
+        sdk.setAuthentication({ userToken: login.userToken, encryptionKey: login.encryptionKey });
+        await executeChallenge(init.challengeId);
+        step('wallet');
+      }
+      var s = null; // Circle creates the wallet a few seconds after the PIN is set
+      for (var i = 0; i < 24; i++) {
+        s = await apiPost('/api/email/session', { userToken: login.userToken });
+        if (s.session) break;
+        await sleep(1500);
+      }
+      if (!s || !s.session) throw new Error('EMAIL_WALLET_PENDING');
+      var provider = (meta && meta.provider) || '';
+      state.kind = 'email';
+      state.provider = provider;
+      state.session = s.session;
+      state.account = String(s.address).toLowerCase();
+      state.walletName = provider === 'google' ? 'Google wallet' : 'Email wallet';
+      state.email = (meta && meta.email) || '';
+      saveStorageJson(LS_AUTH, { session: s.session, kind: 'email', provider: provider, email: state.email, exp: Date.now() + 23 * 3600 * 1000 });
+      saveEmailTokens({ userToken: login.userToken, encryptionKey: login.encryptionKey, exp: Date.now() + 55 * 60 * 1000 });
+      await refreshChainState().catch(function () {});
+      notify();
+      return state;
+    }
+
     async function verifyEmailCode(onStep) {
       var step = onStep || function () {};
       try {
@@ -1069,35 +1111,79 @@
           emailLoginWaiter = { resolve: resolve, reject: reject };
           sdk.verifyOtp();
         });
-        emailCtx.userToken = login.userToken;
-        emailCtx.encryptionKey = login.encryptionKey;
-        emailCtx.otpReady = false;
-        step('wallet');
-        var init = await apiPost('/api/email/initialize', { userToken: login.userToken });
-        if (init.challengeId) {
-          step('pin');
-          sdk.setAuthentication({ userToken: login.userToken, encryptionKey: login.encryptionKey });
-          await executeChallenge(init.challengeId);
-          step('wallet');
-        }
-        var s = null; // Circle creates the wallet a few seconds after the PIN is set
-        for (var i = 0; i < 24; i++) {
-          s = await apiPost('/api/email/session', { userToken: login.userToken });
-          if (s.session) break;
-          await sleep(1500);
-        }
-        if (!s || !s.session) throw new Error('EMAIL_WALLET_PENDING');
-        state.kind = 'email';
-        state.session = s.session;
-        state.account = String(s.address).toLowerCase();
-        state.walletName = 'Email wallet';
-        state.email = emailCtx.email || '';
-        saveStorageJson(LS_AUTH, { session: s.session, kind: 'email', email: state.email, exp: Date.now() + 23 * 3600 * 1000 });
-        saveEmailTokens({ userToken: login.userToken, encryptionKey: login.encryptionKey, exp: Date.now() + 55 * 60 * 1000 });
-        await refreshChainState().catch(function () {});
-        notify();
-        return state;
+        return await finishLogin(login, step, { email: emailCtx.email || '', provider: '' });
       } catch (err) { throw wrapEmailError(err); }
+    }
+
+    /* ---- Sign in with Google (Circle social login): the player picks their Google account, no code is emailed.
+       The page leaves for Google and comes back, so the device token is kept in this tab's sessionStorage in between. ---- */
+    var SS_SOCIAL = 'arc-voxel-quest:google-login';
+
+    function googleCfg() {
+      var g = state.setup && state.setup.google;
+      return g && g.enabled && g.clientId && g.appId ? g : null;
+    }
+
+    function googleLoginConfigs(saved) {
+      var g = googleCfg();
+      return {
+        deviceToken: saved.deviceToken,
+        deviceEncryptionKey: saved.deviceEncryptionKey,
+        google: { clientId: g.clientId, redirectUri: root.location.origin, selectAccountPrompt: true },
+      };
+    }
+
+    function loadSocialPending() {
+      try {
+        var j = JSON.parse(root.sessionStorage.getItem(SS_SOCIAL) || 'null');
+        return j && j.exp > Date.now() && j.deviceToken && j.deviceEncryptionKey ? j : null;
+      } catch (e) { return null; }
+    }
+
+    /* Step 1: send the player to Google. The page reloads when they come back (see resumeGoogleLogin). */
+    async function startGoogleLogin() {
+      try {
+        var g = googleCfg();
+        if (!g) throw new Error('GOOGLE_NOT_CONFIGURED');
+        var sdk = await getEmailSdk();
+        var r = await apiPost('/api/email/social-token', { deviceId: emailCtx.deviceId });
+        var saved = { deviceToken: r.deviceToken, deviceEncryptionKey: r.deviceEncryptionKey, exp: Date.now() + 15 * 60 * 1000 };
+        root.sessionStorage.setItem(SS_SOCIAL, JSON.stringify(saved));
+        sdk.updateConfigs({ appSettings: { appId: g.appId }, loginConfigs: googleLoginConfigs(saved) });
+        await sdk.performLogin('Google');
+        return true;
+      } catch (err) { throw wrapEmailError(err); }
+    }
+
+    /* True when the page was just opened by Google's redirect and a Google sign-in is waiting to be finished. */
+    function googleRedirectPending() {
+      var h = String((root.location && root.location.hash) || '');
+      return /(^#|&)(id_token|access_token|error)=/u.test(h) && Boolean(loadSocialPending());
+    }
+
+    /* Step 2 (after the redirect): Circle reads Google's answer from the page address, then the wallet is created or opened. */
+    async function resumeGoogleLogin(onStep) {
+      var step = onStep || function () {};
+      await loadConfig().catch(function () {});
+      var saved = loadSocialPending();
+      if (!saved || !googleCfg()) return null;
+      try {
+        step('google');
+        var waiting = new Promise(function (resolve, reject) {
+          emailLoginWaiter = { resolve: resolve, reject: reject };
+          setTimeout(function () { reject(new Error('Google sign-in did not finish. Try again.')); }, 60000);
+        });
+        emailCtx = null;
+        await getEmailSdk(googleLoginConfigs(saved));
+        var login = await waiting;
+        root.sessionStorage.removeItem(SS_SOCIAL);
+        try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* keep the hash */ }
+        return await finishLogin(login, step, { email: '', provider: 'google' });
+      } catch (err) {
+        root.sessionStorage.removeItem(SS_SOCIAL);
+        try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* ignore */ }
+        throw wrapEmailError(err);
+      }
     }
 
     /* Follows the newest transaction of this wallet until it has a hash. Returns '' when Circle is slow: the caller then checks the chain. */
@@ -1361,6 +1447,10 @@
       registerPasskey: registerPasskey,
       loginPasskey: loginPasskey,
       passkeyEnabled: function () { return Boolean(state.setup && state.setup.passkey && state.setup.passkey.enabled); },
+      googleEnabled: function () { return Boolean(googleCfg()); },
+      startGoogleLogin: startGoogleLogin,
+      googleRedirectPending: googleRedirectPending,
+      resumeGoogleLogin: resumeGoogleLogin,
       emailEnabled: function () { return Boolean(state.setup && state.setup.email && state.setup.email.enabled); },
       emailNeedsSignin: function () { return state.kind === 'email' && !(emailCtx && emailCtx.userToken && emailCtx.encryptionKey); },
       requestEmailCode: requestEmailCode,

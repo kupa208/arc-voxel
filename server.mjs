@@ -30,6 +30,7 @@ import { verifyTelemetry } from './anticheat.mjs'
 import { createEmailWallet, EmailError } from './email-wallet.mjs'
 import { getNickname, NicknameError, nicknamesFor, setNickname } from './nicknames.mjs'
 import { createTokens } from './tokens.mjs'
+import { kvEnabled } from './kv.mjs'
 import { chainCall, getBoard, getPlayer, indexerStatus, indexerRpcUrl, readConfigPublic, readStartTime, scanNow, startIndexer } from './indexer.mjs'
 
 const root = dirname(fileURLToPath(import.meta.url))
@@ -103,6 +104,9 @@ const CIRCLE_CLIENT_URL = 'https://modular-sdk.circle.com/v1/rpc/w3s/buidl'
 // Email wallets: Circle user-controlled wallets (email one-time code + PIN). Needs CIRCLE_API_KEY, SMTP set up in Circle Console, and CIRCLE_EMAIL_OTP=on.
 const circleApiKey = (process.env.CIRCLE_API_KEY || '').trim()
 const emailOtpOn = ['on', '1', 'true'].includes(String(process.env.CIRCLE_EMAIL_OTP || '').toLowerCase()) && Boolean(circleApiKey)
+// Sign in with Google (Circle social login). The OAuth client ID is public (the browser sends the player to Google with it).
+const googleClientId = (process.env.GOOGLE_CLIENT_ID || '').trim()
+const googleOn = Boolean(googleClientId && circleApiKey)
 let circleClientPromise = null
 let circleAppIdPromise = null
 function circleUserClient() {
@@ -210,7 +214,7 @@ function sessionOf(body) {
 }
 
 const emailWallet = createEmailWallet({
-  getClient: () => (emailOtpOn ? circleUserClient() : Promise.reject(new EmailError(503, 'Email sign-in is not enabled on this server.', 503))),
+  getClient: () => (emailOtpOn || googleOn ? circleUserClient() : Promise.reject(new EmailError(503, 'Email sign-in is not enabled on this server.', 503))),
   getContract: contractAddress,
   usdc: process.env.GAME_USDC || '0x3600000000000000000000000000000000000000',
   newSession,
@@ -229,8 +233,9 @@ function clientIp(req, srv) {
 }
 
 async function handleEmail(p, body, ip) {
-  if (!emailOtpOn) throw new HttpError(404, 'Email sign-in is not enabled on this server.')
+  if (!emailOtpOn && !googleOn) throw new HttpError(404, 'Email sign-in is not enabled on this server.')
   if (p === '/api/email/request-otp') return json(await emailWallet.requestOtp(body, ip))
+  if (p === '/api/email/social-token') return json(await emailWallet.requestSocialToken(body, ip))
   if (p === '/api/email/initialize') return json(await emailWallet.initialize(body, ip))
   if (p === '/api/email/session') return json(await emailWallet.session(body, ip))
   if (p === '/api/email/challenge') return json(await emailWallet.challenge(body, ip))
@@ -534,14 +539,19 @@ async function route(req, url, srv) {
     if (STATELESS) await refreshBoardIfNeeded(false)
     const idx = indexerStatus()
     const relayerOk = relayer ? (await relayerBalanceUsdc().catch(() => 0n)) >= RELAYER_MIN_BALANCE : false
-    return json({ ok: !idx.stalled, signer: signer.address, indexer: idx, relayer: { enabled: Boolean(relayer), funded: relayerOk }, uptimeS: Math.floor(process.uptime()) })
+    return json({ ok: !idx.stalled, signer: signer.address, indexer: idx, relayer: { enabled: Boolean(relayer), funded: relayerOk }, storage: kvEnabled ? 'shared' : 'local', uptimeS: Math.floor(process.uptime()) })
   }
   if (m === 'GET' && p === '/api/config') {
     let email = { enabled: false, appId: '' }
-    if (emailOtpOn) {
-      try { email = { enabled: true, appId: await circleAppId() } } catch (e) { console.warn('[email] could not read the Circle app id:', redact(e).split('\n')[0].slice(0, 160)) }
+    let google = { enabled: false, appId: '', clientId: '' }
+    if (emailOtpOn || googleOn) {
+      try {
+        const appId = await circleAppId()
+        if (emailOtpOn) email = { enabled: true, appId }
+        if (googleOn) google = { enabled: true, appId, clientId: googleClientId }
+      } catch (e) { console.warn('[email] could not read the Circle app id:', redact(e).split('\n')[0].slice(0, 160)) }
     }
-    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
+    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, google, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
   }
   if (m === 'GET' && p === '/vendor/circle-sdk.js') {
     return fileResponse(join(root, 'vendor', 'circle-sdk.js'), 'text/javascript; charset=utf-8', 'no-cache')

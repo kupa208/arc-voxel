@@ -7,6 +7,7 @@
  *
  * Routes (wired in server.mjs):
  *   POST /api/email/request-otp {email, deviceId}        -> {deviceToken, deviceEncryptionKey, otpToken}
+ *   POST /api/email/social-token {deviceId}              -> {deviceToken, deviceEncryptionKey} (Sign in with Google: no code, Google verifies the player)
  *   POST /api/email/initialize  {userToken}              -> {wallet} or {challengeId} (PIN + wallet setup)
  *   POST /api/email/session     {userToken}              -> {session, address, walletId}
  *   POST /api/email/challenge   {session, userToken, to, data} -> {challengeId}
@@ -160,6 +161,24 @@ export function createEmailWallet(deps) {
     }
   }
 
+  /** Sign in with Google: Circle returns the device token the browser needs before it sends the player to Google. */
+  async function requestSocialToken(body, ip) {
+    const deviceId = String(body.deviceId || '')
+    if (deviceId.length < 8 || deviceId.length > 200) throw new EmailError(400, 'Reload the page and try again.', 155137)
+    limiter.hit('social:' + ip, OTP_PER_IP, 'Too many sign-in attempts from this network.')
+    try {
+      const client = await deps.getClient()
+      const res = await client.createDeviceTokenForSocialLogin({ deviceId })
+      const d = res.data
+      log('google sign-in started')
+      return { deviceToken: d.deviceToken, deviceEncryptionKey: d.deviceEncryptionKey }
+    } catch (err) {
+      const e = circleError(err)
+      log(`google sign-in failed: ${e.code}`)
+      throw e
+    }
+  }
+
   /** Existing wallet -> returns it. New player -> returns the challenge that sets the PIN and creates the wallet. */
   async function initialize(body, ip) {
     const userToken = tokenOf(body)
@@ -259,5 +278,5 @@ export function createEmailWallet(deps) {
     }
   }
 
-  return { requestOtp, initialize, session, challenge, lastTx, checkCall }
+  return { requestOtp, requestSocialToken, initialize, session, challenge, lastTx, checkCall }
 }

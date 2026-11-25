@@ -463,6 +463,11 @@
       passkeySetup: 'Passkey wallets are not set up on this server yet. Add CIRCLE_CLIENT_KEY to .env.local and restart. In Circle Console, set the Client Key Allowed Domain and the Passkey Domain Name to exactly:',
       passkeyDomainErr: 'This passkey belongs to a different address than the game. In Circle Console, set the Passkey Domain Name to:',
       passkeyExists: 'That passkey already exists on this device. Press "Use an existing passkey" instead.',
+      googleBtn: 'Continue with Google',
+      googleNote: 'Pick your Google account. No code to type. You set a PIN once and your Arc wallet is created. Gas is free.',
+      googleOpening: 'Opening Google',
+      googleFinishing: 'Finishing your Google sign-in',
+      googleLabel: 'Google account',
       emailTitle: 'Sign in with email',
       emailNote: 'Use your Gmail or any email. Circle sends a one-time code, you set a PIN once, and your Arc wallet is created. Gas is free. Keep your PIN safe: nobody can recover it for you.',
       emailPh: 'you@gmail.com',
@@ -743,6 +748,11 @@
       passkeySetup: 'Ví passkey chưa được cấu hình trên server. Thêm CIRCLE_CLIENT_KEY vào .env.local rồi khởi động lại. Trong Circle Console, đặt Allowed Domain của Client Key và Passkey Domain Name đúng bằng:',
       passkeyDomainErr: 'Passkey này thuộc về một địa chỉ khác với game. Trong Circle Console, hãy đặt Passkey Domain Name là:',
       passkeyExists: 'Passkey này đã có trên thiết bị. Hãy bấm "Dùng passkey có sẵn".',
+      googleBtn: 'Tiếp tục với Google',
+      googleNote: 'Chọn tài khoản Google của bạn, không cần nhập mã. Bạn đặt PIN một lần và ví Arc được tạo. Miễn phí gas.',
+      googleOpening: 'Đang mở Google',
+      googleFinishing: 'Đang hoàn tất đăng nhập Google',
+      googleLabel: 'Tài khoản Google',
       emailTitle: 'Đăng nhập bằng email',
       emailNote: 'Dùng Gmail hoặc email bất kỳ. Circle gửi mã dùng một lần, bạn đặt mã PIN một lần và ví Arc của bạn được tạo. Miễn phí gas. Hãy giữ kỹ mã PIN: không ai khôi phục được giúp bạn.',
       emailPh: 'ban@gmail.com',
@@ -3172,6 +3182,7 @@
     if (msg === 'EMAIL_NOT_CONFIGURED') return t('emailSetup');
     if (msg === 'EMAIL_WALLET_PENDING') return t('emailPending');
     if (msg === 'EMAIL_NO_CODE') return t('emailSendFirst');
+    if (msg === 'GOOGLE_NOT_CONFIGURED') return lang === 'vi' ? 'Đăng nhập Google chưa được cài đặt trên server.' : 'Google sign-in is not set up on this server yet.';
     var known = contractErrorText(err);
     if (known) return known;
     if (msg === 'NEED_USDC') return t('needUsdc');
@@ -3507,7 +3518,21 @@
     if (parts.length !== 2) return '';
     return parts[0].slice(0, 2) + '***@' + parts[1];
   }
+  /* Sign in with Google: one tap, Google confirms who the player is, so no emailed code. The page leaves for Google and comes back. */
+  function renderGoogleBox(parent) {
+    var box = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(66,133,244,.10);border:1px solid rgba(66,133,244,.5)', parent);
+    el('div', 'font-size:12.5px;opacity:.9;line-height:1.45', box).textContent = t('googleNote');
+    var b = el('button', 'justify-content:center', box); b.className = 'avq-btn pri'; b.textContent = 'G  ' + t('googleBtn');
+    b.onclick = function () {
+      b.disabled = true;
+      cnStatus.textContent = '⏳ ' + t('googleOpening') + '...';
+      web3.startGoogleLogin().catch(function (err) { b.disabled = false; cnStatus.textContent = '⚠️ ' + friendlyTxError(err); });
+    };
+  }
+
   function renderEmailBox(parent) {
+    if (web3.googleEnabled()) renderGoogleBox(parent);
+    if (!web3.emailEnabled()) return;
     var box = el('div', 'display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:14px;background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.4)', parent);
     el('div', 'font-weight:900;font-size:14px;color:#ffd166', box).textContent = '✉️ ' + t('emailTitle');
     el('div', 'font-size:12.5px;opacity:.85;line-height:1.45', box).textContent = t('emailNote');
@@ -3560,7 +3585,7 @@
     el('div', 'font-size:22px;font-weight:900;color:#eefaff', head).textContent = t('connectTitle');
     el('div', 'opacity:.75;font-size:13px', head).textContent = t('connectSub');
 
-    if (web3.emailEnabled()) renderEmailBox(cnBody);
+    if (web3.emailEnabled() || web3.googleEnabled()) renderEmailBox(cnBody);
 
     // Other wallets (installed ones connect directly, others link to their install page)
     el('div', 'font-size:11px;font-weight:800;letter-spacing:.08em;opacity:.65;margin-top:4px', cnBody).textContent = t('yourWallets');
@@ -4508,7 +4533,18 @@
         try { window.localStorage.setItem('arc-voxel-quest:nick', playerName); } catch (e) { /* ignore */ }
       }
       refreshStaticTexts(); if (w3Overlay.style.display === 'flex') renderWeb3Modal(); if (cnOverlay.style.display === 'flex') renderConnectModal(); };
-    web3.restoreSession().then(function (restored) { if (restored) refreshStaticTexts(); });
+    if (web3.googleRedirectPending()) {
+      // The player just came back from Google: finish the sign-in (Circle reads Google's answer from the page address).
+      openConnectModal();
+      cnStatus.textContent = '⏳ ' + t('googleFinishing') + '...';
+      web3.resumeGoogleLogin(function (step) {
+        cnStatus.textContent = '⏳ ' + t(step === 'pin' ? 'emailWaitPin' : step === 'wallet' ? 'emailWaitWallet' : 'googleFinishing') + '...';
+      }).then(function (st) {
+        if (st) { cnStatus.textContent = ''; afterLogin(); }
+      }).catch(function (err) { cnStatus.textContent = '⚠️ ' + friendlyTxError(err); renderConnectModal(); });
+    } else {
+      web3.restoreSession().then(function (restored) { if (restored) refreshStaticTexts(); });
+    }
     web3.refreshBoard(false).then(renderEmbeddedLeaderboard);
     function checkPrizes() {
       var st = web3.state;
