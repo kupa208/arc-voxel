@@ -1,13 +1,20 @@
 {
-  "contractAddress": "0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
+  "contractAddress": "0x3ff5e89462eb80a818f76a0662afb1af24b457e1",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/ArcVoxelGameFi.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/ArcVoxelGameFi.sol/ArcVoxelGameFi.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x3ff5e89462eb80a818f76a0662afb1af24b457e1"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x3ff5e89462eb80a818f76a0662afb1af24b457e1",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x3ff5e89462eb80a818f76a0662afb1af24b457e1",
+      "txHash": "0xef4f38a906112a47ce5deb2fa2095f1f8eace87192dc4c2426b0d6f40c13cb3a",
+      "deployedAt": "2026-11-26T08:35:31.749Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
@@ -121,6 +128,19 @@
     },
     {
       "type": "function",
+      "name": "HERO_UNLOCK_COST",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "MAX_LEADERBOARD",
       "inputs": [],
       "outputs": [
@@ -141,6 +161,123 @@
           "name": "",
           "type": "uint256",
           "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MILESTONE_1",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MILESTONE_2",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MILESTONE_3",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MILESTONE_4",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PASS_EXCLUSIVE_SKIN",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PASS_LENGTH",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PASS_MAX_LEVEL",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PASS_PRICE",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PASS_XP_PER_LEVEL",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32",
+          "internalType": "uint32"
         }
       ],
       "stateMutability": "view"
@@ -357,12 +494,42 @@
     },
     {
       "type": "function",
+      "name": "buyPass",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "buySkin",
       "inputs": [
         {
           "name": "id",
           "type": "uint8",
           "internalType": "uint8"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "claimPassReward",
+      "inputs": [
+        {
+          "name": "passSeason",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "level",
+          "type": "uint8",
+          "internalType": "uint8"
+        },
+        {
+          "name": "premium",
+          "type": "bool",
+          "internalType": "bool"
         }
       ],
       "outputs": [],
@@ -462,6 +629,19 @@
     },
     {
       "type": "function",
+      "name": "currentPass",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "currentSeason",
       "inputs": [],
       "outputs": [
@@ -519,6 +699,19 @@
     },
     {
       "type": "function",
+      "name": "equipFx",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "equipSkin",
       "inputs": [
         {
@@ -529,6 +722,25 @@
       ],
       "outputs": [],
       "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "getHeroMask",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "stateMutability": "view"
     },
     {
       "type": "function",
@@ -549,6 +761,50 @@
           "name": "tiers",
           "type": "uint8[]",
           "internalType": "uint8[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getPass",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "passSeason",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "xp",
+          "type": "uint32",
+          "internalType": "uint32"
+        },
+        {
+          "name": "premium",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "freeClaimed",
+          "type": "uint32",
+          "internalType": "uint32"
+        },
+        {
+          "name": "premiumClaimed",
+          "type": "uint32",
+          "internalType": "uint32"
+        },
+        {
+          "name": "endsAt",
+          "type": "uint256",
+          "internalType": "uint256"
         }
       ],
       "stateMutability": "view"
@@ -829,13 +1085,52 @@
       "outputs": [
         {
           "name": "ownedMask",
-          "type": "uint8",
-          "internalType": "uint8"
+          "type": "uint16",
+          "internalType": "uint16"
         },
         {
           "name": "equipped",
           "type": "uint8",
           "internalType": "uint8"
+        },
+        {
+          "name": "equippedFx",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getWeekly",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "runs",
+          "type": "uint16",
+          "internalType": "uint16"
+        },
+        {
+          "name": "points",
+          "type": "uint32",
+          "internalType": "uint32"
+        },
+        {
+          "name": "mask",
+          "type": "uint8",
+          "internalType": "uint8"
+        },
+        {
+          "name": "endsAt",
+          "type": "uint256",
+          "internalType": "uint256"
         }
       ],
       "stateMutability": "view"
@@ -874,6 +1169,30 @@
     },
     {
       "type": "function",
+      "name": "heroUnlocked",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "hero",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "joinRoom",
       "inputs": [
         {
@@ -900,6 +1219,25 @@
     },
     {
       "type": "function",
+      "name": "passEndsAt",
+      "inputs": [
+        {
+          "name": "passSeason",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "pause",
       "inputs": [],
       "outputs": [],
@@ -917,6 +1255,30 @@
         }
       ],
       "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "prizeShareBps",
+      "inputs": [
+        {
+          "name": "winners",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "rank",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "pure"
     },
     {
       "type": "function",
@@ -1164,6 +1526,34 @@
         }
       ],
       "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "seasonRules",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "fee",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "length",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "winnersPaid",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "rollDays",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "pure"
     },
     {
       "type": "function",
@@ -1424,6 +1814,19 @@
     },
     {
       "type": "function",
+      "name": "unlockHero",
+      "inputs": [
+        {
+          "name": "hero",
+          "type": "uint8",
+          "internalType": "uint8"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "unpause",
       "inputs": [],
       "outputs": [],
@@ -1533,6 +1936,25 @@
     },
     {
       "type": "event",
+      "name": "FxEquipped",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "id",
+          "type": "uint8",
+          "indexed": false,
+          "internalType": "uint8"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
       "name": "GuardianChanged",
       "inputs": [
         {
@@ -1546,6 +1968,25 @@
           "type": "address",
           "indexed": true,
           "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "HeroUnlocked",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "hero",
+          "type": "uint8",
+          "indexed": false,
+          "internalType": "uint8"
         }
       ],
       "anonymous": false
@@ -1602,6 +2043,68 @@
           "type": "uint8",
           "indexed": false,
           "internalType": "uint8"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PassBought",
+      "inputs": [
+        {
+          "name": "passSeason",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "price",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PassRewardPaid",
+      "inputs": [
+        {
+          "name": "passSeason",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "level",
+          "type": "uint8",
+          "indexed": false,
+          "internalType": "uint8"
+        },
+        {
+          "name": "premium",
+          "type": "bool",
+          "indexed": false,
+          "internalType": "bool"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
         }
       ],
       "anonymous": false
@@ -2139,6 +2642,16 @@
     },
     {
       "type": "error",
+      "name": "HeroAlreadyUnlocked",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "HeroLocked",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "InsufficientAllowance",
       "inputs": []
     },
@@ -2210,6 +2723,26 @@
     {
       "type": "error",
       "name": "NotPaused",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "PassLevelLocked",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "PassNotPremium",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "PassOwned",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "PassRewardClaimed",
       "inputs": []
     },
     {

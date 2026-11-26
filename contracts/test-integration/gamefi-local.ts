@@ -57,7 +57,7 @@ async function main() {
   const usdcBal = async (a: Hex) => (await pub.readContract({ address: usdc, abi: uAbi, functionName: 'balanceOf', args: [a] })) as bigint
   for (const w of [alice, bob, carol, relayerW]) await wait(await deployer.writeContract({ address: usdc, abi: uAbi, functionName: 'mint', args: [w.account.address, 10_000_000n] }))
 
-  procs.push(spawn('bun', [`${root}/server.mjs`, '5199'], { cwd: root, stdio: process.env.VERBOSE ? 'inherit' : 'ignore', env: { ...process.env, GAME_CONTRACT: game, GAME_CHAIN_ID: '31337', GAME_TEST_AUTH: '1', GAME_RPC_URL: RPC, GAME_DEPLOY_BLOCK: '0', GAME_DATA_FILE: '/tmp/lb-test.json', GAME_STATE_FILE: '/tmp/state-test.json', RELAYER_PRIVATE_KEY: relayerPk, GAME_USDC: usdc } }))
+  procs.push(spawn('bun', [`${root}/server.mjs`, '5199'], { cwd: root, stdio: process.env.VERBOSE ? 'inherit' : 'ignore', env: { ...process.env, GAME_CONTRACT: game, GAME_CHAIN_ID: '31337', GAME_TEST_AUTH: '1', GAME_MIN_SAVE_SECONDS: '0', GAME_RPC_URL: RPC, GAME_DEPLOY_BLOCK: '0', GAME_DATA_FILE: '/tmp/lb-test.json', GAME_STATE_FILE: '/tmp/state-test.json', RELAYER_PRIVATE_KEY: relayerPk, GAME_USDC: usdc } }))
   await sleep(1800)
   const post = async (path: string, body: any) => { const r = await fetch(API + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); return { status: r.status, body: await r.json() } }
   const get = async (path: string) => (await fetch(API + path)).json() as Promise<any>
@@ -147,10 +147,10 @@ async function main() {
   ok('health endpoint reports indexer and funded relayer', health.ok === true && health.relayer.enabled && health.relayer.funded)
 
   const prof: any = await call('getPlayerProfile', [alice.account.address])
-  ok('alice: 150 ARCQ from the run + 35 from quests, Sentinel badge (tier 4)', prof[4] === 185n * 10n ** 18n && prof[5] === 4, `${prof[4]} tier ${prof[5]}`)
+  ok('alice: 150 ARCQ from the run + 35 from quests, Sentinel badge (tier 8)', prof[4] === 185n * 10n ** 18n && prof[5] === 8, `${prof[4]} tier ${prof[5]}`)
   const profBob: any = await call('getPlayerProfile', [bob.account.address])
   const profCarol: any = await call('getPlayerProfile', [carol.account.address])
-  ok('badge tiers follow the score: 300 points is Scout (1), 120 points has no badge (0)', profBob[5] === 1 && profCarol[5] === 0, `${profBob[5]} / ${profCarol[5]}`)
+  ok('badge tiers follow the score: 300 points is Scout (5), 120 points is the 100-point milestone (4)', profBob[5] === 5 && profCarol[5] === 4, `${profBob[5]} / ${profCarol[5]}`)
   const q: any = await call('getQuestState', [alice.account.address])
   ok('quest state: streak 1, 1 run today, quests 0 and 2 done', q[0] === 1n && q[1] === 1n && q[2] === 5, JSON.stringify(q.map(String)))
   const lb: any = await call('getLeaderboard')
@@ -172,15 +172,15 @@ async function main() {
 
   // manual tickets signed with the real signer key (no waiting): quests, skins, rooms
   let seq = 0x100
-  const signTicket = async (player: Hex, score: number, season: bigint, roomId = 0, deadlineOverride?: bigint) => {
+  const signTicket = async (player: Hex, score: number, season: bigint, roomId = 0, deadlineOverride?: bigint, hero = 0) => {
     const blk = await pub.getBlock()
     const deadline = deadlineOverride ?? blk.timestamp + 1_000_000n
     const runId = ('0x' + (seq++).toString(16).padStart(64, '0')) as Hex
     const digest = keccak256(encodeAbiParameters(
       [{ type: 'uint256' }, { type: 'address' }, { type: 'address' }, { type: 'uint256' }, { type: 'uint256' }, { type: 'bytes32' }, { type: 'uint256' }, { type: 'uint256' }, { type: 'uint256' }, { type: 'uint256' }, { type: 'uint256' }, { type: 'uint256' }],
-      [31337n, game, player, season, BigInt(roomId), runId, BigInt(score), 1n, 1n, 2n, 0n, deadline]))
+      [31337n, game, player, season, BigInt(roomId), runId, BigInt(score), 1n, 1n, 2n, BigInt(hero), deadline]))
     const signature = await privateKeyToAccount(signerPk).signMessage({ message: { raw: digest } })
-    return { player, score, gems: 1, maxCombo: 1, wave: 2, hero: 0, roomId, runId, deadline: deadline.toString(), signature }
+    return { player, score, gems: 1, maxCombo: 1, wave: 2, hero, roomId, runId, deadline: deadline.toString(), signature }
   }
   const sub = (w: any, t: any) => w.writeContract({ address: game, abi: gAbi, functionName: 'submitRun', args: toWire(t) as any })
 
@@ -198,7 +198,7 @@ async function main() {
   await wait(await sub(deployer, await signTicket(alice.account.address, 20, 0n))) // +1 ARCQ
   const tokA2 = (await pub.readContract({ address: badgeAddr0, abi: badgeA.abi, functionName: 'tokenOf', args: [alice.account.address] })) as bigint
   const tierA2 = (await pub.readContract({ address: badgeAddr0, abi: badgeA.abi, functionName: 'tierOf', args: [tokA2] })) as number
-  ok('a transferred badge is re-issued at the earned tier (8: best run 50,000 pts)', tokA2 !== 0n && tokA2 !== tokA && tierA2 === 8, `token ${tokA2} tier ${tierA2}`)
+  ok('a transferred badge is re-issued at the earned tier (12: best run 50,000 pts)', tokA2 !== 0n && tokA2 !== tokA && tierA2 === 12, `token ${tokA2} tier ${tierA2}`)
 
   // skins shop (soulbound)
   const skins = (await call('skins')) as Hex
@@ -208,7 +208,7 @@ async function main() {
   await send(alice, 'equipSkin', [1])
   ok('skin equipped', ((await call('getSkins', [alice.account.address])) as any)[1] === 1)
   ok('cannot buy the same skin twice', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'buySkin', args: [1] }), 'SkinAlreadyOwned'))
-  ok('unknown skin id is rejected', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'buySkin', args: [9] }), 'InvalidSkin'))
+  ok('unknown skin id is rejected', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'buySkin', args: [13] }), 'InvalidSkin'))
   ok('skins cannot be equipped without owning them', await reverts(bob.writeContract({ address: game, abi: gAbi, functionName: 'equipSkin', args: [1] }), 'SkinNotOwned'))
   ok('skin NFT is soulbound', await reverts(alice.writeContract({ address: skins, abi: skinsA.abi, functionName: 'transferFrom', args: [alice.account.address, bob.account.address, 1n] }), 'Soulbound'))
   const sUri: string = (await pub.readContract({ address: skins, abi: skinsA.abi, functionName: 'tokenURI', args: [1n] })) as string
@@ -257,12 +257,84 @@ async function main() {
   await send(carol, 'claimPrize', [0n, 1n])
   ok('season: 2 winners split 60/40 of 2 USDC', (await usdcBal(alice.account.address)) - sa0 === 1_200_000n && (await usdcBal(bob.account.address)) - sb0 === 800_000n)
   const profWin: any = await call('getPlayerProfile', [alice.account.address])
-  ok('season winner holds the Champion badge (tier 9)', profWin[5] === 9, String(profWin[5]))
+  ok('season winner holds the Champion badge (tier 13)', profWin[5] === 13, String(profWin[5]))
   ok('season prize cannot be claimed twice', await reverts(carol.writeContract({ address: game, abi: gAbi, functionName: 'claimPrize', args: [0n, 0n] }), 'PrizeAlreadyClaimed'))
   ok('contract holds 0 USDC after all payouts', (await usdcBal(game)) === 0n, String(await usdcBal(game)))
   const badgeAddr: any = await call('badgeNft')
   const uri: string = (await pub.readContract({ address: badgeAddr, abi: badgeA.abi, functionName: 'tokenURI', args: [1n] })) as string
   ok('badge tokenURI is valid JSON with SVG image', JSON.parse(Buffer.from(uri.split(',')[1], 'base64').toString()).image.startsWith('data:image/svg+xml;base64,'))
+
+  // ---------------------------------------------------------------- v7: milestones, hero unlocks, shop, pass, season rules
+  const tierOfPlayer = async (a: Hex) => ((await call('getPlayerProfile', [a])) as any)[5] as number
+  for (const [pts, tier] of [[10, 1], [25, 2], [50, 3], [100, 4]] as const) {
+    await wait(await sub(deployer, await signTicket(dave.account.address, pts, 1n)))
+    ok(`${pts}-point run earns milestone badge tier ${tier}`, (await tierOfPlayer(dave.account.address)) === tier, String(await tierOfPlayer(dave.account.address)))
+  }
+  ok('a run with a hero that is not unlocked reverts', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 5)), 'HeroLocked'))
+  ok('heroes above 7 are invalid', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 8)), 'InvalidHero'))
+  ok('a free hero needs no unlock', (await call('heroUnlocked', [dave.account.address, 3])) === true && (await call('heroUnlocked', [dave.account.address, 6])) === false)
+  ok('unlocking a free hero is invalid', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [3] }), 'InvalidHero'))
+  ok('unlocking without ARCQ reverts', await reverts(dave.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [5] }), 'InsufficientBalance'))
+  const balBeforeUnlock = (await call('balanceOf', [alice.account.address])) as bigint
+  await send(alice, 'unlockHero', [5])
+  ok('unlock burns 800 ARCQ and opens the hero', balBeforeUnlock - ((await call('balanceOf', [alice.account.address])) as bigint) === 800n * 10n ** 18n && (await call('heroUnlocked', [alice.account.address, 5])) === true)
+  ok('a hero cannot be unlocked twice', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [5] }), 'HeroAlreadyUnlocked'))
+  await wait(await sub(deployer, await signTicket(alice.account.address, 40, 1n, 0, undefined, 5)))
+  ok('an unlocked hero can save a run', true)
+
+  // alice earns ARCQ again on the new day (two capped runs) to shop for the new items
+  await wait(await sub(deployer, await signTicket(alice.account.address, 50000, 1n)))
+  await wait(await sub(deployer, await signTicket(alice.account.address, 50000, 1n)))
+  await send(alice, 'buySkin', [7])
+  const own7: any = await call('getSkins', [alice.account.address])
+  ok('new skin 7 bought; the mask holds skins 1 and 7', own7[0] === 65, String(own7[0]))
+  await send(alice, 'equipSkin', [7])
+  ok('skin 7 equipped', ((await call('getSkins', [alice.account.address])) as any)[1] === 7)
+  ok('item 12 is a pass reward and cannot be bought', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'buySkin', args: [12] }), 'InvalidSkin'))
+  ok('an effect cannot be equipped as a skin', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'equipSkin', args: [10] }), 'InvalidSkin'))
+  ok('an effect needs to be owned first', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'equipFx', args: [10] }), 'SkinNotOwned'))
+
+  // battle pass
+  const pass0: any = await call('getPass', [alice.account.address, 0n])
+  ok('runs and quests gave alice pass XP', pass0[0] >= 100 && pass0[1] === false, JSON.stringify(pass0.map(String)))
+  const wk: any = await call('getWeekly', [alice.account.address])
+  ok('weekly quests are tracked (runs, points, mask)', wk[0] >= 5 && wk[1] >= 1500 && (wk[2] & 6) === 6, JSON.stringify(wk.map(String)))
+  const balP = (await call('balanceOf', [alice.account.address])) as bigint
+  await send(alice, 'claimPassReward', [0n, 1, false])
+  ok('free level 1 pays 5 ARCQ', ((await call('balanceOf', [alice.account.address])) as bigint) - balP === 5n * 10n ** 18n)
+  ok('a pass reward cannot be claimed twice', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'claimPassReward', args: [0n, 1, false] }), 'PassRewardClaimed'))
+  ok('the premium track needs the premium pass', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'claimPassReward', args: [0n, 1, true] }), 'PassNotPremium'))
+  ok('a level above the XP is locked', await reverts(dave.writeContract({ address: game, abi: gAbi, functionName: 'claimPassReward', args: [0n, 30, false] }), 'PassLevelLocked'))
+  ok('level 31 does not exist', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'claimPassReward', args: [0n, 31, false] }), 'InvalidLevel'))
+
+  // dave grinds to level 30 (XP is capped at 3000), buys premium and claims the exclusive effect
+  for (let i = 0; i < 56; i++) await wait(await sub(deployer, await signTicket(dave.account.address, 400, 1n)))
+  const daveP: any = await call('getPass', [dave.account.address, 0n])
+  ok('XP is capped at level 30', daveP[0] === 3000, String(daveP[0]))
+  await wait(await deployer.writeContract({ address: usdc, abi: uAbi, functionName: 'mint', args: [dave.account.address, 20_000_000n] }))
+  await wait(await dave.writeContract({ address: usdc, abi: uAbi, functionName: 'approve', args: [game, 20_000_000n] }))
+  const pool1Before = ((await call('getSeasonInfo', [1n])) as any)[0] as bigint
+  await send(dave, 'buyPass')
+  ok('premium costs 3 USDC and goes into the season pool', ((await call('getSeasonInfo', [1n])) as any)[0] - pool1Before === 3_000_000n)
+  ok('premium cannot be bought twice', await reverts(dave.writeContract({ address: game, abi: gAbi, functionName: 'buyPass' }), 'PassOwned'))
+  const dBal = (await call('balanceOf', [dave.account.address])) as bigint
+  await send(dave, 'claimPassReward', [0n, 30, true])
+  ok('premium level 30 pays 300 ARCQ and grants the exclusive effect', ((await call('balanceOf', [dave.account.address])) as bigint) - dBal === 300n * 10n ** 18n && (((await call('getSkins', [dave.account.address])) as any)[0] & 2048) === 2048)
+  await send(dave, 'equipFx', [12])
+  ok('the exclusive effect can be equipped', ((await call('getSkins', [dave.account.address])) as any)[2] === 12)
+  const skinsC = (await call('skins')) as Hex
+  const exUri: string = (await pub.readContract({ address: skinsC, abi: skinsA.abi, functionName: 'tokenURI', args: [2n] })) as string
+  ok('effect token metadata is valid', JSON.parse(Buffer.from(exUri.split(',')[1], 'base64').toString()).name.length > 0)
+
+  // season rules are public, and an empty season's pool rolls forward by itself
+  const rules: any = await call('seasonRules')
+  ok('season rules are readable onchain', rules[0] === 1_000_000n && rules[1] === 86400n && rules[2] === 3n && rules[3] === 7n, JSON.stringify(rules.map(String)))
+  ok('prize shares: 100 / 60-40 / 50-30-20', (await call('prizeShareBps', [1n, 0n])) === 10000n && (await call('prizeShareBps', [2n, 0n])) === 6000n && (await call('prizeShareBps', [3n, 2n])) === 2000n)
+  await pub.request({ method: 'evm_increaseTime' as any, params: [86400 + 5] as any })
+  await pub.request({ method: 'evm_mine' as any, params: [] as any })
+  await send(dave, 'enterSeason')
+  const s1: any = await call('getSeasonInfo', [1n]), s2: any = await call('getSeasonInfo', [2n])
+  ok('the empty season 1 pool rolled into season 2 on its own', s1[0] === 0n && s2[0] === pool1Before + 3_000_000n + 1_000_000n, `${s1[0]} / ${s2[0]}`)
   console.log(`\n${pass} passed, ${fail} failed`)
 }
 

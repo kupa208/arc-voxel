@@ -28,8 +28,9 @@ import { createPublicClient, createWalletClient, decodeFunctionResult, defineCha
 import { privateKeyToAccount } from 'viem/accounts'
 import { verifyTelemetry } from './anticheat.mjs'
 import { createEmailWallet, EmailError } from './email-wallet.mjs'
-import { getNickname, NicknameError, nicknamesFor, setNickname } from './nicknames.mjs'
+import { addressOfNickname, getNickname, NicknameError, nicknamesFor, setNickname } from './nicknames.mjs'
 import { createTokens } from './tokens.mjs'
+import { getModeBoard, MODES, submitResult } from './modeboards.mjs'
 import { kvEnabled } from './kv.mjs'
 import { chainCall, getBoard, getPlayer, indexerStatus, indexerRpcUrl, readConfigPublic, readStartTime, scanNow, startIndexer } from './indexer.mjs'
 
@@ -41,6 +42,9 @@ const port = Number(process.argv[2] || process.env.PORT || 5173)
 
 const CHAIN_ID = BigInt(process.env.GAME_CHAIN_ID || 5042002) // Arc Testnet; override only for local tests
 const MIN_RUN_SECONDS = 10
+// A run is only saved onchain when it is a real attempt: it lasted long enough or scored enough (stops 7-second farming of quest rewards).
+const MIN_SAVE_SECONDS = Number(process.env.GAME_MIN_SAVE_SECONDS ?? 60)
+const MIN_SAVE_POINTS = Number(process.env.GAME_MIN_SAVE_POINTS ?? 200)
 const MAX_SESSION_SECONDS = 60 * 60
 const MIN_FINISH_GAP_MS = 15_000
 // The game's in-run score gets large (about 400 points/second in a good run, much more in bursts).
@@ -322,12 +326,27 @@ function int(v, max) {
   return Number.isFinite(n) && n >= 0 && n <= max ? n : null
 }
 
+const HERO_ABI = parseAbi(['function heroUnlocked(address,uint8) view returns (bool)'])
+/** Heroes 0..4 are free. For the others the contract decides; if the chain cannot be reached the contract still checks at submit. */
+async function heroAllowed(player, hero) {
+  if (hero < 5) return true
+  try {
+    const contract = await contractAddress()
+    const data = await chainCall(contract, encodeFunctionData({ abi: HERO_ABI, functionName: 'heroUnlocked', args: [player, hero] }))
+    return decodeFunctionResult({ abi: HERO_ABI, functionName: 'heroUnlocked', data }) === true
+  } catch {
+    return true
+  }
+}
+
 async function handleRunStart(body) {
   const s = sessionOf(body)
   if (!s.address) throw new HttpError(409, 'Create your wallet first')
   const roomId = int(body.roomId ?? 0, MAX_ROOM_ID)
   const hero = int(body.hero ?? 0, HEROES - 1)
   if (roomId === null || hero === null) throw new HttpError(400, 'Invalid room or hero')
+  // Heroes 5..7 are unlocked with ARCQ before they can save a ranked run (Endless and Boss Rush send ranked: false).
+  if (body.ranked !== false && !(await heroAllowed(s.address, hero))) throw new HttpError(403, 'HERO_LOCKED: unlock this hero with ARCQ in the Shop first')
   const now = Date.now()
   prune(now)
   if (!STATELESS) for (const [id, r] of runs) if (r.player === s.address) runs.delete(id)
@@ -339,10 +358,8 @@ async function handleRunStart(body) {
 }
 
 /** Validates a finished run and returns a ticket signed for the contract. Throws HttpError when rejected. */
-async function issueTicket(s, body) {
-  const runId = String(body.runId || '')
-  const prior = issued.get(runId)
-  if (prior && prior.player === s.address && Number(prior.deadline) * 1000 > Date.now()) return prior
+/** Shared run checks for a saved run and for the extra modes: the run exists, belongs to the caller and passes the anti-cheat. */
+function checkRun(s, body, runId) {
   let run = runs.get(runId)
   if (STATELESS) {
     const d = tokens.verify('r', body.runToken)
@@ -374,14 +391,52 @@ async function issueTicket(s, body) {
     rejectLog(s.address, check.reason, { gameScore, gems, wave, elapsed: reported, serverElapsed })
     throw new HttpError(422, 'Run rejected by anti-cheat: ' + check.reason)
   }
+  return { run, runId, gameScore, gems, maxCombo, wave, elapsed, now, serverElapsed, reported }
+}
+
+async function issueTicket(s, body) {
+  const runId = String(body.runId || '')
+  const prior = issued.get(runId)
+  if (prior && prior.player === s.address && Number(prior.deadline) * 1000 > Date.now()) return prior
+  const checked = checkRun(s, body, runId)
+  const { gameScore, gems, maxCombo, wave, elapsed, now, run } = checked
   const score = Math.min(MAX_SCORE, Math.floor(gameScore / SCORE_DIVISOR))
   if (score < 1) throw new HttpError(400, `Score too low to save (need at least ${SCORE_DIVISOR})`)
+  if (elapsed < MIN_SAVE_SECONDS && score < MIN_SAVE_POINTS) {
+    throw new HttpError(400, `Too short to save: survive ${MIN_SAVE_SECONDS} seconds or reach ${MIN_SAVE_POINTS} points`)
+  }
   if (now - (lastFinish.get(s.address) || 0) < MIN_FINISH_GAP_MS) throw new HttpError(429, 'Too many submissions, wait a moment')
 
   runs.delete(runId)
   lastFinish.set(s.address, now)
   while (lastFinish.size > MAX_SESSIONS) lastFinish.delete(lastFinish.keys().next().value)
   return finalizeTicket({ runId, gameScore, gems, maxCombo, wave, hero: run.hero, roomId: run.roomId, score, now, player: s.address })
+}
+
+/** Endless and Boss Rush results: checked like a saved run, then kept on a server board (never onchain). */
+async function finishMode(s, body) {
+  const mode = String(body.mode || '')
+  if (!MODES.includes(mode)) throw new HttpError(400, 'Unknown mode')
+  const runId = String(body.runId || '')
+  const c = checkRun(s, body, runId)
+  if (Date.now() - (lastFinish.get(s.address) || 0) < MIN_FINISH_GAP_MS) throw new HttpError(429, 'Too many submissions, wait a moment')
+  let result
+  if (mode === 'endless') {
+    // A wave lasts 20 seconds in game, so the wave cannot outrun the clock.
+    if (c.wave < 2 || c.wave > 1 + Math.floor((c.elapsed + 2) / 20)) throw new HttpError(422, 'Wave does not match the time played')
+    result = { wave: c.wave, score: c.gameScore }
+  } else {
+    const bosses = int(body.bosses, 5)
+    const timeMs = int(body.timeMs, 3_600_000)
+    if (bosses === null || timeMs === null || bosses < 1) throw new HttpError(400, 'Invalid run data')
+    // Each boss needs real time to defeat, and the claimed time cannot exceed the time the server saw.
+    if (timeMs < bosses * 4000 || timeMs > (c.elapsed + 2) * 1000) throw new HttpError(422, 'Time does not match the run')
+    result = { bosses, timeMs, score: c.gameScore }
+  }
+  runs.delete(runId)
+  lastFinish.set(s.address, Date.now())
+  const out = await submitResult(mode, s.address, result)
+  return { mode, improved: out.improved, best: out.result, result }
 }
 
 /** Signs the ticket. Its deadline never passes the end of the current season, so a saved run cannot be carried into a later season. */
@@ -551,7 +606,7 @@ async function route(req, url, srv) {
         if (googleOn) google = { enabled: true, appId, clientId: googleClientId }
       } catch (e) { console.warn('[email] could not read the Circle app id:', redact(e).split('\n')[0].slice(0, 160)) }
     }
-    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, google, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
+    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, google, saveRule: { minSeconds: MIN_SAVE_SECONDS, minPoints: MIN_SAVE_POINTS }, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
   }
   if (m === 'GET' && p === '/vendor/circle-sdk.js') {
     return fileResponse(join(root, 'vendor', 'circle-sdk.js'), 'text/javascript; charset=utf-8', 'no-cache')
@@ -559,11 +614,29 @@ async function route(req, url, srv) {
   if (m === 'POST' && p.startsWith('/api/email/')) return handleEmail(p, body, clientIp(req, srv))
   if (m === 'GET' && p === '/api/leaderboard') {
     await refreshBoardIfNeeded(url.searchParams.get('refresh') === '1')
-    const scope = url.searchParams.get('scope') === 'season' ? 'season' : 'all'
+    const rawScope = url.searchParams.get('scope')
+    const scope = ['season', 'week', 'friends'].includes(rawScope) ? rawScope : 'all'
     const season = Number(url.searchParams.get('season') ?? -1)
-    const board = getBoard(scope, Number.isFinite(season) ? season : -1)
+    const friends = String(url.searchParams.get('players') || '').split(',').map((x) => x.trim()).filter((x) => isAddress(x)).slice(0, 30)
+    const board = getBoard(scope, Number.isFinite(season) ? season : -1, friends)
     const names = await nicknamesFor(board.entries.map((e) => e.player))
     return json({ ...board, entries: board.entries.map((e) => ({ ...e, nickname: names[e.player.toLowerCase()] || '' })) })
+  }
+  if (m === 'GET' && p === '/api/nickname/resolve') {
+    const address = await addressOfNickname(String(url.searchParams.get('name') || ''))
+    if (!address) throw new HttpError(404, 'No player with that nickname')
+    return json({ address })
+  }
+  if (m === 'GET' && p === '/api/mode/board') {
+    const mode = String(url.searchParams.get('mode') || '')
+    if (!MODES.includes(mode)) throw new HttpError(400, 'Unknown mode')
+    const board = await getModeBoard(mode)
+    const names = await nicknamesFor(board.entries.map((e) => e.player))
+    return json({ ...board, entries: board.entries.map((e) => ({ ...e, nickname: names[e.player.toLowerCase()] || '' })) })
+  }
+  if (m === 'POST' && p === '/api/mode/finish') {
+    const s = sessionOf(body)
+    return json(await finishMode(s, body))
   }
   if (m === 'GET' && p === '/api/nickname') {
     const addr = String(url.searchParams.get('address') || '')

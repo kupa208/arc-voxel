@@ -80,6 +80,35 @@ ok('a valid token reaches the anti-cheat checks (run too short)', early.status =
 const swapped = await fin(la.body.session, r1.body.runToken, '0x' + 'ab'.repeat(32))
 ok('a run token only works for its own run id', swapped.status === 400, JSON.stringify(swapped))
 
+// ---- nickname lookup, mode boards and the "real attempt" rule for saved runs ----
+const resolved = await call('GET', 'nickname/resolve', { query: 'name=KIEN%20trinh' })
+ok('a nickname resolves to its wallet (case-insensitive)', resolved.status === 200 && resolved.body.address === alice.address.toLowerCase(), JSON.stringify(resolved))
+const unknownNick = await call('GET', 'nickname/resolve', { query: 'name=nobody-here' })
+ok('an unknown nickname is a 404', unknownNick.status === 404)
+for (const mode of ['endless', 'bossrush']) {
+  const mb = await call('GET', 'mode/board', { query: `mode=${mode}` })
+  ok(`${mode} board starts empty`, mb.status === 200 && Array.isArray(mb.body.entries) && mb.body.entries.length === 0, JSON.stringify(mb))
+}
+const badMode = await call('GET', 'mode/board', { query: 'mode=nope' })
+ok('an unknown mode is refused', badMode.status === 400)
+const cfg2 = await call('GET', 'config')
+ok('config tells the game the save rule', cfg2.body.saveRule && cfg2.body.saveRule.minSeconds === 60 && cfg2.body.saveRule.minPoints === 200, JSON.stringify(cfg2.body.saveRule))
+
+const { createTokens } = await import('../../tokens.mjs')
+const toks = createTokens(process.env.GAME_SIGNER_PRIVATE_KEY)
+function forgedRun(player, ageS, runId) {
+  return toks.sign('r', { runId, player: player.toLowerCase(), startedAt: Date.now() - ageS * 1000, roomId: 0, hero: 0 }, 3_600_000)
+}
+const telemetry40 = Array.from({ length: 8 }, (_, i) => ({ t: (i + 1) * 5, s: (i + 1) * 100, k: 0, g: 0, w: 1 + Math.floor(((i + 1) * 5) / 20) }))
+const rid = '0x' + 'cd'.repeat(32)
+const shortRun = await call('POST', 'run/finish', { body: { session: la.body.session, runId: rid, runToken: forgedRun(alice.address, 40, rid), score: 2000, gems: 3, maxCombo: 1, wave: 3, elapsed: 40, telemetry: telemetry40 } })
+console.log('   (short run answer)', shortRun.status, shortRun.body.error)
+ok('a 40-second run under 200 points is not saved onchain', shortRun.status === 400 && /survive 60 seconds or reach 200 points/.test(shortRun.body.error || ''), JSON.stringify(shortRun))
+const rid2 = '0x' + 'ef'.repeat(32)
+const modeBad = await call('POST', 'mode/finish', { body: { session: la.body.session, mode: 'bossrush', runId: rid2, runToken: forgedRun(alice.address, 40, rid2), bosses: 3, timeMs: 5000, score: 2000, gems: 3, maxCombo: 1, wave: 3, elapsed: 40, telemetry: telemetry40 } })
+console.log('   (mode answer)', modeBad.status, modeBad.body.error)
+ok('a boss rush time faster than the bosses allow is refused', modeBad.status >= 400, JSON.stringify(modeBad))
+
 const big = await fn.fetch(new Request('https://game.example/api/index?__route=client-error', { method: 'POST', headers: { 'content-length': '999999', 'content-type': 'application/json' }, body: JSON.stringify({ message: 'x' }) }))
 ok('oversized requests are refused', big.status === 413)
 const nf = await call('GET', 'nothing-here')

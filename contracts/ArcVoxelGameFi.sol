@@ -42,6 +42,12 @@ error RoomClosed();
 error RoomNotEnded();
 error RoomHasWinners();
 error RefundAlreadyClaimed();
+error HeroLocked();
+error HeroAlreadyUnlocked();
+error PassOwned();
+error PassLevelLocked();
+error PassNotPremium();
+error PassRewardClaimed();
 
 interface IERC721Receiver {
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)
@@ -68,6 +74,19 @@ abstract contract ArcVoxelArt {
             '</text></svg>'
         );
         return string(abi.encodePacked("data:image/svg+xml;base64,", _base64(svg)));
+    }
+
+    /// @dev "#rrggbb" for entry `i` of a packed palette of 3-byte colours.
+    function _color(bytes memory palette, uint256 i) internal pure returns (string memory) {
+        bytes memory hexChars = "0123456789abcdef";
+        bytes memory out = new bytes(7);
+        out[0] = "#";
+        for (uint256 k = 0; k < 3; k++) {
+            uint8 b = uint8(palette[i * 3 + k]);
+            out[1 + k * 2] = hexChars[b >> 4];
+            out[2 + k * 2] = hexChars[b & 15];
+        }
+        return string(out);
     }
 
     function _base64(bytes memory data) internal pure returns (string memory) {
@@ -213,7 +232,7 @@ contract ArcExplorerBadge is ArcVoxelArt {
     }
 
     function mintOrUpgrade(address player, uint8 newTier) external onlyGame returns (uint256 tokenId) {
-        if (newTier < 1 || newTier > 9) revert InvalidTier();
+        if (newTier < 1 || newTier > 13) revert InvalidTier();
         tokenId = tokenOf[player];
         if (tokenId == 0) {
             tokenId = _nextTokenId++;
@@ -231,15 +250,19 @@ contract ArcExplorerBadge is ArcVoxelArt {
     function tokenURI(uint256 tokenId) external view returns (string memory) {
         if (_owners[tokenId] == address(0)) revert NonexistentToken();
         uint8 tier = tierOf[tokenId];
-        string memory tierLabel = "Scout";
-        if (tier == 2) tierLabel = "Vanguard";
-        else if (tier == 3) tierLabel = "Striker";
-        else if (tier == 4) tierLabel = "Sentinel";
-        else if (tier == 5) tierLabel = "Warlord";
-        else if (tier == 6) tierLabel = "Titan";
-        else if (tier == 7) tierLabel = "Overlord";
-        else if (tier == 8) tierLabel = "Arc Legend";
-        else if (tier == 9) tierLabel = "Champion";
+        string memory tierLabel = "Newcomer";
+        if (tier == 2) tierLabel = "Rookie";
+        else if (tier == 3) tierLabel = "Cadet";
+        else if (tier == 4) tierLabel = "Recruit";
+        else if (tier == 5) tierLabel = "Scout";
+        else if (tier == 6) tierLabel = "Vanguard";
+        else if (tier == 7) tierLabel = "Striker";
+        else if (tier == 8) tierLabel = "Sentinel";
+        else if (tier == 9) tierLabel = "Warlord";
+        else if (tier == 10) tierLabel = "Titan";
+        else if (tier == 11) tierLabel = "Overlord";
+        else if (tier == 12) tierLabel = "Arc Legend";
+        else if (tier == 13) tierLabel = "Champion";
         bytes memory json = abi.encodePacked(
             '{"name":"Arc Explorer Badge #',
             _toString(tokenId),
@@ -253,20 +276,12 @@ contract ArcExplorerBadge is ArcVoxelArt {
     }
 
     function _badgeImage(uint8 tier, string memory label) internal pure returns (string memory) {
-        string memory color = "#8b7355";
-        if (tier == 2) color = "#9aa5b1";
-        else if (tier == 3) color = "#3b82f6";
-        else if (tier == 4) color = "#22c55e";
-        else if (tier == 5) color = "#f97316";
-        else if (tier == 6) color = "#ef4444";
-        else if (tier == 7) color = "#a855f7";
-        else if (tier == 8) color = "#ffd700";
-        else if (tier == 9) color = "#ff3df5";
-        return _image(color, label);
+        bytes memory palette = hex"8b7355a8a29e9aa5b17dd3fc3b82f622c55ef97316ef4444a855f7ec489906b6d4ffd700ff3df5";
+        return _image(_color(palette, tier - 1), label);
     }
 }
 
-/// @notice Non-transferable skins. Token IDs are sequential; skinOf identifies the cosmetic (1..6).
+/// @notice Non-transferable cosmetics. Token IDs are sequential; skinOf identifies the item: skins 1..9, effects 10..12.
 contract ArcVoxelSkins is ArcVoxelArt {
     string public constant name = "Arc Voxel Skin";
     string public constant symbol = "ARCS";
@@ -319,7 +334,7 @@ contract ArcVoxelSkins is ArcVoxelArt {
     function mint(address player, uint8 skinId) external returns (uint256 tokenId) {
         if (msg.sender != gameContract) revert OnlyGame();
         if (player == address(0)) revert ZeroAddress();
-        if (skinId == 0 || skinId > 6) revert InvalidSkin();
+        if (skinId == 0 || skinId > 12) revert InvalidSkin();
         if (tokenOf[player][skinId] != 0) revert SkinAlreadyOwned();
         tokenId = _nextTokenId++;
         _owners[tokenId] = player;
@@ -332,9 +347,8 @@ contract ArcVoxelSkins is ArcVoxelArt {
     function tokenURI(uint256 tokenId) external view returns (string memory) {
         ownerOf(tokenId);
         uint8 id = skinOf[tokenId];
-        string memory label = string(abi.encodePacked("Skin ", _toString(id)));
-        string memory color = id == 1 ? "#22c55e" : (id == 2 ? "#3b82f6" : (id == 3 ? "#ef4444" :
-            (id == 4 ? "#a855f7" : (id == 5 ? "#f59e0b" : "#06b6d4"))));
+        string memory label = string(abi.encodePacked(id > 9 ? "Effect " : "Skin ", _toString(id)));
+        string memory color = _color(hex"22c55e3b82f6ef4444a855f7f59e0b06b6d4166534e11d48fbbf24a3e63510b981f97316", id - 1);
         bytes memory json = abi.encodePacked(
             '{"name":"Arc Voxel ', label,
             '","description":"Soulbound Arc Voxel Quest cosmetic","image":"', _image(color, label),
@@ -346,7 +360,8 @@ contract ArcVoxelSkins is ArcVoxelArt {
 
 /**
  * @title ArcVoxelGameFi
- * @notice v5: ERC-20 ARCQ rewards, relayed signed runs, quests, skins, and USDC tournaments.
+ * @notice v7: ERC-20 ARCQ rewards, relayed signed runs, quests, 13 badge tiers, a cosmetics shop, a 30-level
+ *         battle pass, auto-rolling empty seasons, and USDC tournaments.
  * @dev On Arc Testnet deploy with usdc_ = 0x3600000000000000000000000000000000000000.
  *      ENTRY_FEE and all prize pools are denominated in 6-decimal ERC-20 USDC, not native value.
  */
@@ -357,6 +372,11 @@ contract ArcVoxelGameFi {
 
     uint256 public constant MAX_SCORE_PER_RUN = 50_000;
     uint256 public constant REWARD_PER_POINT = 5e16;
+    // Milestone badges come first (tiers 1..4), then the original eight tiers shifted to 5..12.
+    uint256 public constant MILESTONE_1 = 10;
+    uint256 public constant MILESTONE_2 = 25;
+    uint256 public constant MILESTONE_3 = 50;
+    uint256 public constant MILESTONE_4 = 100;
     uint256 public constant TIER_1 = 300;
     uint256 public constant TIER_2 = 700;
     uint256 public constant TIER_3 = 1500;
@@ -365,11 +385,17 @@ contract ArcVoxelGameFi {
     uint256 public constant TIER_6 = 12000;
     uint256 public constant TIER_7 = 25000;
     uint256 public constant TIER_8 = 40000;
-    uint8 public constant CHAMPION_TIER = 9;
+    uint8 public constant CHAMPION_TIER = 13;
     uint256 public constant MAX_LEADERBOARD = 10;
     uint256 public constant DAILY_SCORE_CAP = 100_000;
     uint256 public constant SEASON_LENGTH = 1 days;
     uint256 public constant ENTRY_FEE = 1_000_000;
+    uint256 public constant HERO_UNLOCK_COST = 800e18;
+    uint256 public constant PASS_LENGTH = 30 days;
+    uint256 public constant PASS_PRICE = 3_000_000; // 3 USDC, paid into the current season's prize pool
+    uint32 public constant PASS_XP_PER_LEVEL = 100;
+    uint8 public constant PASS_MAX_LEVEL = 30;
+    uint8 public constant PASS_EXCLUSIVE_SKIN = 12; // premium level 30 reward
 
     ArcExplorerBadge public immutable badgeNft;
     ArcVoxelSkins public immutable skins;
@@ -426,6 +452,20 @@ contract ArcVoxelGameFi {
         uint8 questMask;
     }
 
+    struct PassState {
+        uint32 xp;
+        bool premium;
+        uint32 freeClaimed;
+        uint32 premiumClaimed;
+    }
+
+    struct WeekState {
+        uint64 week;
+        uint16 runs;
+        uint32 points;
+        uint8 mask;
+    }
+
     struct Room {
         address creator;
         uint64 start;
@@ -448,9 +488,14 @@ contract ArcVoxelGameFi {
     mapping(uint256 => uint256) public claimedMask;
     mapping(address => uint8) public heroLevel;
     mapping(address => QuestState) private _quests;
-    // Bit (id - 1) represents ownership for skin IDs 1..6.
-    mapping(address => uint8) private _ownedSkins;
+    // Bit (id - 1) represents ownership for item IDs 1..12 (skins 1..9, effects 10..12).
+    mapping(address => uint16) private _ownedSkins;
     mapping(address => uint8) private _equippedSkin;
+    mapping(address => uint8) private _equippedFx;
+    // Bit (hero - 5) is set once heroes 5..7 are unlocked with ARCQ. Heroes 0..4 are free.
+    mapping(address => uint8) private _heroMask;
+    mapping(uint256 => mapping(address => PassState)) private _pass;
+    mapping(address => WeekState) private _weekly;
     uint256 public roomCount;
     mapping(uint256 => Room) private _rooms;
     mapping(uint256 => mapping(address => bool)) public roomEntered;
@@ -489,6 +534,10 @@ contract ArcVoxelGameFi {
     event QuestCompleted(address indexed player, uint256 indexed day, uint8 questId, uint256 amount);
     event SkinBought(address indexed player, uint8 indexed id, uint256 cost, uint256 tokenId);
     event SkinEquipped(address indexed player, uint8 id);
+    event FxEquipped(address indexed player, uint8 id);
+    event HeroUnlocked(address indexed player, uint8 hero);
+    event PassBought(uint256 indexed passSeason, address indexed player, uint256 price);
+    event PassRewardPaid(uint256 indexed passSeason, address indexed player, uint8 level, bool premium, uint256 amount);
     event RoomCreated(uint256 indexed roomId, address indexed creator, uint256 entryFee, uint64 end);
     event RoomJoined(uint256 indexed roomId, address indexed player, uint256 entryFee);
     event RoomBestUpdated(uint256 indexed roomId, address indexed player, uint256 score);
@@ -600,6 +649,7 @@ contract ArcVoxelGameFi {
         if (usedRun[r.runId]) revert RunAlreadyUsed();
         if (r.score == 0 || r.score > MAX_SCORE_PER_RUN) revert InvalidScore();
         if (r.hero >= 8) revert InvalidHero();
+        if (!heroUnlocked(r.player, r.hero)) revert HeroLocked();
         if (r.player == address(0)) revert ZeroAddress();
         if (_recover(_runDigest(r), signature) != signer) revert BadSignature();
         if (r.roomId != 0) _validateRoomRun(r.roomId, r.player);
@@ -654,6 +704,7 @@ contract ArcVoxelGameFi {
             _mint(r.player, reward);
         }
         _completeQuests(r.player, r.score);
+        _awardRunXp(r.player, r.score);
 
         uint8 newTier = _scoreTier(p.bestScore);
         bool tierUp = newTier > p.badgeTier;
@@ -670,14 +721,18 @@ contract ArcVoxelGameFi {
     }
 
     function _scoreTier(uint256 bestScore) internal pure returns (uint8) {
-        if (bestScore >= TIER_8) return 8;
-        if (bestScore >= TIER_7) return 7;
-        if (bestScore >= TIER_6) return 6;
-        if (bestScore >= TIER_5) return 5;
-        if (bestScore >= TIER_4) return 4;
-        if (bestScore >= TIER_3) return 3;
-        if (bestScore >= TIER_2) return 2;
-        if (bestScore >= TIER_1) return 1;
+        if (bestScore >= TIER_8) return 12;
+        if (bestScore >= TIER_7) return 11;
+        if (bestScore >= TIER_6) return 10;
+        if (bestScore >= TIER_5) return 9;
+        if (bestScore >= TIER_4) return 8;
+        if (bestScore >= TIER_3) return 7;
+        if (bestScore >= TIER_2) return 6;
+        if (bestScore >= TIER_1) return 5;
+        if (bestScore >= MILESTONE_4) return 4;
+        if (bestScore >= MILESTONE_3) return 3;
+        if (bestScore >= MILESTONE_2) return 2;
+        if (bestScore >= MILESTONE_1) return 1;
         return 0;
     }
 
@@ -723,6 +778,7 @@ contract ArcVoxelGameFi {
         profiles[player].totalTokensEarned += amount;
         _mint(player, amount);
         emit QuestCompleted(player, day, questId, amount);
+        _addPassXp(player, 25);
     }
 
     /// @notice Current UTC-day counters. Streak is zero after a missed day, until the next run resets it to one.
@@ -739,6 +795,7 @@ contract ArcVoxelGameFi {
         }
     }
 
+    /// @dev Skins 1..9, effects 10..12. Item 12 is a pass reward and cannot be bought.
     function skinCost(uint8 id) public pure returns (uint256) {
         if (id == 1) return 1000e18;
         if (id == 2) return 2000e18;
@@ -746,28 +803,154 @@ contract ArcVoxelGameFi {
         if (id == 4) return 5000e18;
         if (id == 5) return 8000e18;
         if (id == 6) return 12000e18;
+        if (id == 7) return 4000e18;
+        if (id == 8) return 6000e18;
+        if (id == 9) return 10000e18;
+        if (id == 10) return 2500e18;
+        if (id == 11) return 6000e18;
         revert InvalidSkin();
     }
 
     function buySkin(uint8 id) external nonReentrant {
         uint256 cost = skinCost(id);
-        uint8 bit = uint8(1 << (id - 1));
-        if ((_ownedSkins[msg.sender] & bit) != 0) revert SkinAlreadyOwned();
         _burn(msg.sender, cost);
-        _ownedSkins[msg.sender] |= bit;
-        uint256 tokenId = skins.mint(msg.sender, id);
+        uint256 tokenId = _grantSkin(msg.sender, id);
         emit SkinBought(msg.sender, id, cost, tokenId);
     }
 
+    function _grantSkin(address player, uint8 id) private returns (uint256 tokenId) {
+        uint16 bit = uint16(1) << (id - 1);
+        if ((_ownedSkins[player] & bit) != 0) revert SkinAlreadyOwned();
+        _ownedSkins[player] |= bit;
+        tokenId = skins.mint(player, id);
+    }
+
+    /// @notice Equip a skin (1..9, or 0 for none).
     function equipSkin(uint8 id) external {
-        if (id > 6) revert InvalidSkin();
-        if (id != 0 && (_ownedSkins[msg.sender] & uint8(1 << (id - 1))) == 0) revert SkinNotOwned();
+        if (id > 9) revert InvalidSkin();
+        if (id != 0 && (_ownedSkins[msg.sender] & (uint16(1) << (id - 1))) == 0) revert SkinNotOwned();
         _equippedSkin[msg.sender] = id;
         emit SkinEquipped(msg.sender, id);
     }
 
-    function getSkins(address player) external view returns (uint8 ownedMask, uint8 equipped) {
-        return (_ownedSkins[player], _equippedSkin[player]);
+    /// @notice Equip an effect (10..12, or 0 for none).
+    function equipFx(uint8 id) external {
+        if (id != 0 && (id < 10 || id > 12)) revert InvalidSkin();
+        if (id != 0 && (_ownedSkins[msg.sender] & (uint16(1) << (id - 1))) == 0) revert SkinNotOwned();
+        _equippedFx[msg.sender] = id;
+        emit FxEquipped(msg.sender, id);
+    }
+
+    function getSkins(address player) external view returns (uint16 ownedMask, uint8 equipped, uint8 equippedFx) {
+        return (_ownedSkins[player], _equippedSkin[player], _equippedFx[player]);
+    }
+
+    /// @notice Heroes 5..7 are unlocked once with ARCQ. They are not stronger: the unlock only opens them for ranked runs.
+    function unlockHero(uint8 hero) external nonReentrant {
+        if (hero < 5 || hero > 7) revert InvalidHero();
+        uint8 bit = uint8(1) << (hero - 5);
+        if ((_heroMask[msg.sender] & bit) != 0) revert HeroAlreadyUnlocked();
+        _burn(msg.sender, HERO_UNLOCK_COST);
+        _heroMask[msg.sender] |= bit;
+        emit HeroUnlocked(msg.sender, hero);
+    }
+
+    function heroUnlocked(address player, uint8 hero) public view returns (bool) {
+        if (hero < 5) return true;
+        return hero < 8 && ((_heroMask[player] >> (hero - 5)) & 1) == 1;
+    }
+
+    function getHeroMask(address player) external view returns (uint8) {
+        return _heroMask[player];
+    }
+
+    // ---------------------------------------------------------------- battle pass
+
+    function currentPass() public view returns (uint256) {
+        return (block.timestamp - startTime) / PASS_LENGTH;
+    }
+
+    function passEndsAt(uint256 passSeason) public view returns (uint256) {
+        return startTime + (passSeason + 1) * PASS_LENGTH;
+    }
+
+    function _addPassXp(address player, uint32 amount) private {
+        PassState storage ps = _pass[currentPass()][player];
+        uint32 cap = uint32(PASS_MAX_LEVEL) * PASS_XP_PER_LEVEL;
+        uint32 next = ps.xp + amount;
+        ps.xp = next > cap ? cap : next;
+    }
+
+    /// @dev Run XP: 10 base + up to 40 for score, plus three weekly quests worth 150 XP each.
+    function _awardRunXp(address player, uint256 score) private {
+        uint32 xp = 10 + uint32(score >= 400 ? 40 : score / 10);
+        WeekState storage w = _weekly[player];
+        uint64 week = uint64(block.timestamp / 7 days);
+        if (w.week != week) {
+            w.week = week;
+            w.runs = 0;
+            w.points = 0;
+            w.mask = 0;
+        }
+        w.runs += 1;
+        w.points += uint32(score);
+        if (w.runs >= 10 && (w.mask & 1) == 0) { w.mask |= 1; xp += 150; }
+        if (score >= 300 && (w.mask & 2) == 0) { w.mask |= 2; xp += 150; }
+        if (w.points >= 1500 && (w.mask & 4) == 0) { w.mask |= 4; xp += 150; }
+        _addPassXp(player, xp);
+    }
+
+    /// @notice Premium costs 3 USDC. It goes into the current season's prize pool, so it is paid back to players.
+    function buyPass() external whenNotPaused nonReentrant {
+        uint256 passSeason = currentPass();
+        PassState storage ps = _pass[passSeason][msg.sender];
+        if (ps.premium) revert PassOwned();
+        ps.premium = true;
+        uint256 season = currentSeason();
+        _autoRoll(season);
+        seasons[season].pool += PASS_PRICE;
+        if (!usdc.transferFrom(msg.sender, address(this), PASS_PRICE)) revert UsdcTransferFailed();
+        emit PassBought(passSeason, msg.sender, PASS_PRICE);
+    }
+
+    /// @notice Free track: 5 ARCQ x level. Premium track: 10 ARCQ x level, and an exclusive effect at level 30.
+    function claimPassReward(uint256 passSeason, uint8 level, bool premium) external nonReentrant {
+        if (level == 0 || level > PASS_MAX_LEVEL || passSeason > currentPass()) revert InvalidLevel();
+        PassState storage ps = _pass[passSeason][msg.sender];
+        if (ps.xp / PASS_XP_PER_LEVEL < level) revert PassLevelLocked();
+        uint32 bit = uint32(1) << (level - 1);
+        uint256 amount;
+        if (premium) {
+            if (!ps.premium) revert PassNotPremium();
+            if ((ps.premiumClaimed & bit) != 0) revert PassRewardClaimed();
+            ps.premiumClaimed |= bit;
+            amount = uint256(level) * 10e18;
+            if (level == PASS_MAX_LEVEL && (_ownedSkins[msg.sender] & (uint16(1) << (PASS_EXCLUSIVE_SKIN - 1))) == 0) {
+                _grantSkin(msg.sender, PASS_EXCLUSIVE_SKIN);
+            }
+        } else {
+            if ((ps.freeClaimed & bit) != 0) revert PassRewardClaimed();
+            ps.freeClaimed |= bit;
+            amount = uint256(level) * 5e18;
+        }
+        profiles[msg.sender].totalTokensEarned += amount;
+        _mint(msg.sender, amount);
+        emit PassRewardPaid(passSeason, msg.sender, level, premium, amount);
+    }
+
+    function getPass(address player, uint256 passSeason)
+        external view returns (uint32 xp, bool premium, uint32 freeClaimed, uint32 premiumClaimed, uint256 endsAt)
+    {
+        PassState storage ps = _pass[passSeason][player];
+        return (ps.xp, ps.premium, ps.freeClaimed, ps.premiumClaimed, passEndsAt(passSeason));
+    }
+
+    /// @notice This week's quests: 10 runs, a 300-point run, 1500 points in total. Each pays 150 pass XP.
+    function getWeekly(address player) external view returns (uint16 runs, uint32 points, uint8 mask, uint256 endsAt) {
+        uint64 week = uint64(block.timestamp / 7 days);
+        WeekState storage w = _weekly[player];
+        endsAt = (uint256(week) + 1) * 7 days;
+        if (w.week == week) return (w.runs, w.points, w.mask, endsAt);
     }
 
     function currentSeason() public view returns (uint256) {
@@ -782,10 +965,36 @@ contract ArcVoxelGameFi {
         uint256 season = currentSeason();
         if (enteredSeason[season][msg.sender]) revert AlreadyEntered();
         enteredSeason[season][msg.sender] = true;
+        _autoRoll(season);
         seasons[season].pool += ENTRY_FEE;
         seasons[season].entrants += 1;
         if (!usdc.transferFrom(msg.sender, address(this), ENTRY_FEE)) revert UsdcTransferFailed();
         emit SeasonEntered(season, msg.sender, ENTRY_FEE);
+    }
+
+    /// @dev Prize pools of the previous 7 seasons that ended with nobody on the board move into the current season on their own.
+    function _autoRoll(uint256 destination) private {
+        for (uint256 k = 1; k <= 7 && k <= destination; k++) {
+            uint256 src = destination - k;
+            Season storage old = seasons[src];
+            if (old.rolled || old.pool == 0 || _seasonLeaderboards[src].length != 0) continue;
+            uint256 amount = old.pool;
+            old.rolled = true;
+            old.pool = 0;
+            seasons[destination].pool += amount;
+            emit SeasonRolledOver(src, destination, amount);
+        }
+    }
+
+    /// @notice The public prize rules: entry fee, season length, how many places are paid and how far back empty pools roll.
+    function seasonRules() external pure returns (uint256 fee, uint256 length, uint256 winnersPaid, uint256 rollDays) {
+        return (ENTRY_FEE, SEASON_LENGTH, 3, 7);
+    }
+
+    /// @notice Share of the pool (in basis points) for a rank when `winners` places are filled.
+    function prizeShareBps(uint256 winners, uint256 rank) external pure returns (uint256) {
+        if (winners == 0 || winners > 3 || rank >= winners) revert InvalidRank();
+        return _prizeAmount(10_000, winners, rank);
     }
 
     function _recordSeasonScore(address player, uint256 score, uint8 tier) internal {

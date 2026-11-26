@@ -82,7 +82,7 @@
     var noiseBuf = null;
     var timer = null;
     var themeId = 'vietnam';
-    var mode = 'lobby'; // 'lobby' (title / after a run) or 'play'
+    var mode = 'lobby'; // 'lobby' (title / after a run), 'play' or 'boss' (faster and heavier)
     var wave = 1;
     var step = 0;
     var nextTime = 0;
@@ -146,8 +146,9 @@
     function scheduleStep(t, idx) {
       var th = buildTheme(themeId);
       var spec = th.spec;
-      var stepDur = 60 / spec.bpm / 4;
-      var play = mode === 'play';
+      var stepDur = 60 / spec.bpm / 4 / (mode === 'boss' ? 1.18 : 1);
+      var play = mode !== 'lobby';
+      var boss = mode === 'boss';
       var s = idx % STEPS;
       var leadDeg = th.lead[s];
       var calm = !play;
@@ -163,12 +164,15 @@
         tone(t, spec.root - 12, stepDur * 16, 'sine', calm ? 0.022 : 0.03, false);
         tone(t, spec.root - 5, stepDur * 16, 'sine', calm ? 0.012 : 0.018, false);
       }
+      if (boss && bassDeg > -999) tone(t, degreeToMidi(spec, bassDeg) - 12, stepDur * 3, 'sawtooth', 0.035, false);
       if (play) {
         var k = spec.kick;
         var s16 = s % 16;
         if (k === 'four' && s16 % 4 === 0) kick(t, 0.11);
         else if (k === 'samba' && (s16 === 0 || s16 === 6 || s16 === 10)) kick(t, 0.1);
         else if (!k && (s16 === 0 || s16 === 8)) kick(t, 0.07);
+        if (boss && s16 % 4 === 0) kick(t, 0.12);
+        if (boss && s16 % 2 === 1) hat(t, 0.016);
         if (wave >= 3 && s16 % 4 === 2) hat(t, 0.02);
         if (wave >= 6 && s16 % 2 === 1) hat(t, 0.012);
         if (wave >= 9 && leadDeg > -999 && s16 % 4 === 2) tone(t + stepDur * 0.5, degreeToMidi(spec, leadDeg) + 19, stepDur * 1.2, spec.lead, 0.014, true)
@@ -179,7 +183,7 @@
       if (!running || !ctx) return;
       if (ctx.state === 'suspended') { nextTime = ctx.currentTime + 0.08; return; }
       var spec = buildTheme(themeId).spec;
-      var stepDur = 60 / spec.bpm / 4;
+      var stepDur = 60 / spec.bpm / 4 / (mode === 'boss' ? 1.18 : 1);
       var guard = 0;
       while (nextTime < ctx.currentTime + 0.25 && guard++ < 16) {
         scheduleStep(nextTime, step);
@@ -218,7 +222,7 @@
         step = 0;
         if (ctx) nextTime = ctx.currentTime + 0.1;
       },
-      setMode: function (m) { mode = m === 'play' ? 'play' : 'lobby'; },
+      setMode: function (m) { mode = m === 'play' || m === 'boss' ? m : 'lobby'; },
       setWave: function (w) { wave = w | 0; },
       isRunning: function () { return running; },
       ids: function () { return Object.keys(SPECS); },

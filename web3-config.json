@@ -1,6 +1,6 @@
 {
   "defaultNetwork": "arc-testnet",
-  "defaultContract": "0x50b801d63d79262aaba8ef133a6f7b8c4a7ac30b",
+  "defaultContract": "0x3ff5e89462eb80a818f76a0662afb1af24b457e1",
   "networks": {
     "arc-testnet": {
       "chainId": "0x4cef52",
@@ -23,5 +23,5 @@
       "erc20Usdc": "0x3600000000000000000000000000000000000000"
     }
   },
-  "deployTxHash": "0xd5fc7d463c1145f857a8e579ba7698eb20f89f3778608e49cc96bf88fbebc09a"
+  "deployTxHash": "0xef4f38a906112a47ce5deb2fa2095f1f8eace87192dc4c2426b0d6f40c13cb3a"
 }

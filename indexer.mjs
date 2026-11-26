@@ -229,18 +229,36 @@ export async function readConfigPublic() {
   return readConfig()
 }
 
-export function getBoard(scope = 'all', season = -1) {
-  const source = scope === 'season' ? db.seasons[season] || {} : db.players
+/** Best run per player over the last 7 seasons (a season is 24 hours). */
+function weekSource(season) {
+  const out = {}
+  for (let k = season - 6; k <= season; k++) {
+    for (const [player, e] of Object.entries(db.seasons[k] || {})) if (better(out[player], e)) out[player] = e
+  }
+  return out
+}
+
+export function getBoard(scope = 'all', season = -1, friends = []) {
+  let source = db.players
+  if (scope === 'season') source = db.seasons[season] || {}
+  else if (scope === 'week') source = weekSource(season)
+  else if (scope === 'friends') {
+    source = {}
+    for (const f of friends) {
+      const a = String(f).toLowerCase()
+      if (db.players[a]) source[a] = db.players[a]
+    }
+  }
   const entries = Object.entries(source)
     .map(([player, e]) => ({
       player, score: e.score, gems: e.gems, maxCombo: e.maxCombo, wave: e.wave ?? 0, hero: e.hero ?? 0,
       season: e.season ?? 0, txHash: e.txHash, block: e.block, runs: e.runs ?? 1,
     }))
     .sort((a, b) => b.score - a.score || a.block - b.block)
-    .slice(0, BOARD_SIZE)
+    .slice(0, scope === 'friends' ? 30 : BOARD_SIZE)
   return {
     scope,
-    season: scope === 'season' ? season : null,
+    season: scope === 'season' || scope === 'week' ? season : null,
     entries,
     players: Object.keys(source).length,
     indexing: indexerStatus(),

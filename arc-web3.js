@@ -304,6 +304,7 @@
   var LS_NET = 'arc-voxel-quest:custom-network';
   var LS_DEMO = 'arc-voxel-quest:demo-vault';
   var LS_AUTH = 'arc-voxel-quest:auth';
+  var LS_FRIENDS = 'arc-voxel-quest:friends';
 
   function loadStorageJson(key, fallback) {
     try {
@@ -346,10 +347,13 @@
       profile: null,
       leaderboard: [],
       board: [],
+      topBoard: [], // the all-time board shown on the menu and the results card, whatever filter the Full Rankings tab uses
+      boardStatus: 'loading', // 'loading' | 'ok' | 'error'
       boardInfo: null,
       nickname: '',
       provider: '',
       boardScope: 'all',
+      friends: loadStorageJson(LS_FRIENDS, []),
       questState: null,
       skinState: null,
       art: null,
@@ -395,6 +399,17 @@
       return rpcFetch('eth_call', [{ to: to, data: data }, 'latest']);
     }
 
+    /* Battle pass and weekly quests for the connected wallet. */
+    async function loadPass(c) {
+      try {
+        var id = Number(readWord(await call(c, fnSelector('currentPass()')), 0));
+        var h = await call(c, encodeCall('getPass(address,uint256)', [state.account, id]));
+        state.pass = { id: id, xp: Number(readWord(h, 0)), premium: readWord(h, 1) !== 0n, freeClaimed: Number(readWord(h, 2)), premiumClaimed: Number(readWord(h, 3)), endsAt: Number(readWord(h, 4)) };
+        var w = await call(c, encodeCall('getWeekly(address)', [state.account]));
+        state.weekly = { runs: Number(readWord(w, 0)), points: Number(readWord(w, 1)), mask: Number(readWord(w, 2)), endsAt: Number(readWord(w, 3)) };
+      } catch (e) { /* pass data is optional */ }
+    }
+
     async function refreshChainState() {
       var c = state.contractAddress;
       var hasC = isValidAddress(c);
@@ -417,8 +432,10 @@
           jobs.push(call(c, encodeCall('getPlayerState(address)', [state.account])).then(function (h) { state.playerState = decodePlayerState(h); }));
           jobs.push(call(c, encodeCall('getQuestState(address)', [state.account])).then(function (h) { state.questState = decodeQuestState(h); }));
           jobs.push(call(c, encodeCall('getSkins(address)', [state.account])).then(function (h) {
-            state.skinState = { owned: Number(readWord(h, 0)), equipped: Number(readWord(h, 1)) };
+            state.skinState = { owned: Number(readWord(h, 0)), equipped: Number(readWord(h, 1)), fx: Number(readWord(h, 2)) };
           }));
+          jobs.push(call(c, encodeCall('getHeroMask(address)', [state.account])).then(function (h) { state.heroMask = Number(readWord(h, 0)); }));
+          jobs.push(loadPass(c));
         }
         jobs.push(call(c, encodeGetLeaderboard()).then(function (h) { state.leaderboard = decodeLeaderboard(h); }));
         jobs.push(call(c, fnSelector('currentSeason()')).then(async function (h) {
@@ -432,15 +449,68 @@
     }
 
     /* All-time board: best verified run per player, indexed by the server from onchain events (each entry has its tx hash). */
-    async function refreshBoard(force, scope) {
+    async function fetchBoard(query, force) {
+      var res = await fetch('/api/leaderboard' + query + (force ? '&refresh=1' : ''));
+      if (!res.ok) throw new Error('board ' + res.status);
+      return res.json();
+    }
+    /* Friends are kept in this browser: addresses, added by wallet address or by nickname. */
+    function friendsList() {
+      var mine = (state.account || '').toLowerCase();
+      var list = (state.friends || []).slice();
+      if (mine && list.indexOf(mine) === -1) list.push(mine); // you are always on your own friends board
+      return list;
+    }
+    async function addFriend(input) {
+      var v = String(input || '').trim();
+      if (!v) throw new Error('Type a wallet address or a nickname.');
+      var addr = v;
+      if (!/^0x[0-9a-fA-F]{40}$/.test(v)) {
+        var res = await fetch('/api/nickname/resolve?name=' + encodeURIComponent(v));
+        if (!res.ok) throw new Error('No player found with that nickname.');
+        addr = (await res.json()).address;
+      }
+      addr = addr.toLowerCase();
+      if (state.friends.indexOf(addr) === -1) state.friends = state.friends.concat([addr]).slice(0, 29);
+      saveStorageJson(LS_FRIENDS, state.friends);
+      notify();
+      return addr;
+    }
+    function removeFriend(addr) {
+      state.friends = state.friends.filter(function (a) { return a !== String(addr).toLowerCase(); });
+      saveStorageJson(LS_FRIENDS, state.friends);
+      notify();
+    }
+
+    /* Boards for Endless and Boss Rush (kept by the server, not onchain). */
+    async function fetchModeBoard(mode) {
+      var res = await fetch('/api/mode/board?mode=' + encodeURIComponent(mode));
+      if (!res.ok) throw new Error('mode board ' + res.status);
+      return res.json();
+    }
+    async function submitMode(mode, run, extra) {
+      if (!state.session || !state.runId) throw new Error('Sign in and start a run to be on this board.');
+      return apiPost('/api/mode/finish', Object.assign({ mode: mode }, runPayload(run), extra || {}));
+    }
+
+    async function refreshBoard(force, scope, isRetry) {
       if (scope) state.boardScope = scope;
+      if (!state.topBoard.length) state.boardStatus = 'loading';
       try {
-        var q = state.boardScope === 'season' && state.season ? '?scope=season&season=' + state.season.id : '?scope=all';
-        var res = await fetch('/api/leaderboard' + q + (force ? '&refresh=1' : ''));
-        var json = await res.json();
+        var q = '?scope=all';
+        if ((state.boardScope === 'season' || state.boardScope === 'week') && state.season) q = '?scope=' + state.boardScope + '&season=' + state.season.id;
+        else if (state.boardScope === 'friends') q = '?scope=friends&players=' + encodeURIComponent(friendsList().join(','));
+        var json = await fetchBoard(q, force);
         state.board = json.entries || [];
         state.boardInfo = json.indexing || null;
-      } catch (e) { /* keep the previous board */ }
+        if (q === '?scope=all') state.topBoard = state.board;
+        else state.topBoard = (await fetchBoard('?scope=all', false)).entries || [];
+        state.boardStatus = 'ok';
+      } catch (e) {
+        // keep the previous board; try once more shortly before showing an error
+        if (!isRetry) setTimeout(function () { refreshBoard(force, scope, true); }, 3000);
+        else if (!state.topBoard.length) state.boardStatus = 'error';
+      }
       notify();
     }
 
@@ -468,7 +538,7 @@
         if (tid > 0n) out.badge = parseUri(decodeString(await call(badgeAddr, encodeCall('tokenURI(uint256)', [tid]))));
         var skinsAddr = '0x' + (await call(c, fnSelector('skins()'))).slice(26);
         var owned = state.skinState ? state.skinState.owned : 0;
-        for (var id = 1; id <= 6; id++) {
+        for (var id = 1; id <= 12; id++) {
           if (!(owned & (1 << (id - 1)))) continue;
           var skinTid = readWord(await call(skinsAddr, encodeCall('tokenOf(address,uint8)', [state.account, id])), 0);
           if (skinTid > 0n) out.skins[id] = parseUri(decodeString(await call(skinsAddr, encodeCall('tokenURI(uint256)', [skinTid]))));
@@ -843,6 +913,14 @@
         data = encodeCall('buySkin(uint8)', [params.id]);
       } else if (action === 'equip') {
         data = encodeCall('equipSkin(uint8)', [params.id]);
+      } else if (action === 'equip-fx') {
+        data = encodeCall('equipFx(uint8)', [params.id]);
+      } else if (action === 'unlock-hero') {
+        data = encodeCall('unlockHero(uint8)', [params.hero]);
+      } else if (action === 'buy-pass') {
+        data = fnSelector('buyPass()');
+      } else if (action === 'claim-pass') {
+        data = encodeCall('claimPassReward(uint256,uint8,bool)', [params.passSeason, params.level, params.premium]);
       } else if (action === 'rollover') {
         data = encodeCall('rolloverEmptySeason(uint256)', [params.season]);
       } else if (action === 'submit-run') {
@@ -1265,7 +1343,7 @@
     async function startRun(opts) {
       if (!state.session || !state.account) return null;
       opts = opts || {};
-      var r = await apiPost('/api/run/start', { session: state.session, roomId: opts.roomId || 0, hero: opts.hero || 0 });
+      var r = await apiPost('/api/run/start', { session: state.session, roomId: opts.roomId || 0, hero: opts.hero || 0, ranked: opts.ranked !== false });
       state.runId = r.runId;
       state.runToken = r.runToken || '';
       return r.runId;
@@ -1334,6 +1412,41 @@
     async function equipSkin(id) {
       needContract();
       return sendAction('equip', { id: id }, function () { return state.skinState && state.skinState.equipped === id; });
+    }
+
+    async function equipFx(id) {
+      needContract();
+      return sendAction('equip-fx', { id: id }, function () { return state.skinState && state.skinState.fx === id; });
+    }
+
+    async function unlockHero(hero) {
+      needContract();
+      return sendAction('unlock-hero', { hero: hero }, function () { return state.heroMask && (state.heroMask & (1 << (hero - 5))) !== 0; });
+    }
+
+    var PASS_PRICE_USDC = 3000000n; // matches ArcVoxelGameFi.PASS_PRICE
+    async function buyPass() {
+      needContract();
+      if (state.usdcBalance < PASS_PRICE_USDC) throw new Error('NEED_USDC');
+      if (state.usdcAllowance < PASS_PRICE_USDC && state.kind !== 'passkey') {
+        await sendAction('approve', { amount: PASS_PRICE_USDC }, function () { return state.usdcAllowance >= PASS_PRICE_USDC; });
+      }
+      return sendAction('buy-pass', {}, function () { return state.pass && state.pass.premium; });
+    }
+
+    async function claimPassReward(passSeason, level, premium) {
+      needContract();
+      var bit = 1 << (level - 1);
+      return sendAction('claim-pass', { passSeason: passSeason, level: level, premium: premium }, function () {
+        var p = state.pass; if (!p) return false;
+        return ((premium ? p.premiumClaimed : p.freeClaimed) & bit) !== 0;
+      });
+    }
+
+    /* The contract's own season rules (fee, length, places paid, days an empty pool rolls forward). */
+    async function loadSeasonRules() {
+      var h = await call(needContract(), fnSelector('seasonRules()'));
+      return { fee: readWord(h, 0), length: Number(readWord(h, 1)), winnersPaid: Number(readWord(h, 2)), rollDays: Number(readWord(h, 3)) };
     }
 
     async function createRoom(feeUsdc, seconds) {
@@ -1472,6 +1585,10 @@
       logout: logout,
       refreshChainState: refreshChainState,
       refreshBoard: refreshBoard,
+      addFriend: addFriend,
+      removeFriend: removeFriend,
+      fetchModeBoard: fetchModeBoard,
+      submitMode: submitMode,
       setNickname: setNickname,
       submitRunOnChain: submitRunOnChain,
       submitRunGasless: submitRunGasless,
@@ -1479,6 +1596,11 @@
       loadArt: loadArt,
       loadRooms: loadRooms,
       buySkin: buySkin,
+      equipFx: equipFx,
+      unlockHero: unlockHero,
+      buyPass: buyPass,
+      claimPassReward: claimPassReward,
+      loadSeasonRules: loadSeasonRules,
       equipSkin: equipSkin,
       createRoom: createRoom,
       joinRoom: joinRoom,

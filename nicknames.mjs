@@ -151,3 +151,12 @@ export async function setNickname(address, raw) {
   if (current && keyOf(current) !== key) await kv('HDEL', K_KEYS, keyOf(current))
   return name
 }
+
+/** Finds the wallet that owns a nickname (case and accent insensitive), or '' when nobody does. */
+export async function addressOfNickname(raw) {
+  const name = String(raw || '').normalize('NFC').trim().replace(/\s+/g, ' ')
+  if (!name) return ''
+  const key = keyOf(name)
+  if (kvEnabled) return (await kv('HGET', K_KEYS, key)) || ''
+  return byKey.get(key) || ''
+}

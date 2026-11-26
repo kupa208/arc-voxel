@@ -371,7 +371,7 @@
       boss: { nameVi: '🦁 Kilimanjaro Warlion', nameEn: '🦁 Kilimanjaro Warlion', crown: 'mane', body: '#78350f', armor: '#ef4444', glow: '#fde047', visor: '#ffffff', pattern: 'spread' },
     },
   ];
-  var selectedMapIdx = 0;
+  var selectedMapIdx = 1; // a wide island by default: the easiest layout for new players
 
   /* 1C. ENDLESS DIFFICULTY PROGRESSION TIERS */
   var THREAT_TIERS = [
@@ -415,7 +415,7 @@
       badgeEarned: 'Earned',
       badgeNextGoal: 'Next goal: {tier} badge. {n} more points to go (about {g} in-game points).',
       badgeAllScore: 'You hold every score badge. Win a daily season to earn the Champion badge.',
-      badgeFirstGoal: 'Goal: save one run of 300+ points (about 6,000 in-game points) to earn your first badge, Scout.',
+      badgeFirstGoal: 'Goal: save one run worth 10 ranking points (200 in-game score) to earn your first badge, Newcomer. Scout comes at 300 points (6,000 in-game).',
       badgeTipsTitle: 'How to climb',
       badgeTips: [
         'Keep your combo alive: every 4 kills in a row raises the score multiplier, up to x10.',
@@ -427,13 +427,13 @@
       featuresTitle: '🗺️ Arc Quest Board',
       boardDone: 'done',
       questNext: 'NEXT',
-      qConnectT: 'Connect your wallet', qConnectD: 'Sign in with email or use any wallet. It unlocks every quest.',
+      qConnectT: 'Connect your wallet', qConnectD: 'Continue with Google or use a browser wallet (MetaMask, Rabby...). It lets you save scores and unlocks every quest.',
       qPlayT: 'Play your first run', qPlayD: 'Survive the waves and rack up points.',
-      qSaveT: 'Save a score onchain', qSaveD: 'Free gas. Earn ARCQ, and a Scout badge from 300 points.',
-      qSeasonT: 'Enter the daily season', qSeasonD: 'Pay 1 USDC. The top 3 share the prize pool.',
+      qSaveT: 'Save a score onchain', qSaveD: 'Free gas. Earn ARCQ, and a first badge from 10 ranking points (200 in-game).',
+      qSeasonT: 'Enter the daily season', qSeasonD: 'Optional: pay 1 USDC. The top 3 of the day share the prize pool.',
       qDailyT: 'Finish a daily quest', qDailyD: 'Quests and streaks pay up to 80 ARCQ a day.',
       qHeroT: 'Buy an upgrade NFT', qHeroD: 'Each level widens your item pickup range.',
-      surrenderBtn: '🏳️ End run', surrenderConfirm: 'Tap again to end',
+      surrenderBtn: '🏳️ End run', surrenderConfirm: 'Press again to end the run',
       connectWalletShort: 'Connect Wallet',
       accountTitle: 'My Account',
       noWalletDetected: 'No browser wallet detected yet. Install MetaMask or Rabby in this browser, then reload the page.',
@@ -544,7 +544,7 @@
       waveLabel: 'Wave',
       timeLabel: 'Survived',
       killsLabel: 'Kills',
-      lbTitle: '🏆 Arc Onchain Leaderboard (Top 6)',
+      lbTitle: '🏆 Arc Onchain Leaderboard',
       lbColTx: 'Tx',
       lbEmpty: 'No verified runs yet. Play, then press Record Score to be the first on the board.',
       lbSyncing: 'Syncing chain data...',
@@ -557,7 +557,65 @@
       lostTitle: 'Defeated in Wave',
       pausedTitle: 'Paused',
       pausedBody: 'Press P or tap Resume to continue.',
+      guestBanner: 'Practice run: not saved. Sign in to save scores.',
+      guestTitleNote: 'Play a free practice run now. Sign in to save scores onchain.',
+      guestConnectBtn: 'Sign in to save scores',
+      guestSavedNote: 'This was a practice run, so it was not saved. Sign in, then play a new run to save it onchain.',
+      helpTitle: 'How to play',
+      detecting: 'Looking for wallets',
+      detectedN: 'Found {n} wallet(s). Pick one below.',
+      detectNone: 'No browser wallet found. Use Continue with Google, or install a wallet and try again.',
+      seasonOptional: 'Optional. Playing and saving scores are free. The 1 USDC fee only enters the daily prize pool.',
+      tutTitle: 'How to play',
+      tutStep: 'Step {i} of {n}', tutNext: 'Next', tutBack: 'Back',
+      tutS1T: 'Move', tutS1: 'WASD, arrow keys or drag on the screen to move. Your weapon fires by itself at the nearest mob. Stay away from red zones and enemy bullets.',
+      tutS2T: 'Collect gems, level up', tutS2: 'Mobs drop gems. Collecting them fills the XP bar at the top. Each level you pick 1 of 3 upgrades (keys 1-3 or tap): new weapons, more health, a bigger pickup range.',
+      tutS3T: 'Dash', tutS3: 'Space or the DASH button is a short dash. You cannot be hurt while dashing and it breaks enemy bullets. It needs a moment to recharge, so keep it for emergencies.',
+      tutS4T: 'Save your score', tutS4: 'Practice runs are free and never saved. Sign in with Google or a wallet, then save a run onchain: it joins the leaderboard and earns ARCQ. Ranking points = in-game score / 20. P pauses, M mutes.',
+      coachMove: 'Move with WASD, the arrows or by dragging. Your weapon fires on its own.',
+      coachGem: 'Pick up the cyan gems: they fill the XP bar and level you up.',
+      coachDash: 'Press Space (or DASH) to dash through danger. You cannot be hurt while dashing.',
+      coachLevel: 'First level up! Pick one upgrade (1, 2, 3 or tap).',
+      statHp: 'HP', statSpeed: 'Speed', statDmg: 'Damage', weaponLabel: 'Weapon', outfitLabel: 'Look', adviceLabel: 'Tip',
+      mapLayoutIsland: 'Wide round island: lots of room to dodge.',
+      mapLayoutGlacier: 'Square ice shelf: edges are slippery tight spots.',
+      mapLayoutCaldera: 'Ring around a crater: you circle the hole, mobs cut you off.',
+      mapLayoutCross: 'Four narrow bridges around a small centre: little room to dodge.',
+      mapDifficulty: 'Difficulty',
+      recentUnsaved: 'not saved onchain', recentPractice: 'practice', recentUnsavedTitle: 'Runs not saved',
+      tutOk: 'Got it, let me play',
       resumeBtn: 'Resume',
+      modeLabel: 'Game mode:', modeNormal: 'Ranked', modeEndless: 'Endless', modeBossRush: 'Boss Rush',
+      modeDescNormal: 'Runs can be saved onchain and join the leaderboard.',
+      modeDescEndless: 'No end: mobs keep growing. Every 5 waves you heal 1 heart and get 3 seconds of protection. Your best wave goes on the Endless board (not onchain).',
+      modeDescBossRush: 'Defeat 5 bosses back to back, no regular mobs. The fastest time wins the Boss Rush board (not onchain).',
+      endlessMilestone: 'Wave {w} milestone! +1 heart and 3 seconds of protection.',
+      modeSaving: 'Sending your result to the board...', modeNewBest: 'Saved: a new best on this board!', modeKeptBest: 'Sent. Your best on this board is still higher.',
+      modeFailed: 'Could not save to the board:', modeNoResult: 'Too short to rank: reach wave 2 (Endless) or defeat a boss (Boss Rush).',
+      modeGuest: 'Practice: sign in to be ranked on this board.',
+      saveRuleShort: 'Too short to save onchain: survive {s} seconds or reach {p} points.',
+      lbDay: 'Today', lbWeek: 'This week', lbFriends: 'Friends',
+      lbKindChain: 'Onchain', lbKindEndless: 'Endless', lbKindBoss: 'Boss Rush',
+      friendPlaceholder: 'Wallet address or nickname', friendAdd: 'Add', friendEmpty: 'Add friends by wallet address or nickname to compare scores.',
+      friendRemove: 'Remove', modeBoardEmpty: 'Nobody is on this board yet. Sign in and play to be first.', modeBoardNote: 'Kept by the game server, not onchain.',
+      guestLimit: 'You used today\'s 2 free practice runs. Sign in to keep playing and save your scores.',
+      shareX: 'Post on X',
+      shareDiscord: 'Copy for Discord',
+      shareDiscordDone: 'Copied. The image was downloaded: attach it in Discord.',
+      seasonEmptyWarn: 'Nobody has entered this season yet: you would be the first, and the prize pool is just your own fee.',
+      seasonPoolWarn: '{n} player(s) are in and the prize pool is {pool} USDC.',
+      seasonRules: 'The 1 USDC fee is not refunded. At the end the best scores share the pool: one player gets it back, two split 60/40, three or more split 50/30/20. If nobody scores, the pool rolls over.',
+      seasonTick: 'I understand and agree to pay 1 USDC to enter.',
+      advLockTitle: 'Advanced settings are locked',
+      advLockWarn: 'Changing the contract or the network can send your money to the wrong place. Only change them if you know exactly why.',
+      advLockCheck: 'I understand the risk and want to edit these settings',
+      contractChangeConfirm: 'This is not the official game contract. Saving it may lose funds. Continue?',
+      winnerOnly: 'Only this wallet can claim',
+      quitBtn: 'Leave run',
+      quitConfirm: 'Press again to leave, nothing is saved',
+      playAgainConfirm: 'Run not saved. Press again to play ({s}s)',
+      lbLoading: 'Loading the leaderboard...',
+      lbError: 'Could not load the leaderboard. It will retry shortly.',
       pauseTitle: 'Pause',
       hintControls: 'WASD / Arrows / Drag to move · Space / DASH to dodge i-frame & smash · 1-3 for Upgrades',
       tutStep1: 'Dodge red charge lines & magenta bullets! Stay off the water edge!',
@@ -575,13 +633,28 @@
       tabProfile: 'Profile',
       tabQuests: 'Daily',
       tabShop: 'Shop',
+      tabPass: 'Battle Pass',
+      passTitle: 'Battle Pass (30 days, 30 levels)', passLevelWord: 'Level', passXpWord: 'XP', passEndsIn: 'Ends in', passFreeTrack: 'Free', passPremiumTrack: 'Premium',
+      passBuy: 'Get Premium (3 USDC)', passBuyNote: 'The 3 USDC goes into the daily prize pool, so it is paid back to players. Premium pays double ARCQ, and level 30 also gives the exclusive Galaxy Trail effect.',
+      passClaim: 'Claim', passClaimed: 'Claimed', passPremiumOn: 'Premium active',
+      passXpHint: 'Earn XP from every saved run (10 to 50), each daily quest (25) and the weekly quests below. Level 30 is the maximum.',
+      weeklyTitle: 'Weekly quests (150 XP each)', weeklyRuns: 'Save 10 runs this week', weeklyBig: 'Save one run of 300+ points', weeklyPoints: 'Reach 1,500 points in total this week',
+      shopCosmeticsTitle: 'Cosmetics (no gameplay bonus)', shopHeroesTitle: 'Unlock heroes',
+      heroUnlockNote: 'These heroes are not stronger. They only need unlocking once with ARCQ (burned) before they can save ranked runs. Practice, Endless and Boss Rush are open to everyone.',
+      unlockBtn: 'Unlock', unlockedWord: 'Unlocked', previewWord: 'Preview', passExclusive: 'Battle Pass exclusive (Premium level 30)',
+      heroLockedMsg: 'This hero is locked for ranked runs. Unlock it in the Shop with ARCQ, or pick another hero.',
+      confirmUnlock: 'Unlock {name} for {cost} ARCQ (burned).', confirmBuyCosmetic: 'Buy {name} for {cost} ARCQ (burned). Cosmetic only.',
+      confirmFx: 'Equip the effect {name}.', confirmFxOff: 'Remove the equipped effect.', confirmPass: 'Buy the Premium pass for 3 USDC. It goes into the prize pool.',
+      confirmPassClaim: 'Claim the level {lvl} {track} reward.',
+      seasonRulesTitle: 'Season rules (read from the contract)',
+      seasonRulesBody: 'Entry costs {fee} USDC and a season lasts {len} hours. Top places are paid: 1 player gets the whole pool, 2 players split it 60/40, 3 or more split it 50/30/20. The Premium pass adds to the pool too. If a season ends with nobody on the board, its pool moves into the next season on its own (up to {days} days later).',
       lbAll: 'All time',
       lbSeasonF: 'This season',
       streakLabel: 'Day streak',
       recentRuns: 'Recent runs',
       noRuns: 'No saved runs yet.',
       badgeArtTitle: 'Your badge',
-      noBadge: 'Save a run of 300+ points to earn your first badge (Scout).',
+      noBadge: 'Save a run of 10+ points to earn your first badge (Newcomer).',
       skinsOwnedTitle: 'Your skins',
       questsTitle: 'Daily quests',
       questHint: 'Rewards are paid automatically when you save the run. They reset every UTC day.',
@@ -606,7 +679,7 @@
       unequipBtn: 'Unequip',
       equippedLabel: 'Equipped',
       ownedLabel: 'Owned',
-      skinNames: ['', 'Ruby', 'Amber', 'Emerald', 'Violet', 'Frost', 'Gold'],
+      skinNames: ['', 'Ruby', 'Amber', 'Emerald', 'Violet', 'Frost', 'Gold', 'Forest', 'Crimson', 'Sunbeam', 'Spark Trail', 'Flame Aura', 'Galaxy Trail'],
       joinBtn: 'Join',
       leaveRoomBtn: 'Stop playing in this room',
       refundBtn: 'Get my fee back',
@@ -662,7 +735,7 @@
       arcqBalLabel: 'ARCQ Earned',
       badgeLabel: 'Explorer NFT',
       runsLabel: 'On-Chain Runs',
-      tiers: ['None', 'Scout', 'Vanguard', 'Striker', 'Sentinel', 'Warlord', 'Titan', 'Overlord', 'Arc Legend', 'Champion'],
+      tiers: ['None', 'Newcomer', 'Rookie', 'Cadet', 'Recruit', 'Scout', 'Vanguard', 'Striker', 'Sentinel', 'Warlord', 'Titan', 'Overlord', 'Arc Legend', 'Champion'],
       contractLabel: 'ArcVoxelGameFi Contract Address',
       saveContract: 'Save Contract',
       contractHint: 'Leave empty for Local Ranked mode. Deploy contracts/ArcVoxelGameFi.sol and paste its address here.',
@@ -710,7 +783,7 @@
       badgeEarned: 'Đã đạt',
       badgeNextGoal: 'Mục tiêu tiếp theo: huy hiệu {tier}. Còn {n} điểm nữa (khoảng {g} điểm trong ván).',
       badgeAllScore: 'Bạn đã có đủ huy hiệu điểm. Hãy thắng một mùa giải để nhận huy hiệu Quán quân.',
-      badgeFirstGoal: 'Mục tiêu: ghi một ván từ 300 điểm (khoảng 6.000 điểm trong ván) để nhận huy hiệu đầu tiên: Trinh Sát.',
+      badgeFirstGoal: 'Mục tiêu: ghi một ván đạt 10 điểm xếp hạng (200 điểm trong ván) để nhận huy hiệu đầu tiên, Tân Binh. Huy hiệu Trinh Sát cần 300 điểm (6.000 điểm trong ván).',
       badgeTipsTitle: 'Mẹo để leo hạng',
       badgeTips: [
         'Giữ combo liên tục: cứ 4 lần hạ liên tiếp, hệ số điểm tăng thêm, tối đa x10.',
@@ -722,13 +795,13 @@
       featuresTitle: '🗺️ Bảng Nhiệm Vụ Arc',
       boardDone: 'hoàn thành',
       questNext: 'TIẾP THEO',
-      qConnectT: 'Kết nối ví', qConnectD: 'Đăng nhập bằng email hoặc dùng ví có sẵn. Mở khóa mọi nhiệm vụ.',
+      qConnectT: 'Kết nối ví', qConnectD: 'Đăng nhập bằng Google hoặc dùng ví trình duyệt (MetaMask, Rabby...). Cho phép ghi điểm và mở khóa mọi nhiệm vụ.',
       qPlayT: 'Chơi ván đầu tiên', qPlayD: 'Sống sót qua các đợt quái để lấy điểm.',
-      qSaveT: 'Ghi điểm lên chuỗi', qSaveD: 'Miễn phí gas. Nhận ARCQ, và huy hiệu Trinh Sát từ 300 điểm.',
-      qSeasonT: 'Vào mùa giải hằng ngày', qSeasonD: 'Đóng 1 USDC. Top 3 chia quỹ thưởng.',
+      qSaveT: 'Ghi điểm lên chuỗi', qSaveD: 'Gas miễn phí. Nhận ARCQ và huy hiệu đầu tiên từ 10 điểm xếp hạng (200 điểm trong ván).',
+      qSeasonT: 'Vào mùa giải hằng ngày', qSeasonD: 'Tùy chọn: đóng 1 USDC. Top 3 trong ngày chia quỹ thưởng.',
       qDailyT: 'Hoàn thành nhiệm vụ ngày', qDailyD: 'Nhiệm vụ và chuỗi ngày chơi trả tới 80 ARCQ mỗi ngày.',
       qHeroT: 'Mua NFT nâng cấp', qHeroD: 'Mỗi cấp mở rộng tầm hút vật phẩm.',
-      surrenderBtn: '🏳️ Kết thúc sớm', surrenderConfirm: 'Bấm lần nữa để kết thúc',
+      surrenderBtn: '🏳️ Kết thúc sớm', surrenderConfirm: 'Bấm lần nữa để kết thúc ván',
       connectWalletShort: 'Kết Nối Ví',
       accountTitle: 'Tài khoản của tôi',
       yourWallets: 'VÍ KHÁC',
@@ -833,7 +906,7 @@
       waveLabel: 'Wave',
       timeLabel: 'Sống sót',
       killsLabel: 'Đã hạ',
-      lbTitle: '🏆 Bảng Xếp Hạng Onchain Arc (Top 6)',
+      lbTitle: '🏆 Bảng Xếp Hạng Onchain Arc',
       lbColTx: 'Tx',
       lbEmpty: 'Chưa có ván nào được xác thực. Hãy chơi rồi bấm Ghi Điểm để đứng đầu bảng.',
       lbSyncing: 'Đang đồng bộ dữ liệu chuỗi...',
@@ -846,7 +919,65 @@
       lostTitle: 'Thất Thủ Tại Wave',
       pausedTitle: 'Tạm dừng',
       pausedBody: 'Bấm P hoặc nút Tiếp tục để chơi tiếp.',
+      guestBanner: 'Ván luyện tập: không được lưu. Đăng nhập để ghi điểm.',
+      guestTitleNote: 'Chơi thử miễn phí ngay. Đăng nhập để ghi điểm lên chuỗi.',
+      guestConnectBtn: 'Đăng nhập để ghi điểm',
+      guestSavedNote: 'Đây là ván luyện tập nên không được lưu. Hãy đăng nhập rồi chơi ván mới để ghi điểm lên chuỗi.',
+      helpTitle: 'Cách chơi',
+      detecting: 'Đang tìm ví',
+      detectedN: 'Tìm thấy {n} ví. Hãy chọn một ví bên dưới.',
+      detectNone: 'Không thấy ví trình duyệt nào. Dùng Tiếp tục với Google, hoặc cài ví rồi thử lại.',
+      seasonOptional: 'Tùy chọn. Chơi và ghi điểm đều miễn phí. Phí 1 USDC chỉ để vào quỹ thưởng hằng ngày.',
+      tutTitle: 'Cách chơi',
+      tutStep: 'Bước {i} / {n}', tutNext: 'Tiếp', tutBack: 'Quay lại',
+      tutS1T: 'Di chuyển', tutS1: 'WASD, phím mũi tên hoặc kéo trên màn hình để di chuyển. Vũ khí tự bắn vào quái gần nhất. Tránh vùng đỏ và đạn của quái.',
+      tutS2T: 'Nhặt ngọc, lên cấp', tutS2: 'Quái rơi ngọc. Nhặt ngọc làm đầy thanh kinh nghiệm ở trên cùng. Mỗi cấp bạn chọn 1 trong 3 nâng cấp (phím 1-3 hoặc chạm): vũ khí mới, thêm máu, tầm hút rộng hơn.',
+      tutS3T: 'Lướt', tutS3: 'Space hoặc nút LƯỚT là cú lướt ngắn. Khi lướt bạn không bị thương và phá được đạn của quái. Cần chờ hồi một lúc nên hãy để dành lúc nguy hiểm.',
+      tutS4T: 'Ghi điểm', tutS4: 'Ván luyện tập miễn phí và không được lưu. Đăng nhập bằng Google hoặc ví rồi ghi ván lên chuỗi: vào bảng xếp hạng và nhận ARCQ. Điểm xếp hạng = điểm trong ván / 20. P tạm dừng, M tắt tiếng.',
+      coachMove: 'Di chuyển bằng WASD, phím mũi tên hoặc kéo. Vũ khí tự động bắn.',
+      coachGem: 'Nhặt các viên ngọc xanh: chúng làm đầy thanh kinh nghiệm để lên cấp.',
+      coachDash: 'Bấm Space (hoặc LƯỚT) để lướt qua nguy hiểm. Lướt thì không bị thương.',
+      coachLevel: 'Lên cấp đầu tiên! Chọn một nâng cấp (1, 2, 3 hoặc chạm).',
+      statHp: 'Máu', statSpeed: 'Tốc độ', statDmg: 'Sát thương', weaponLabel: 'Vũ khí', outfitLabel: 'Trang phục', adviceLabel: 'Gợi ý',
+      mapLayoutIsland: 'Đảo tròn rộng: nhiều chỗ để né.',
+      mapLayoutGlacier: 'Tảng băng vuông: các mép là chỗ hẹp.',
+      mapLayoutCaldera: 'Vành quanh miệng núi lửa: bạn chạy vòng quanh hố, quái dễ chặn đường.',
+      mapLayoutCross: 'Bốn cây cầu hẹp quanh vùng giữa nhỏ: ít chỗ để né.',
+      mapDifficulty: 'Độ khó',
+      recentUnsaved: 'chưa ghi on-chain', recentPractice: 'luyện tập', recentUnsavedTitle: 'Ván chưa ghi',
+      tutOk: 'Đã hiểu, cho tôi chơi',
       resumeBtn: 'Tiếp tục',
+      modeLabel: 'Chế độ chơi:', modeNormal: 'Xếp hạng', modeEndless: 'Vô tận', modeBossRush: 'Boss Rush',
+      modeDescNormal: 'Ván chơi ghi được lên chuỗi và vào bảng xếp hạng.',
+      modeDescEndless: 'Không có điểm kết: quái tăng mãi. Cứ 5 wave bạn hồi 1 tim và được bảo vệ 3 giây. Wave cao nhất lên bảng Vô tận (không onchain).',
+      modeDescBossRush: 'Hạ liên tiếp 5 boss, không có quái thường. Thời gian nhanh nhất thắng bảng Boss Rush (không onchain).',
+      endlessMilestone: 'Mốc wave {w}! +1 tim và được bảo vệ 3 giây.',
+      modeSaving: 'Đang gửi kết quả lên bảng...', modeNewBest: 'Đã lưu: kỷ lục mới trên bảng này!', modeKeptBest: 'Đã gửi. Kỷ lục của bạn trên bảng này vẫn cao hơn.',
+      modeFailed: 'Không lưu được lên bảng:', modeNoResult: 'Quá ngắn để xếp hạng: đạt wave 2 (Vô tận) hoặc hạ một boss (Boss Rush).',
+      modeGuest: 'Luyện tập: đăng nhập để được xếp hạng trên bảng này.',
+      saveRuleShort: 'Quá ngắn để ghi onchain: sống {s} giây hoặc đạt {p} điểm.',
+      lbDay: 'Hôm nay', lbWeek: 'Tuần này', lbFriends: 'Bạn bè',
+      lbKindChain: 'Onchain', lbKindEndless: 'Vô tận', lbKindBoss: 'Boss Rush',
+      friendPlaceholder: 'Địa chỉ ví hoặc biệt danh', friendAdd: 'Thêm', friendEmpty: 'Thêm bạn bằng địa chỉ ví hoặc biệt danh để so điểm.',
+      friendRemove: 'Xóa', modeBoardEmpty: 'Chưa có ai trên bảng này. Đăng nhập và chơi để đứng đầu.', modeBoardNote: 'Do máy chủ game lưu, không onchain.',
+      guestLimit: 'Bạn đã dùng hết 2 ván luyện tập miễn phí hôm nay. Đăng nhập để chơi tiếp và ghi điểm.',
+      shareX: 'Đăng lên X',
+      shareDiscord: 'Sao chép cho Discord',
+      shareDiscordDone: 'Đã sao chép. Ảnh đã được tải về: hãy đính kèm vào Discord.',
+      seasonEmptyWarn: 'Chưa có ai vào mùa này: bạn sẽ là người đầu tiên và quỹ thưởng chỉ là phí của chính bạn.',
+      seasonPoolWarn: 'Đang có {n} người chơi và quỹ thưởng là {pool} USDC.',
+      seasonRules: 'Phí 1 USDC không được hoàn lại. Cuối mùa các điểm cao nhất chia quỹ: một người nhận lại, hai người chia 60/40, từ ba người chia 50/30/20. Nếu không ai ghi điểm, quỹ được chuyển sang mùa sau.',
+      seasonTick: 'Tôi hiểu và đồng ý đóng 1 USDC để vào mùa.',
+      advLockTitle: 'Cài đặt nâng cao đang bị khóa',
+      advLockWarn: 'Đổi contract hoặc mạng có thể gửi tiền của bạn sai chỗ. Chỉ đổi khi bạn biết chính xác lý do.',
+      advLockCheck: 'Tôi hiểu rủi ro và muốn sửa các cài đặt này',
+      contractChangeConfirm: 'Đây không phải contract chính thức của game. Lưu có thể làm mất tiền. Tiếp tục?',
+      winnerOnly: 'Chỉ ví này nhận được',
+      quitBtn: 'Thoát ván',
+      quitConfirm: 'Bấm lần nữa để thoát, không lưu gì',
+      playAgainConfirm: 'Ván chưa ghi. Bấm lần nữa để chơi ({s}s)',
+      lbLoading: 'Đang tải bảng xếp hạng...',
+      lbError: 'Chưa tải được bảng xếp hạng. Sẽ tự thử lại.',
       pauseTitle: 'Tạm dừng',
       hintControls: 'WASD / Mũi tên / Kéo để né · Space / LƯỚT để bất tử thoáng chốc & phá đạn · 1-3 chọn thẻ',
       tutStep1: 'Né vạch húc đỏ & đạn tím! Đừng bước ra mép nước kẻo mất máu!',
@@ -864,13 +995,28 @@
       tabProfile: 'Hồ sơ',
       tabQuests: 'Hằng ngày',
       tabShop: 'Cửa hàng',
+      tabPass: 'Battle Pass',
+      passTitle: 'Battle Pass (30 ngày, 30 cấp)', passLevelWord: 'Cấp', passXpWord: 'XP', passEndsIn: 'Kết thúc sau', passFreeTrack: 'Miễn phí', passPremiumTrack: 'Premium',
+      passBuy: 'Mua Premium (3 USDC)', passBuyNote: '3 USDC được cộng vào quỹ thưởng mùa giải, nên được chia lại cho người chơi. Premium thưởng ARCQ gấp đôi, và cấp 30 còn tặng hiệu ứng độc quyền Vệt ngân hà.',
+      passClaim: 'Nhận', passClaimed: 'Đã nhận', passPremiumOn: 'Đã có Premium',
+      passXpHint: 'Nhận XP từ mỗi ván đã ghi (10 đến 50), mỗi nhiệm vụ ngày (25) và các nhiệm vụ tuần bên dưới. Cấp 30 là tối đa.',
+      weeklyTitle: 'Nhiệm vụ tuần (150 XP mỗi nhiệm vụ)', weeklyRuns: 'Ghi 10 ván trong tuần', weeklyBig: 'Ghi một ván từ 300 điểm xếp hạng', weeklyPoints: 'Đạt tổng 1.500 điểm xếp hạng trong tuần',
+      shopCosmeticsTitle: 'Trang trí (không tăng sức mạnh)', shopHeroesTitle: 'Mở khóa nhân vật',
+      heroUnlockNote: 'Các nhân vật này không mạnh hơn. Chỉ cần mở khóa một lần bằng ARCQ (bị đốt) trước khi ghi ván xếp hạng. Luyện tập, Vô tận và Boss Rush mở cho mọi người.',
+      unlockBtn: 'Mở khóa', unlockedWord: 'Đã mở', previewWord: 'Xem trước', passExclusive: 'Độc quyền Battle Pass (Premium cấp 30)',
+      heroLockedMsg: 'Nhân vật này chưa mở khóa cho ván xếp hạng. Hãy mở khóa trong Cửa hàng bằng ARCQ, hoặc chọn nhân vật khác.',
+      confirmUnlock: 'Mở khóa {name} với {cost} ARCQ (bị đốt).', confirmBuyCosmetic: 'Mua {name} với {cost} ARCQ (bị đốt). Chỉ để trang trí.',
+      confirmFx: 'Trang bị hiệu ứng {name}.', confirmFxOff: 'Gỡ hiệu ứng đang dùng.', confirmPass: 'Mua Premium với 3 USDC. Số tiền vào quỹ thưởng.',
+      confirmPassClaim: 'Nhận phần thưởng {track} cấp {lvl}.',
+      seasonRulesTitle: 'Luật mùa giải (đọc từ hợp đồng)',
+      seasonRulesBody: 'Phí vào là {fee} USDC và một mùa kéo dài {len} giờ. Có thưởng cho các hạng đầu: 1 người nhận cả quỹ, 2 người chia 60/40, từ 3 người trở lên chia 50/30/20. Premium cũng cộng vào quỹ. Nếu một mùa kết thúc mà bảng trống, quỹ của mùa đó tự chuyển sang mùa kế tiếp (tối đa {days} ngày sau).',
       lbAll: 'Mọi thời đại',
       lbSeasonF: 'Mùa này',
       streakLabel: 'Chuỗi ngày chơi',
       recentRuns: 'Ván gần đây',
       noRuns: 'Chưa có ván nào được ghi.',
       badgeArtTitle: 'Huy hiệu của bạn',
-      noBadge: 'Ghi một ván từ 300 điểm để nhận huy hiệu đầu tiên (Trinh Sát).',
+      noBadge: 'Ghi một ván từ 10 điểm xếp hạng để nhận huy hiệu đầu tiên (Tân Binh).',
       skinsOwnedTitle: 'Skin của bạn',
       questsTitle: 'Nhiệm vụ hằng ngày',
       questHint: 'Thưởng tự trả khi bạn ghi ván. Làm mới mỗi ngày theo giờ UTC.',
@@ -895,7 +1041,7 @@
       unequipBtn: 'Bỏ trang bị',
       equippedLabel: 'Đang dùng',
       ownedLabel: 'Đã sở hữu',
-      skinNames: ['', 'Hồng ngọc', 'Hổ phách', 'Lục bảo', 'Tím', 'Băng giá', 'Vàng kim'],
+      skinNames: ['', 'Hồng ngọc', 'Hổ phách', 'Lục bảo', 'Tím', 'Băng giá', 'Vàng kim', 'Rừng xanh', 'Đỏ thắm', 'Nắng vàng', 'Vệt tia lửa', 'Hào quang lửa', 'Vệt ngân hà'],
       joinBtn: 'Tham gia',
       leaveRoomBtn: 'Thôi không chơi trong phòng này',
       refundBtn: 'Nhận lại phí',
@@ -951,7 +1097,7 @@
       arcqBalLabel: 'Token ARCQ',
       badgeLabel: 'Huy hiệu NFT',
       runsLabel: 'Số lượt On-Chain',
-      tiers: ['Chưa có', 'Trinh Sát', 'Tiên Phong', 'Xung Kích', 'Hộ Vệ', 'Thống Soái', 'Cự Thần', 'Bá Chủ', 'Huyền Thoại Arc', 'Quán Quân'],
+      tiers: ['Chưa có', 'Tân Binh', 'Lính Mới', 'Học Viên', 'Tân Thủ', 'Trinh Sát', 'Tiên Phong', 'Xung Kích', 'Hộ Vệ', 'Thống Soái', 'Cự Thần', 'Bá Chủ', 'Huyền Thoại Arc', 'Quán Quân'],
       contractLabel: 'Địa chỉ Contract ArcVoxelGameFi',
       saveContract: 'Lưu Contract',
       contractHint: 'Để trống nếu dùng BXH cục bộ. Sau khi deploy contracts/ArcVoxelGameFi.sol, dán địa chỉ vào đây.',
@@ -2156,7 +2302,13 @@
   var HAZARD_GEO = new THREE.RingGeometry(0.2, 2.6, 24);
 
   /* 7. AUDIO */
-  var audio = null, muted = false;
+  var audio = null, muted = false, bossAlive = false;
+  try { muted = window.localStorage.getItem('arc-voxel-quest:muted') === '1'; } catch (e) { /* ignore */ }
+  function toggleMute() {
+    muted = !muted;
+    try { window.localStorage.setItem('arc-voxel-quest:muted', muted ? '1' : '0'); } catch (e) { /* ignore */ }
+    refreshStaticTexts();
+  }
   function blip(freq, duration, type, volume, slideTo) {
     if (muted) return;
     try {
@@ -2186,7 +2338,7 @@
     if (!music) return;
     if (muted || document.hidden) { music.stop(); return; }
     music.setMap(activeMapSpec().id);
-    music.setMode(phase === 'playing' && !paused ? 'play' : 'lobby');
+    music.setMode(phase === 'playing' && !paused ? (bossAlive ? 'boss' : 'play') : 'lobby');
     music.start();
   }
   // Browsers only allow sound after a tap or key press: start the music on the first one.
@@ -2207,11 +2359,17 @@
   function escHtml(v) {
     return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
   }
-  function getMergedLeaderboard() {
+  function getMergedLeaderboard(source) {
     if (!web3) return [];
-    return web3.state.board.map(function (e) {
+    return (source === 'filtered' ? web3.state.board : web3.state.topBoard).map(function (e) {
       return { mine: Boolean(web3.state.account) && String(e.player).toLowerCase() === String(web3.state.account).toLowerCase(), name: e.nickname || window.ARC_WEB3.shortAddr(e.player), addr: window.ARC_WEB3.shortAddr(e.player), hasNick: !!e.nickname, score: e.score, wave: e.wave, heroName: (HEROES[e.hero] && HEROES[e.hero].short) || '', txHash: e.txHash, url: explorerTx(e.txHash) };
     });
+  }
+  function boardEmptyText() {
+    var status = web3 && web3.state.boardStatus;
+    if (status === 'loading') return t('lbLoading');
+    if (status === 'error') return t('lbError');
+    return boardSyncNote() || t('lbEmpty');
   }
   function boardSyncNote() {
     var info = web3 && web3.state.boardInfo;
@@ -2219,7 +2377,7 @@
   }
 
   var styleEl = document.createElement('style');
-  styleEl.textContent = ''
+  styleEl.textContent = '@media (pointer:coarse){.avq-btn{min-height:44px;padding-top:9px;padding-bottom:9px}}'
     + '.avq-btn{pointer-events:auto;cursor:pointer;border:1px solid rgba(110,235,255,.38);background:linear-gradient(180deg,rgba(24,52,96,.92),rgba(13,26,56,.95));color:#eefaff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:inherit;transition:transform .14s cubic-bezier(.34,1.56,.64,1),box-shadow .14s,border-color .14s;box-shadow:0 4px 0 rgba(7,15,36,.75),0 6px 14px rgba(0,0,0,.35);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}'
     + '.avq-btn:hover{transform:translateY(-2px);border-color:#63f7ff}'
     + '.avq-btn:active{transform:translateY(2px) scale(.96);box-shadow:0 1px 0 rgba(7,15,36,.85)}'
@@ -2263,22 +2421,32 @@
   var killsEl = el('span', 'color:#aef9ff;font-size:.9em', statPill);
   var timeEl = el('span', 'color:#cfe9ff;font-size:.9em;font-variant-numeric:tabular-nums', statPill);
   var multBadge = el('span', 'color:#fb923c;font-size:.9em;display:none', statPill);
+  var mapEl = el('span', 'color:#cfe9ff;font-size:.85em;opacity:.85', statPill);
+  var modeEl = el('span', 'color:#ffd166;font-weight:800', statPill);
 
   var rightGroup = el('div', 'display:flex;align-items:center;gap:6px;flex-wrap:wrap', topBar);
   var langBtn = el('button', '', rightGroup); langBtn.className = 'avq-btn'; stopPtr(langBtn);
   var soundBtn = el('button', '', rightGroup); soundBtn.className = 'avq-btn'; stopPtr(soundBtn);
   var pauseBtn = el('button', 'display:none', rightGroup); pauseBtn.className = 'avq-btn'; pauseBtn.textContent = '⏸'; stopPtr(pauseBtn);
+  var helpBtn = el('button', '', rightGroup); helpBtn.className = 'avq-btn'; helpBtn.textContent = '❔'; stopPtr(helpBtn);
+  helpBtn.onclick = function () { if (phase === 'playing' && !paused) setPaused(true); openTutorial(); };
   var web3Btn = el('button', '', rightGroup); web3Btn.className = 'avq-btn'; stopPtr(web3Btn);
   var seasonPill = el('button', 'display:none', rightGroup); seasonPill.className = 'avq-btn'; stopPtr(seasonPill);
   var surrenderBtn = el('button', 'display:none', rightGroup); surrenderBtn.className = 'avq-btn'; stopPtr(surrenderBtn);
   var surrenderArmedAt = 0;
+  function tickSurrender() {
+    if (!surrenderArmedAt) return;
+    var left = 5 - Math.floor((performance.now() - surrenderArmedAt) / 1000);
+    if (left <= 0) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); return; }
+    surrenderBtn.textContent = t('surrenderConfirm') + ' (' + left + 's)';
+    setTimeout(tickSurrender, 300);
+  }
   surrenderBtn.onclick = function () {
     if (phase !== 'playing') return;
     var now = performance.now();
-    if (now - surrenderArmedAt < 3000) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); finish(false); return; }
-    surrenderArmedAt = now; // first tap only arms it, so a stray tap cannot throw away a good run
-    surrenderBtn.textContent = t('surrenderConfirm');
-    setTimeout(function () { if (surrenderArmedAt === now) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); } }, 3000);
+    if (surrenderArmedAt && now - surrenderArmedAt < 5000) { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); finish(false); return; }
+    surrenderArmedAt = now; // the first tap only arms it, so a stray tap cannot throw away a good run
+    tickSurrender();
   };
 
   var xpWrap = el('div', 'position:fixed;top:0;left:0;right:0;height:5px;background:rgba(10,18,40,.7);z-index:15', hud);
@@ -2288,7 +2456,7 @@
   var bossBarTrack = el('div', 'height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden', bossBarWrap);
   var bossBarFill = el('div', 'height:100%;width:100%;background:linear-gradient(90deg,#f43f5e,#fb923c);transition:width .1s', bossBarTrack);
 
-  var dashBtn = el('button', 'position:fixed;right:18px;bottom:18px;width:74px;height:74px;border-radius:50%;justify-content:center;font-size:13px;display:none;z-index:12', hud);
+  var dashBtn = el('button', 'position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));width:78px;height:78px;border-radius:50%;justify-content:center;font-size:13px;display:none;z-index:12', hud);
   dashBtn.className = 'avq-btn pri';
   stopPtr(dashBtn);
   var tutEl = el('div', 'position:fixed;bottom:18px;left:50%;transform:translateX(-50%);padding:8px 16px;border-radius:999px;background:rgba(8,18,40,.88);border:1px solid rgba(244,63,94,.6);color:#ffe4e6;font-weight:700;font-size:13px;text-align:center;max-width:90vw;display:none;z-index:11', hud);
@@ -2380,6 +2548,10 @@
   }
 
   var heroBox = el('div', 'margin-top:8px;padding:10px;border-radius:14px;background:rgba(7,14,32,.68);border:1px solid rgba(120,230,255,.22)', card);
+  var modeRow = el('div', 'display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(120,230,255,.14)', heroBox);
+  var modeHeadEl = el('span', 'font-weight:800;font-size:12px;color:#63f7ff', modeRow);
+  var modeListEl = el('div', 'display:flex;gap:4px;flex-wrap:wrap;justify-content:center', modeRow);
+  var modeDescEl = el('div', 'font-size:11.5px;color:#e0f2fe;opacity:.92;font-weight:700;text-align:center', modeRow);
   var mapRow = el('div', 'display:flex;flex-direction:column;align-items:center;gap:5px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(120,230,255,.14)', heroBox);
   var mapHeadRow = el('div', 'display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap', mapRow);
   var mapBoxLbl = el('span', 'font-weight:800;font-size:12px;color:#63f7ff', mapHeadRow);
@@ -2421,6 +2593,7 @@
   var heroRightCol = el('div', 'flex:1;min-width:210px;display:flex;flex-direction:column;align-items:center;gap:6px', heroMainRow);
   var heroListEl = el('div', 'display:flex;justify-content:center;gap:6px;flex-wrap:wrap', heroRightCol);
   var heroDescEl = el('div', 'font-size:12.5px;color:#aef9ff;font-weight:600;text-align:center', heroRightCol);
+  var heroStatsEl = el('div', 'display:flex;flex-direction:column;gap:3px;font-size:11.5px;text-align:left', heroRightCol);
 
   var cardStats = el('div', 'margin-top:10px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-weight:800;color:#ffd166', card);
   var cardActions = el('div', 'margin-top:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap', card);
@@ -2428,6 +2601,26 @@
   var cardClaimBtn = el('button', 'display:none', cardActions); cardClaimBtn.className = 'avq-btn gold';
   var cardClaimOwnBtn = el('button', 'display:none', cardActions); cardClaimOwnBtn.className = 'avq-btn';
   var cardShareBtn = el('button', 'display:none', cardActions); cardShareBtn.className = 'avq-btn';
+  var cardXBtn = el('button', 'display:none', cardActions); cardXBtn.className = 'avq-btn';
+  var cardDiscordBtn = el('button', 'display:none', cardActions); cardDiscordBtn.className = 'avq-btn';
+  var cardQuitBtn = el('button', 'display:none', cardActions); cardQuitBtn.className = 'avq-btn';
+  var quitArmedAt = 0;
+  function tickQuit() {
+    if (!quitArmedAt) return;
+    var left = 5 - Math.floor((performance.now() - quitArmedAt) / 1000);
+    if (left <= 0) { quitArmedAt = 0; cardQuitBtn.textContent = '🚪 ' + t('quitBtn'); return; }
+    cardQuitBtn.textContent = t('quitConfirm') + ' (' + left + 's)';
+    setTimeout(tickQuit, 300);
+  }
+  /* Leaves the run without a result (nothing is saved) and returns to the menu. */
+  cardQuitBtn.onclick = function () {
+    var nowMs = performance.now();
+    if (!quitArmedAt || nowMs - quitArmedAt > 5000) { quitArmedAt = nowMs; tickQuit(); return; }
+    quitArmedAt = 0;
+    clearArena();
+    paused = false; levelUpChoices = null; lvlOverlay.style.display = 'none';
+    setPhase('title');
+  };
   var cardClaimStatus = el('div', 'margin-top:8px;font-size:12.5px;min-height:16px;color:#aef9ff', card);
   var cardGoal = el('div', 'margin-top:6px;font-size:12px;color:#ffd166;font-weight:700;line-height:1.4', card);
 
@@ -2438,7 +2631,7 @@
   var cardHint = el('div', 'margin-top:8px;font-size:11.5px;opacity:.76;line-height:1.35', card);
 
   // Level-up 1-of-3 Modal
-  var lvlOverlay = el('div', 'position:fixed;inset:0;background:rgba(4,9,24,.74);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:25', hud);
+  var lvlOverlay = el('div', 'position:fixed;inset:58px 0 0 0;background:rgba(4,9,24,.74);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:25', hud);
   stopPtr(lvlOverlay);
   var lvlModal = el('div', 'width:min(94vw,620px);background:#0b1530;border:1px solid rgba(255,209,102,.48);border-radius:20px;padding:18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7)', lvlOverlay);
   var lvlTitleEl = el('div', 'font-size:20px;font-weight:900;color:#ffd166', lvlModal);
@@ -2453,7 +2646,7 @@
   var w3Title = el('div', 'font-size:18px;font-weight:900;color:#63f7ff', w3Head);
   var w3Close = el('button', 'padding:4px 10px', w3Head); w3Close.className = 'avq-btn'; w3Close.textContent = '✕';
   var w3Tabs = el('div', 'display:flex;gap:6px;flex-wrap:wrap', w3Modal);
-  var tabBtns = { profile: el('button', '', w3Tabs), season: el('button', '', w3Tabs), quests: el('button', '', w3Tabs), shop: el('button', '', w3Tabs), leaderboard: el('button', '', w3Tabs), wallet: el('button', '', w3Tabs), network: el('button', '', w3Tabs) };
+  var tabBtns = { profile: el('button', '', w3Tabs), season: el('button', '', w3Tabs), quests: el('button', '', w3Tabs), shop: el('button', '', w3Tabs), pass: el('button', '', w3Tabs), leaderboard: el('button', '', w3Tabs), wallet: el('button', '', w3Tabs), network: el('button', '', w3Tabs) };
   Object.keys(tabBtns).forEach(function (k) { tabBtns[k].className = 'avq-btn'; });
   var w3Body = el('div', 'display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.45', w3Modal);
   var w3Status = el('div', 'font-size:12px;color:#ffd166;min-height:16px', w3Modal);
@@ -2474,8 +2667,13 @@
     var p = info.params || {};
     switch (info.action) {
       case 'enter': return fill(t('confirmEnter'), { fee: '1' });
-      case 'buy-skin': return fill(t('confirmBuy'), { lvl: p.id, name: t('skinNames')[p.id] || '', cost: fmtN(SKIN_COSTS[p.id] || 0), bonus: pct(MAGNET_STEPS[(p.id || 1) - 1] || 0) });
+      case 'buy-skin': if (p.id > 6) return fill(t('confirmBuyCosmetic'), { name: t('skinNames')[p.id] || '', cost: fmtN(SKIN_COSTS[p.id] || 0) });
+        return fill(t('confirmBuy'), { lvl: p.id, name: t('skinNames')[p.id] || '', cost: fmtN(SKIN_COSTS[p.id] || 0), bonus: pct(MAGNET_STEPS[(p.id || 1) - 1] || 0) });
       case 'equip': return p.id ? fill(t('confirmEquip'), { lvl: p.id, name: t('skinNames')[p.id] || '' }) : t('confirmUnequip');
+      case 'equip-fx': return p.id ? fill(t('confirmFx'), { name: t('skinNames')[p.id] || '' }) : t('confirmFxOff');
+      case 'unlock-hero': return fill(t('confirmUnlock'), { name: heroNameOf(p.hero), cost: fmtN(HERO_UNLOCK_COST) });
+      case 'buy-pass': return t('confirmPass');
+      case 'claim-pass': return fill(t('confirmPassClaim'), { lvl: p.level, track: p.premium ? t('passPremiumTrack') : t('passFreeTrack') });
       case 'claim': return fill(t('confirmClaim'), { season: Number(p.season) + 1, rank: Number(p.rank) + 1 });
       case 'rollover': return fill(t('confirmRollover'), { season: Number(p.season) + 1 });
       case 'submit-run': return fill(t('confirmSave'), { points: fmtN(info.points || 0) });
@@ -2531,6 +2729,12 @@
     try { window.localStorage.setItem('arc-voxel-quest:best', String(val)); } catch (e) { /* ignore */ }
   }
   function activeHeroSpec() { return HEROES[selectedHeroIdx]; }
+  function heroNameOf(i) { var h = HEROES[i]; return h ? (lang === 'vi' ? h.nameVi : h.nameEn) : ''; }
+  /* Heroes 5..7 must be unlocked with ARCQ before they can save a ranked run (practice and the extra modes stay open). */
+  function heroLocked(idx) {
+    if (idx < 5 || !web3 || !web3.state.account || !window.ARC_WEB3.isValidAddress(web3.state.contractAddress)) return false;
+    return ((web3.state.heroMask || 0) & (1 << (idx - 5))) === 0;
+  }
   /* Every upgrade NFT the wallet owns is one level; each level widens the item pickup range by 20%. */
   var MAGNET_STEPS = [0.04, 0.06, 0.08, 0.10, 0.12, 0.15]; // each level adds a bit more than the one before: +4% ... +15%
   function magnetBonus(level) { var sum = 0; for (var i = 0; i < Math.min(6, level); i++) sum += MAGNET_STEPS[i]; return sum; }
@@ -2538,7 +2742,7 @@
   function magnetLevel() {
     var ss = web3 && web3.state.account && web3.state.skinState;
     var n = 0;
-    for (var b = ss ? ss.owned : 0; b > 0; b >>= 1) n += b & 1;
+    for (var b = ss ? ss.owned & 63 : 0; b > 0; b >>= 1) n += b & 1; // only items 1..6 are range upgrades; 7..12 are cosmetics
     return Math.min(6, n);
   }
 
@@ -2550,8 +2754,28 @@
       var link = r.url ? '<a href="' + r.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">↗</a>' : '—';
       html += '<tr' + (r.mine ? ' style="background:rgba(56,242,255,.16)"' : '') + '><td>' + (idx + 1) + '</td><td style="font-weight:700" title="' + escHtml(r.addr) + '">' + escHtml(r.name) + '</td><td style="color:#ffd166;font-weight:800">' + r.score + '</td><td>' + link + '</td></tr>';
     });
-    if (!rows.length) html += '<tr><td colspan="4" style="opacity:.75;text-align:center;padding:8px">' + (boardSyncNote() || t('lbEmpty')) + '</td></tr>';
+    if (!rows.length) html += '<tr><td colspan="4" style="opacity:.75;text-align:center;padding:8px">' + boardEmptyText() + '</td></tr>';
     cardLbTable.innerHTML = html;
+  }
+
+  function renderModeSelector() {
+    modeHeadEl.textContent = '🎯 ' + t('modeLabel');
+    modeListEl.innerHTML = '';
+    [['normal', 'modeNormal'], ['endless', 'modeEndless'], ['bossrush', 'modeBossRush']].forEach(function (m) {
+      var b = document.createElement('button');
+      b.className = 'avq-btn' + (gameMode === m[0] ? ' map-on' : '');
+      b.style.padding = '3px 10px';
+      b.style.fontSize = '11.5px';
+      b.textContent = t(m[1]);
+      stopPtr(b);
+      b.onclick = function () {
+        gameMode = m[0];
+        try { window.localStorage.setItem('arc-voxel-quest:mode', gameMode); } catch (e) { /* ignore */ }
+        renderModeSelector();
+      };
+      modeListEl.appendChild(b);
+    });
+    modeDescEl.textContent = t(gameMode === 'endless' ? 'modeDescEndless' : (gameMode === 'bossrush' ? 'modeDescBossRush' : 'modeDescNormal'));
   }
 
   function renderMapSelector() {
@@ -2570,13 +2794,55 @@
         if (phase !== 'playing') clearArena();
         buildArena(idx);
         renderMapSelector();
+    renderModeSelector();
       };
       mapListEl.appendChild(b);
     });
     var curMap = activeMapSpec();
     var bossName = lang === 'vi' ? curMap.boss.nameVi : curMap.boss.nameEn;
     var mobNames = lang === 'vi' ? curMap.mobs.namesVi : curMap.mobs.namesEn;
-    if (typeof mapDescEl !== 'undefined') mapDescEl.textContent = (lang === 'vi' ? '🐾 Quái: ' : '🐾 Mobs: ') + mobNames + ' · Boss: ' + bossName;
+    var diff = { island: 1, glacier: 2, caldera: 2, cross: 3 }[curMap.shape] || 2;
+    var layoutKey = { island: 'mapLayoutIsland', glacier: 'mapLayoutGlacier', caldera: 'mapLayoutCaldera', cross: 'mapLayoutCross' }[curMap.shape] || 'mapLayoutIsland';
+    if (typeof mapDescEl !== 'undefined') mapDescEl.textContent = (lang === 'vi' ? '🐾 Quái: ' : '🐾 Mobs: ') + mobNames + ' · Boss: ' + bossName + ' · ' + t('mapDifficulty') + ' ' + '★'.repeat(diff) + '☆'.repeat(3 - diff) + ' · ' + t(layoutKey);
+    if (typeof mapEl !== 'undefined') mapEl.textContent = '🗺️ ' + (lang === 'vi' ? curMap.nameVi : curMap.nameEn);
+  }
+
+  /* Per-hero damage rating (1-5) and a one-line tip. HP and speed come straight from the hero's real stats. */
+  var HERO_META = {
+    toan_nhu: { dmg: 3, advEn: 'Balanced all-rounder. A good first pick.', advVi: 'Cân bằng, dễ chơi. Hợp người mới.' },
+    xuan_hai: { dmg: 3, advEn: 'Fast but fragile. Chain lightning loves packs: keep moving.', advVi: 'Nhanh nhưng mỏng máu. Sét chuyền hợp đám đông, luôn di chuyển.' },
+    elias_j: { dmg: 3, advEn: 'Homing bolts and a wide pickup range: levels up quickly.', advVi: 'Tên bám đích và tầm hút rộng: lên cấp nhanh.' },
+    lily_hoang: { dmg: 4, advEn: 'Spinning blades cover every side. Great when surrounded.', advVi: 'Phi tiêu xoay phủ mọi hướng, hợp khi bị vây.' },
+    kien_trinh: { dmg: 4, advEn: 'Very sturdy with a piercing lance. Slow but forgiving.', advVi: 'Rất trâu, mũi khoan xuyên. Chậm nhưng dễ tha thứ.' },
+    hieu_nguyen: { dmg: 3, advEn: 'Stay close: the shockwave pushes mobs back. Good against swarms.', advVi: 'Đứng gần quái: sóng âm đẩy lùi, hợp đánh đám đông.' },
+    quoc_vuong: { dmg: 4, advEn: 'Slow and sturdy. Throw the boomerang through lines of mobs.', advVi: 'Chậm và trâu. Ném boomerang xuyên hàng quái.' },
+    miley_nguyen: { dmg: 3, advEn: 'Fast but only 3 HP. Keep moving and drop mines behind you.', advVi: 'Nhanh nhưng chỉ 3 máu. Vừa chạy vừa thả mìn phía sau.' },
+  };
+  function renderHeroStats(h) {
+    heroStatsEl.innerHTML = '';
+    var meta = HERO_META[h.id] || { dmg: 3, advEn: '', advVi: '' };
+    var parts = String(lang === 'vi' ? h.tagVi : h.tagEn).split(' · ');
+    var weaponPart = String(parts.pop() || '').replace(/\s*\(\d+ HP\)\s*$/u, '');
+    function bar(label, value, color, text) {
+      var r = el('div', 'display:flex;align-items:center;gap:6px', heroStatsEl);
+      el('span', 'width:74px;opacity:.8', r).textContent = label;
+      var track = el('div', 'flex:1;height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden', r);
+      el('div', 'height:100%;border-radius:99px;background:' + color + ';width:' + Math.round(clamp(value, 0.06, 1) * 100) + '%', track);
+      el('span', 'width:34px;text-align:right;font-variant-numeric:tabular-nums', r).textContent = text;
+    }
+    bar(t('statHp'), h.hp / 6, '#ff7b9c', '♥' + h.hp);
+    bar(t('statSpeed'), (h.speedMult - 0.85) / 0.45, '#63f7ff', h.speedMult.toFixed(2));
+    bar(t('statDmg'), meta.dmg / 5, '#ffd166', meta.dmg + '/5');
+    var upg = t('upgrades')[h.weaponId] || { name: weaponPart, desc: '' };
+    var wl = el('div', 'margin-top:3px;line-height:1.4', heroStatsEl);
+    el('b', 'color:#ffd166', wl).textContent = t('weaponLabel') + ': ';
+    wl.appendChild(document.createTextNode(upg.name + ' — ' + upg.desc));
+    var ol = el('div', 'line-height:1.4;opacity:.85', heroStatsEl);
+    el('b', 'color:#ffd166', ol).textContent = t('outfitLabel') + ': ';
+    ol.appendChild(document.createTextNode(parts.join(' · ')));
+    var al = el('div', 'line-height:1.4;color:#7dffb1', heroStatsEl);
+    el('b', '', al).textContent = t('adviceLabel') + ': ';
+    al.appendChild(document.createTextNode(lang === 'vi' ? meta.advVi : meta.advEn));
   }
 
   function renderHeroSelector() {
@@ -2584,9 +2850,10 @@
     HEROES.forEach(function (h, idx) {
       var b = document.createElement('button');
       b.className = 'avq-btn' + (idx === selectedHeroIdx ? ' hero-on' : '');
+      b.dataset.locked = heroLocked(idx) ? '1' : '';
       b.style.padding = '5px 10px';
       b.style.fontSize = '12px';
-      b.textContent = h.short;
+      b.textContent = (heroLocked(idx) ? '🔒 ' : '') + h.short;
       stopPtr(b);
       b.onclick = function () {
         selectedHeroIdx = idx;
@@ -2598,7 +2865,9 @@
       heroListEl.appendChild(b);
     });
     var cur = activeHeroSpec();
-    heroDescEl.textContent = (lang === 'vi' ? cur.nameVi + ' — ' + cur.tagVi : cur.nameEn + ' — ' + cur.tagEn);
+    if (phase !== 'playing') { maxHearts = cur.hp; hearts = cur.hp; }
+    heroDescEl.textContent = lang === 'vi' ? cur.nameVi : cur.nameEn;
+    renderHeroStats(cur);
     if (typeof heroPreviewBox !== 'undefined') heroPreviewBox.style.borderColor = cur.color;
   }
 
@@ -2632,7 +2901,7 @@
   }
 
   function spawnEnemy(kind) {
-    var p = randomLand(11, true) || randomLand(8, false);
+    var p = randomLand(wave <= 2 ? 15 : 11, true) || randomLand(wave <= 2 ? 12 : 8, false);
     if (!p) return;
     var mp = activeMapSpec();
     var tier = getThreatTier(wave);
@@ -2646,7 +2915,7 @@
       enemies.push({
         kind: 'boss', type: 'boss', bossName: bossLabel, bossPattern: mp.boss.pattern, bossGlow: mp.boss.glow,
         x: p.x, z: p.z, y: groundAt(p.x, p.z),
-        hp: Math.round(36 * wScale), maxHp: Math.round(36 * wScale),
+        hp: Math.round(36 * wScale * (runMode === 'bossrush' ? 1 + 0.3 * bossesKilled : 1)), maxHp: Math.round(36 * wScale * (runMode === 'bossrush' ? 1 + 0.3 * bossesKilled : 1)),
         speed: R.enemySpeed * 0.72 * spdScale, radius: 1.55, wobble: 0, flash: 0,
         aiTimer: 2.0, meteorTimer: 3.4,
         node: makeCharacter('enemy', 3.4, BOSS_BOXES, 'boss', mp, false),
@@ -2751,7 +3020,7 @@
 
   function renderLevelUpModal() {
     lvlTitleEl.textContent = t('levelUpTitle');
-    lvlHintEl.textContent = t('levelUpHint');
+    lvlHintEl.textContent = coachDone ? t('levelUpHint') : t('coachLevel');
     lvlCardsEl.innerHTML = '';
     var dict = t('upgrades');
     (levelUpChoices || []).forEach(function (id, idx) {
@@ -2814,6 +3083,7 @@
       if (e.isElite || e.kind === 'boss') spawnFxRing(e.x, (groundAt(e.x, e.z) || 1) + 0.15, e.z, e.kind === 'boss' ? '#ff2e63' : '#ffd166', 0.8, e.kind === 'boss' ? 6.5 : 3.4, 0.36, false);
       spawnPopup(e.x, e.y + 1.4, e.z, '+' + pts + (mult > 1 ? ' ×' + mult : ''), e.kind === 'boss' || e.isElite ? '#ffd166' : '#aef9ff');
       if (e.kind === 'boss') {
+        onBossKilled();
         showBanner(t('bossDefeated'));
         for (var b = 0; b < 6; b++) addShard(e.x + (Math.random() - 0.5) * 3, e.z + (Math.random() - 0.5) * 3, 25, true);
         blip(520, 0.35, 'triangle', 0.08, 1040);
@@ -2934,6 +3204,7 @@
     hearts -= 1;
     streak = 0; streakTimer = 0;
     invulnerable = 1.0;
+    shakeT = 0.3;
     if (knockX || knockZ) moveOnIsland(hero, knockX, knockZ, 0.35);
     blip(160, 0.28, 'square', 0.07, 80);
     if (reasonText) showBanner(reasonText);
@@ -2983,6 +3254,7 @@
     soundBtn.textContent = muted ? '🔇' : '🔊';
     soundBtn.title = muted ? t('soundOff') : t('soundOn');
     pauseBtn.title = t('pauseTitle');
+    helpBtn.title = t('helpTitle');
     var connected = web3 && web3.state.account;
     var web3Label = connected ? ('🟢 ' + window.ARC_WEB3.shortAddr(web3.state.account) + (prizeAlert ? ' 🏆' : '')) : ('🔌 ' + t('connectWalletShort'));
     web3Btn.textContent = web3Label;
@@ -3002,11 +3274,13 @@
     tabBtns.profile.textContent = t('tabProfile');
     tabBtns.quests.textContent = t('tabQuests');
     tabBtns.shop.textContent = t('tabShop');
+    tabBtns.pass.textContent = t('tabPass');
     tabBtns.season.textContent = t('tabSeason');
     tabBtns.wallet.textContent = t('tabWallet');
     tabBtns.leaderboard.textContent = t('tabLeaderboard');
     tabBtns.network.textContent = t('tabNetwork');
     renderMapSelector();
+    renderModeSelector();
     renderHeroSelector();
     renderEmbeddedLeaderboard();
     updateCardTexts();
@@ -3017,7 +3291,17 @@
     return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
   }
 
+  /* A saved run has to be a real attempt: long enough or high enough (the server enforces the same rule). */
+  function tooShortToSave() {
+    var rule = web3 && web3.state.setup && web3.state.setup.saveRule;
+    return Boolean(rule) && runMode === 'normal' && !runGuest && elapsed < rule.minSeconds && Math.floor(score / 20) < rule.minPoints;
+  }
   function updateCardTexts() {
+    cardQuitBtn.style.display = phase === 'playing' && paused ? 'inline-flex' : 'none';
+    cardXBtn.style.display = 'none'; cardDiscordBtn.style.display = 'none';
+    cardXBtn.textContent = '𝕏 ' + t('shareX'); cardDiscordBtn.textContent = '💬 ' + t('shareDiscord');
+    if (!(phase === 'playing' && paused)) quitArmedAt = 0;
+    if (!quitArmedAt) cardQuitBtn.textContent = '🚪 ' + t('quitBtn');
     if (phase === 'title') {
       card.style.display = 'block';
       setTimeout(layoutCard, 0);
@@ -3031,7 +3315,7 @@
       cardClaimOwnBtn.style.display = 'none';
       cardShareBtn.style.display = 'none';
       cardClaimStatus.textContent = '';
-      cardHint.textContent = t('hintControls');
+      cardHint.textContent = (needsWallet() ? t('guestTitleNote') + ' · ' : '') + t('hintControls');
     } else if (phase === 'playing') {
       card.style.display = paused ? 'block' : 'none';
       setTimeout(layoutCard, 0);
@@ -3063,19 +3347,23 @@
         + '<span>' + t('killsLabel') + ': ' + kills + '</span>';
       cardPlayBtn.textContent = t('playAgainBtn');
       var relayOn = Boolean(web3 && web3.state.setup && web3.state.setup.relay && web3.state.setup.relay.enabled);
-      if (score > 0 && !runClaimed) {
+      if (runMode === 'normal' && score > 0 && !runClaimed && !tooShortToSave()) {
         var canRealChain = web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress);
         cardClaimBtn.style.display = 'inline-flex';
-        cardClaimBtn.textContent = canRealChain ? (relayOn ? t('claimGaslessBtn') : t('claimChainBtn')) : t('claimDemoBtn');
-        cardClaimOwnBtn.style.display = canRealChain && relayOn ? 'inline-flex' : 'none';
+        cardClaimBtn.textContent = canRealChain && !runGuest ? (relayOn ? t('claimGaslessBtn') : t('claimChainBtn')) : t('guestConnectBtn');
+        cardClaimOwnBtn.style.display = canRealChain && !runGuest && relayOn ? 'inline-flex' : 'none';
         cardClaimOwnBtn.textContent = t('claimOwnBtn');
       } else {
         cardClaimBtn.style.display = 'none';
         cardClaimOwnBtn.style.display = 'none';
       }
       cardShareBtn.style.display = runClaimed ? 'inline-flex' : 'none';
+      cardXBtn.style.display = runClaimed ? 'inline-flex' : 'none';
+      cardDiscordBtn.style.display = runClaimed ? 'inline-flex' : 'none';
       cardShareBtn.textContent = '📤 ' + t('shareBtn');
-      cardClaimStatus.textContent = claimStatusText;
+      var rule2 = web3 && web3.state.setup && web3.state.setup.saveRule;
+      cardClaimStatus.textContent = runMode !== 'normal' ? modeStatusText
+        : (!runClaimed && score > 0 && tooShortToSave() ? fill(t('saveRuleShort'), { s: rule2.minSeconds, p: rule2.minPoints }) : claimStatusText);
       if (lastTxExplorerUrl) {
         // Built with DOM nodes (not innerHTML) so wallet or server error text can never inject markup.
         var txLink = document.createElement('a');
@@ -3095,24 +3383,109 @@
     dashBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     surrenderBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     pauseBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
+    statPill.style.display = next === 'playing' ? '' : 'none'; // no zero-score HUD on the menu
     if (next === 'playing') { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); }
     if (next !== 'playing') { bossBarWrap.style.display = 'none'; lvlOverlay.style.display = 'none'; levelUpChoices = null; }
+    playAgainArmedAt = 0;
+    if (next === 'won' || next === 'lost') releaseFocus(); // no button keeps the focus after a run ends
     refreshStaticTexts();
     post({ type: 'state', phase: phase, score: score });
   }
 
-  /* Playing requires a connected wallet that has signed in (free message signature). */
+  /* A wallet is only needed to save a run onchain: without one the run is a free practice run. */
+  var runGuest = false;
+  var gameMode = 'normal', runMode = 'normal';
+  var fxTrailT = 0;
+  try { var savedMode = window.localStorage.getItem('arc-voxel-quest:mode'); if (savedMode === 'endless' || savedMode === 'bossrush') gameMode = savedMode; } catch (e) { /* ignore */ }
+  var BOSS_RUSH_COUNT = 5;
+  var bossesKilled = 0, bossRushDone = false, bossRushMs = 0, modeStatusText = '';
+  var modeBoards = {};
+  function setModeLabel() {
+    if (typeof modeEl === 'undefined') return;
+    modeEl.textContent = runMode === 'bossrush' ? '💀 ' + bossesKilled + '/' + BOSS_RUSH_COUNT : (runMode === 'endless' ? '♾️' : '');
+  }
+  /* A boss rush win is flagged here and handled at the end of the frame, never in the middle of the enemy loop. */
+  function onBossKilled() {
+    if (runMode !== 'bossrush') return;
+    bossesKilled += 1;
+    setModeLabel();
+    if (bossesKilled >= BOSS_RUSH_COUNT) { bossRushMs = Math.round(elapsed * 1000); bossRushDone = true; }
+    else nextBossAt = elapsed + 3;
+  }
+  function submitModeResult(won) {
+    if (runMode === 'normal') return;
+    if (runGuest || !web3) { modeStatusText = t('modeGuest'); return; }
+    var qualifies = runMode === 'endless' ? wave >= 2 : bossesKilled >= 1;
+    if (!qualifies) { modeStatusText = t('modeNoResult'); return; }
+    var run = { score: score, gems: gems, maxCombo: maxCombo, wave: wave, elapsed: Math.floor(elapsed), telemetry: telemetry };
+    var extra = runMode === 'bossrush' ? { bosses: bossesKilled, timeMs: won ? bossRushMs : Math.round(elapsed * 1000) } : {};
+    var modeNow = runMode;
+    modeStatusText = t('modeSaving');
+    web3.submitMode(runMode, run, extra).then(function (res) {
+      modeStatusText = res.improved ? t('modeNewBest') : t('modeKeptBest');
+      delete modeBoards[modeNow];
+      updateCardTexts();
+    }).catch(function (err) {
+      modeStatusText = t('modeFailed') + ' ' + String((err && err.message) || '');
+      updateCardTexts();
+    });
+  }
+  /* Recent runs kept in this browser, so unsaved ones can be listed too (the chain only knows about saved runs). */
+  var RECENT_KEY = 'arc-voxel-quest:recent';
+  var lastRecentAt = 0;
+  function loadRecent() { try { return JSON.parse(window.localStorage.getItem(RECENT_KEY) || '[]'); } catch (e) { return []; } }
+  function saveRecent(list) { try { window.localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, 12))); } catch (e) { /* ignore */ } }
+  function recordRecent() {
+    if (score <= 0) return;
+    lastRecentAt = Date.now();
+    var list = loadRecent();
+    list.unshift({ at: lastRecentAt, score: score, wave: wave, hero: selectedHeroIdx, saved: false, practice: runGuest });
+    saveRecent(list);
+  }
+  function markRecentSaved() {
+    var list = loadRecent();
+    for (var i = 0; i < list.length; i++) if (list[i].at === lastRecentAt) list[i].saved = true;
+    saveRecent(list);
+  }
+  var coachDone = false, coachShown = {};
+  try { coachDone = window.localStorage.getItem('arc-voxel-quest:coach') === '1'; } catch (e) { coachDone = true; }
+  /* First-run hints: three short messages at set times, plus one at the first level-up. */
+  function coachTick() {
+    if (coachDone) return;
+    [[1.5, 'coachMove'], [8, 'coachGem'], [15, 'coachDash']].forEach(function (c) {
+      if (elapsed >= c[0] && !coachShown[c[1]]) { coachShown[c[1]] = true; showBanner(t(c[1])); }
+    });
+  }
   function needsWallet() {
     return Boolean(web3) && !web3.state.account;
   }
   var pendingStart = false;
   /* A connected wallet is required to play; after connecting, the pending run starts automatically. */
+  /* Practice runs without an account: 2 per day, then the player is invited to sign in. */
+  var GUEST_RUNS_PER_DAY = 2;
+  function guestRunsToday() {
+    try {
+      var j = JSON.parse(window.localStorage.getItem('arc-voxel-quest:guest-runs') || 'null');
+      return j && j.day === new Date().toDateString() ? j.n : 0;
+    } catch (e) { return 0; }
+  }
+  function countGuestRun() {
+    try { window.localStorage.setItem('arc-voxel-quest:guest-runs', JSON.stringify({ day: new Date().toDateString(), n: guestRunsToday() + 1 })); } catch (e) { /* ignore */ }
+  }
   function requestStart() {
-    if (needsWallet()) {
-      pendingStart = true;
-      openConnectModal();
+    if (gameMode === 'normal' && heroLocked(selectedHeroIdx) && tutorialSeen()) {
+      activeTab = 'shop';
+      openWeb3Modal();
+      w3Status.textContent = '🔒 ' + t('heroLockedMsg');
       return;
     }
+    if (web3 && !web3.state.account && guestRunsToday() >= GUEST_RUNS_PER_DAY && tutorialSeen()) {
+      openConnectModal();
+      cnStatus.textContent = '⚠️ ' + t('guestLimit');
+      return;
+    }
+    // The first time, explain the rules before anything else. Without a wallet the run is a free practice run (never saved).
+    if (!tutorialSeen()) { openTutorial(function () { requestStart(); }); return; }
     start();
   }
 
@@ -3139,7 +3512,7 @@
     hearts = maxHearts;
     timeLeft = R.duration > 0 ? R.duration : 0;
     elapsed = 0; spawnTimer = 0; nextBossAt = R.duration > 0 ? Math.min(R.bossEvery, Math.max(8, R.duration * 0.5)) : R.bossEvery;
-    invulnerable = 0; dashCooldown = 0; dashTimer = 0; paused = false; levelUpChoices = null;
+    invulnerable = 1.0; dashCooldown = 0; dashTimer = 0; paused = false; levelUpChoices = null; // one second of protection at the start of a run
     runClaimed = false; claimStatusText = ''; lastTxExplorerUrl = '';
     telemetry = []; lastCpAt = 0; runHeroShort = hSpec.short;
     fireRateMult = 1; speedStatMult = hSpec.speedMult; magnetMult = 1 + magnetBonus(magnetLevel());
@@ -3148,20 +3521,29 @@
     wTimers = { dragon: 0.2, lightning: 0.2, shuriken: 0.2, coloa: 0.2, drill: 0.2, orbital: 1.5, pulse: 0.3, boomerang: 0.3, mines: 0.4 };
     hero.x = 0; hero.z = 0; hero.vx = hero.vz = 0;
     for (var i = 0; i < R.maxPickups; i++) addShard(undefined, undefined, 15, false);
-    spawnEnemy('stalker'); spawnEnemy('charger'); spawnEnemy('caster');
     blip(520, 0.12, 'triangle', 0.07, 780);
-    if (web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress)) {
-      web3.startRun({ hero: selectedHeroIdx }).catch(function () { /* claim will explain if the anti-cheat server is unreachable */ });
+    runMode = gameMode; bossesKilled = 0; bossRushDone = false; bossRushMs = 0; modeStatusText = '';
+    if (runMode === 'bossrush') nextBossAt = 4; // the first boss arrives after the usual 4 quiet seconds
+    coachShown = {};
+    if (web3 && !web3.state.account) countGuestRun();
+    runGuest = !(web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress));
+    if (!runGuest) {
+      web3.startRun({ hero: selectedHeroIdx, ranked: runMode === 'normal' }).catch(function () { /* claim will explain if the anti-cheat server is unreachable */ });
     }
     setPhase('playing');
+    setModeLabel();
+    if (runGuest) showBanner(t('guestBanner'));
   }
 
   function finish(won) {
     if (score > best) { best = score; saveBest(best); }
+    if (!coachDone) { coachDone = true; try { window.localStorage.setItem('arc-voxel-quest:coach', '1'); } catch (e) { /* ignore */ } }
+    recordRecent();
+    submitModeResult(won);
     blip(won ? 660 : 200, 0.5, won ? 'triangle' : 'sawtooth', 0.06, won ? 990 : 90);
     setPhase(won ? 'won' : 'lost');
   }
-  function canRestart() { return performance.now() - endedAt > 500; }
+  function canRestart() { return performance.now() - endedAt > 1200; } // long enough that a Space tap from the last second of play cannot restart
 
   /* 12. WEB3 MODAL */
   // Contract custom errors reach the wallet as bare 4-byte selectors: translate them for players.
@@ -3252,7 +3634,7 @@
     return h + 'h ' + m + 'm';
   }
 
-  var SKIN_COLORS = ['', '#ff4d6d', '#ffb703', '#2ecc71', '#9b5de5', '#6ee7ff', '#ffd700'];
+  var SKIN_COLORS = ['', '#ff4d6d', '#ffb703', '#2ecc71', '#9b5de5', '#6ee7ff', '#ffd700', '#16a34a', '#e11d48', '#fbbf24', '#63f7ff', '#ff7b3d', '#c084fc'];
 
   /* Upgrade-NFT icon: the Arc Voxel "A" arch logo (blue to purple to pink) on a tile tinted by level, with one dot per level. */
   var LOGO_PATH = 'M14 94 L36 94 L38 66 C39 50 44 40 52 40 C60 40 64 50 65 66 L67 94 L90 94 L84 56 C80 26 66 8 50 8 C34 8 20 26 16 56 Z';
@@ -3272,7 +3654,8 @@
       + dots + '</svg>';
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
   }
-  var SKIN_COSTS = [0, 1000, 2000, 3000, 5000, 8000, 12000];
+  var SKIN_COSTS = [0, 1000, 2000, 3000, 5000, 8000, 12000, 4000, 6000, 10000, 2500, 6000, 0];
+  var HERO_UNLOCK_COST = 800;
 
   function panel(parent) {
     return el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', parent);
@@ -3367,6 +3750,15 @@
         if (url) { var a = el('a', 'color:#4ade80;text-decoration:none', line); a.href = url; a.target = '_blank'; a.rel = 'noreferrer'; a.textContent = 'tx ↗'; }
       });
       if (!(res.history || []).length) list.textContent = t('noRuns');
+      var unsaved = loadRecent().filter(function (r) { return !r.saved; }).slice(0, 8);
+      if (unsaved.length) {
+        el('div', 'margin-top:8px;font-weight:800;color:#ffd166', list).textContent = t('recentUnsavedTitle');
+        unsaved.forEach(function (r) {
+          var line2 = el('div', 'display:flex;justify-content:space-between;gap:8px;opacity:.8', list);
+          el('span', '', line2).textContent = Math.floor(r.score / 20) + ' pts · W' + r.wave + ' · ' + ((HEROES[r.hero] && HEROES[r.hero].short) || '—');
+          el('span', 'color:#ffb4a2', line2).textContent = r.practice ? t('recentPractice') : t('recentUnsaved');
+        });
+      }
     });
   }
 
@@ -3398,10 +3790,11 @@
   /* Badge roadmap: what each badge needs, how far the player is, and tips to climb. */
   var SCORE_DIVISOR = 20; // in-game score / 20 = onchain points (same rule the server applies)
   var BADGE_STEPS = [
-    { tier: 1, pts: 300, icon: '🔰' }, { tier: 2, pts: 700, icon: '🛡️' }, { tier: 3, pts: 1500, icon: '⚔️' }, { tier: 4, pts: 3000, icon: '🏰' },
-    { tier: 5, pts: 6000, icon: '🔥' }, { tier: 6, pts: 12000, icon: '🗿' }, { tier: 7, pts: 25000, icon: '⚡' }, { tier: 8, pts: 40000, icon: '🌟' },
+    { tier: 1, pts: 10, icon: '🌱' }, { tier: 2, pts: 25, icon: '🥉' }, { tier: 3, pts: 50, icon: '🥈' }, { tier: 4, pts: 100, icon: '🥇' },
+    { tier: 5, pts: 300, icon: '🔰' }, { tier: 6, pts: 700, icon: '🛡️' }, { tier: 7, pts: 1500, icon: '⚔️' }, { tier: 8, pts: 3000, icon: '🏰' },
+    { tier: 9, pts: 6000, icon: '🔥' }, { tier: 10, pts: 12000, icon: '🗿' }, { tier: 11, pts: 25000, icon: '⚡' }, { tier: 12, pts: 40000, icon: '🌟' },
   ];
-  var CHAMPION_TIER = 9;
+  var CHAMPION_TIER = 13;
   var MILESTONES = [
     { key: 'msRuns5', icon: '🎮', ok: function (p) { return p.totalRuns >= 5; } },
     { key: 'msRuns25', icon: '🏅', ok: function (p) { return p.totalRuns >= 25; } },
@@ -3515,6 +3908,127 @@
         }
       })(id);
     }
+    renderCosmeticsShop(ss, bal);
+    renderHeroUnlocks(bal);
+  }
+
+  /* A small preview tile: a blocky hero wearing the skin colour, or leaving a glowing trail for effects. */
+  function cosmeticIconUri(id) {
+    var c = SKIN_COLORS[id] || '#6ee7ff';
+    var body = '<rect x="38" y="46" width="24" height="26" fill="' + (id <= 9 ? c : '#3b4a6b') + '"/><rect x="40" y="26" width="20" height="20" fill="#f1c9a5"/>'
+      + '<rect x="38" y="72" width="10" height="14" fill="#1f2a44"/><rect x="52" y="72" width="10" height="14" fill="#1f2a44"/><rect x="40" y="26" width="20" height="7" fill="#2a1d14"/>';
+    var trail = '';
+    if (id >= 10) {
+      for (var i = 0; i < 6; i++) trail += '<circle cx="' + (30 - i * 5) + '" cy="' + (78 - i * 3) + '" r="' + (7 - i) + '" fill="' + c + '" opacity="' + (0.85 - i * 0.12) + '"/>';
+    }
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="2" y="2" width="96" height="96" rx="20" fill="#0a1226" stroke="' + c + '" stroke-width="3"/>' + trail + body + '</svg>';
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  function renderCosmeticsShop(ss, bal) {
+    var box = panel(w3Body);
+    heading(box, t('shopCosmeticsTitle'));
+    for (var id = 7; id <= 12; id++) {
+      (function (sid) {
+        var owned = (ss.owned & (1 << (sid - 1))) !== 0;
+        var isFx = sid >= 10;
+        var equipped = isFx ? ss.fx === sid : ss.equipped === sid;
+        var row = el('div', 'display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;background:rgba(120,230,255,.06);border:1px solid ' + (equipped ? '#7dffb1' : 'transparent'), box);
+        var ico = el('img', 'width:44px;height:44px;border-radius:10px;flex:none', row); ico.src = cosmeticIconUri(sid); ico.alt = t('previewWord');
+        var txt = el('div', 'display:flex;flex-direction:column;flex:1;min-width:0', row);
+        el('span', 'font-weight:800', txt).textContent = t('skinNames')[sid];
+        el('span', 'font-size:12px;opacity:.75', txt).textContent = sid === 12 ? t('passExclusive') : (SKIN_COSTS[sid] + ' ARCQ' + (owned ? ' · ' + t('unlockedWord') : ''));
+        if (sid === 12 && !owned) return;
+        var b = el('button', '', row); b.className = 'avq-btn' + (owned && !equipped ? ' pri' : '');
+        if (!owned) {
+          b.textContent = t('buyBtn');
+          b.disabled = bal < BigInt(SKIN_COSTS[sid]) * 10n ** 18n;
+          b.onclick = function () { runTx(t('buyBtn') + ' ' + t('skinNames')[sid], function () { return web3.buySkin(sid); }); };
+        } else if (equipped) {
+          b.textContent = t('unequipBtn');
+          b.onclick = function () { runTx(t('unequipBtn'), function () { return isFx ? web3.equipFx(0) : web3.equipSkin(0); }); };
+        } else {
+          b.textContent = t('equipBtn');
+          b.onclick = function () { runTx(t('equipBtn') + ' ' + t('skinNames')[sid], function () { return isFx ? web3.equipFx(sid) : web3.equipSkin(sid); }); };
+        }
+      })(id);
+    }
+  }
+
+  function renderHeroUnlocks(bal) {
+    var st = web3.state;
+    var box = panel(w3Body);
+    heading(box, t('shopHeroesTitle'));
+    hint(box, t('heroUnlockNote'));
+    for (var hi = 5; hi <= 7; hi++) {
+      (function (idx) {
+        var open = ((st.heroMask || 0) & (1 << (idx - 5))) !== 0;
+        var row = el('div', 'display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:rgba(120,230,255,.06)', box);
+        el('span', 'flex:1;font-weight:800', row).textContent = heroNameOf(idx);
+        if (open) { el('span', 'color:#7dffb1;font-weight:800', row).textContent = '✅ ' + t('unlockedWord'); return; }
+        var b = el('button', '', row); b.className = 'avq-btn pri';
+        b.textContent = t('unlockBtn') + ' · ' + HERO_UNLOCK_COST + ' ARCQ';
+        b.disabled = bal < BigInt(HERO_UNLOCK_COST) * 10n ** 18n;
+        b.onclick = function () { runTx(t('unlockBtn') + ' ' + heroNameOf(idx), function () { return web3.unlockHero(idx); }); };
+      })(hi);
+    }
+  }
+
+  /* Battle Pass: 30 levels, a free and a premium track, and weekly quests. */
+  function passTimeLeft(endsAt) {
+    var sec = Math.max(0, endsAt - Math.floor(Date.now() / 1000));
+    var d = Math.floor(sec / 86400), h = Math.floor((sec % 86400) / 3600);
+    return d > 0 ? d + (lang === 'vi' ? ' ngày ' : 'd ') + h + 'h' : h + 'h ' + Math.floor((sec % 3600) / 60) + 'm';
+  }
+  function renderPassTab() {
+    var st = web3.state;
+    if (!st.account) { renderLoginPanel(w3Body); return; }
+    var p = st.pass;
+    if (!p) { hint(w3Body, t('lbLoading')); return; }
+    var level = Math.min(30, Math.floor(p.xp / 100));
+    var box = panel(w3Body);
+    heading(box, t('passTitle'));
+    kv(box, t('passLevelWord'), level + ' / 30');
+    kv(box, t('passXpWord'), p.xp + ' / 3000');
+    kv(box, t('passEndsIn'), passTimeLeft(p.endsAt));
+    var bar = el('div', 'height:8px;border-radius:99px;background:rgba(120,230,255,.16);overflow:hidden', box);
+    el('div', 'height:100%;width:' + Math.round(Math.min(1, p.xp / 3000) * 100) + '%;background:linear-gradient(90deg,#38f2ff,#ffd166)', bar);
+    hint(box, t('passXpHint'));
+    if (p.premium) {
+      el('div', 'color:#7dffb1;font-weight:800', box).textContent = '✅ ' + t('passPremiumOn');
+    } else {
+      var buy = el('button', 'align-self:flex-start', box); buy.className = 'avq-btn gold'; buy.textContent = t('passBuy');
+      buy.onclick = function () { runTx(t('passBuy'), function () { return web3.buyPass(); }); };
+      hint(box, t('passBuyNote'));
+    }
+    var wk = st.weekly || { runs: 0, points: 0, mask: 0 };
+    var wbox = panel(w3Body);
+    heading(wbox, t('weeklyTitle'));
+    [[1, t('weeklyRuns'), Math.min(10, wk.runs) + ' / 10'], [2, t('weeklyBig'), (wk.mask & 2) ? '✅' : '—'], [4, t('weeklyPoints'), Math.min(1500, wk.points) + ' / 1500']].forEach(function (q) {
+      var r = el('div', 'display:flex;justify-content:space-between;gap:8px', wbox);
+      el('span', '', r).textContent = ((wk.mask & q[0]) ? '✅ ' : '▫️ ') + q[1];
+      el('span', 'font-family:ui-monospace,monospace;color:#aef9ff', r).textContent = q[2];
+    });
+    var lbox = panel(w3Body);
+    lbox.style.maxHeight = '300px';
+    lbox.style.overflowY = 'auto';
+    for (var lv = 1; lv <= 30; lv++) {
+      (function (L) {
+        var reached = level >= L;
+        var row = el('div', 'display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:8px;background:' + (reached ? 'rgba(74,222,128,.08)' : 'rgba(120,230,255,.04)'), lbox);
+        el('span', 'width:52px;font-weight:800;color:' + (reached ? '#7dffb1' : '#ffd166'), row).textContent = t('passLevelWord') + ' ' + L;
+        [[false, 5 * L], [true, 10 * L]].forEach(function (tr) {
+          var prem = tr[0];
+          var claimedMask = prem ? p.premiumClaimed : p.freeClaimed;
+          var done = (claimedMask & (1 << (L - 1))) !== 0;
+          var b = el('button', 'flex:1;font-size:11.5px;padding:4px 6px', row); b.className = 'avq-btn' + (reached && !done && (!prem || p.premium) ? ' pri' : '');
+          var label = (prem ? '⭐ ' : '') + tr[1] + ' ARCQ' + (prem && L === 30 ? ' + ' + t('skinNames')[12] : '');
+          b.textContent = done ? '✅ ' + t('passClaimed') : (reached && (!prem || p.premium) ? t('passClaim') + ' · ' + label : label);
+          b.disabled = done || !reached || (prem && !p.premium);
+          b.onclick = function () { runTx(t('passClaim') + ' ' + L, function () { return web3.claimPassReward(p.id, L, prem); }); };
+        });
+      })(lv);
+    }
   }
 
 
@@ -3528,7 +4042,55 @@
     cnStatus.textContent = '';
     renderConnectModal();
   }
-  function closeConnectModal() { cnOverlay.style.display = 'none'; }
+  /* Closing a window must not leave focus on a button: a later Space or Enter would press it again. */
+  function releaseFocus() {
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    canvas.focus();
+  }
+  function closeConnectModal() { cnOverlay.style.display = 'none'; releaseFocus(); }
+
+  /* How to play: shown automatically before the first run, and from the help button. */
+  var tutOverlay = el('div', 'position:fixed;inset:0;background:rgba(4,9,24,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:45', hud);
+  stopPtr(tutOverlay);
+  var tutModal = el('div', 'width:min(94vw,520px);max-height:92vh;overflow-y:auto;background:#0d1730;border:1px solid rgba(99,247,255,.35);border-radius:22px;padding:20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.65);display:flex;flex-direction:column;gap:10px;color:#eefaff', tutOverlay);
+  var tutAfter = null;
+  function tutorialSeen() {
+    try { return window.localStorage.getItem('arc-voxel-quest:tutorial') === '1'; } catch (e) { return true; }
+  }
+  var tutStepIdx = 0;
+  function renderTutorial() {
+    tutModal.innerHTML = '';
+    var steps = [['tutS1T', 'tutS1', '🕹️'], ['tutS2T', 'tutS2', '💎'], ['tutS3T', 'tutS3', '⚡'], ['tutS4T', 'tutS4', '⛓️']];
+    el('div', 'font-size:22px;font-weight:900;color:#63f7ff', tutModal).textContent = '🎮 ' + t('tutTitle');
+    el('div', 'font-size:12px;opacity:.75', tutModal).textContent = fill(t('tutStep'), { i: tutStepIdx + 1, n: steps.length });
+    var bar = el('div', 'height:5px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden', tutModal);
+    el('div', 'height:100%;background:linear-gradient(90deg,#38f2ff,#ffd166);width:' + Math.round(((tutStepIdx + 1) / steps.length) * 100) + '%', bar);
+    var st = steps[tutStepIdx];
+    var row = el('div', 'padding:14px 12px;border-radius:14px;background:#0a1630;border:1px solid rgba(120,230,255,.22);min-height:150px', tutModal);
+    el('div', 'font-size:34px;line-height:1.1', row).textContent = st[2];
+    el('div', 'font-weight:900;color:#ffd166;font-size:17px;margin:6px 0 4px', row).textContent = t(st[0]);
+    el('div', 'font-size:13.5px;line-height:1.5;opacity:.94', row).textContent = t(st[1]);
+    var nav = el('div', 'display:flex;gap:8px;justify-content:space-between', tutModal);
+    var back = el('button', tutStepIdx === 0 ? 'visibility:hidden' : '', nav); back.className = 'avq-btn'; back.textContent = t('tutBack');
+    back.onclick = function () { tutStepIdx = Math.max(0, tutStepIdx - 1); renderTutorial(); };
+    var last = tutStepIdx === steps.length - 1;
+    var next = el('button', 'flex:1;justify-content:center;font-size:15px', nav); next.className = 'avq-btn pri'; next.textContent = last ? t('tutOk') : t('tutNext');
+    next.onclick = function () { if (last) closeTutorial(); else { tutStepIdx += 1; renderTutorial(); } };
+  }
+  function openTutorial(after) {
+    tutAfter = after || null;
+    tutStepIdx = 0;
+    renderTutorial();
+    tutOverlay.style.display = 'flex';
+  }
+  function closeTutorial() {
+    tutOverlay.style.display = 'none';
+    try { window.localStorage.setItem('arc-voxel-quest:tutorial', '1'); } catch (e) { /* ignore */ }
+    releaseFocus();
+    var cb = tutAfter;
+    tutAfter = null;
+    if (cb) cb();
+  }
 
   function walletBadge(parent, w) {
     if (w.icon) {
@@ -3603,7 +4165,14 @@
         var note = el('div', 'grid-column:1 / -1;padding:10px 12px;border-radius:12px;background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.4);font-size:12px;line-height:1.5;color:#ffe9a8', grid);
         note.textContent = t('noWalletDetected') + (inFrame ? ' ' + t('noWalletInFrame') : '');
         var again = el('button', 'margin-top:6px;display:block', note); again.className = 'avq-btn'; again.textContent = t('detectAgain');
-        again.onclick = function () { renderConnectModal(); };
+        again.onclick = function () {
+          cnStatus.textContent = '⏳ ' + t('detecting') + '...';
+          web3.listWalletOptions().then(function (found) {
+            var n = found.filter(function (w2) { return w2.installed; }).length;
+            renderConnectModal();
+            cnStatus.textContent = n ? '✅ ' + fill(t('detectedN'), { n: n }) : '⚠️ ' + t('detectNone');
+          });
+        };
       }
     });
     var wcOn = Boolean(st.setup && st.setup.walletConnectProjectId);
@@ -3631,6 +4200,13 @@
       el('span', 'font-weight:700;font-family:ui-monospace,monospace;color:#aef9ff;text-align:right', r).textContent = val;
     }
     el('div', 'font-weight:800;color:#ffd166', box).textContent = t('seasonTitle');
+    el('div', 'font-size:12px;opacity:.8;line-height:1.4', box).textContent = t('seasonOptional');
+    var rulesEl = el('div', 'font-size:12px;line-height:1.45;opacity:.92;padding:6px 8px;border-radius:8px;background:rgba(120,230,255,.06)', box);
+    function showRules(fee, len, days) { rulesEl.textContent = '📜 ' + t('seasonRulesTitle') + ': ' + fill(t('seasonRulesBody'), { fee: fee, len: len, days: days }); }
+    showRules('1', 24, 7);
+    if (A.isValidAddress(st.contractAddress)) {
+      web3.loadSeasonRules().then(function (r) { showRules(A.formatUnits(r.fee, 6, 0), Math.round(r.length / 3600), r.rollDays); }).catch(function () { /* keep the defaults */ });
+    }
     if (!A.isValidAddress(st.contractAddress)) {
       el('div', 'opacity:.9', box).textContent = t('noContractMsg');
       return;
@@ -3648,8 +4224,21 @@
     }
     el('div', 'opacity:.7;font-size:12px', box).textContent = t('seasonHint');
     var btns = el('div', 'display:flex;gap:8px;flex-wrap:wrap;align-items:center', box);
+    var alreadyIn = Boolean(ps && ps.entered);
+    var tick = null;
+    if (season && !alreadyIn) {
+      // Before taking 1 USDC: say who is in, how big the pool is, and what happens with few players.
+      var warn = el('div', 'padding:8px 10px;border-radius:10px;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.45);font-size:12.5px;line-height:1.5;color:#ffe9a8', box);
+      var pool = A.formatUnits(season.poolUsdc, 6, 2);
+      warn.textContent = (Number(season.entrants) === 0 ? t('seasonEmptyWarn') : fill(t('seasonPoolWarn'), { n: String(season.entrants), pool: pool })) + ' ' + t('seasonRules');
+      var tickRow = el('label', 'display:flex;gap:8px;align-items:flex-start;font-size:12.5px;cursor:pointer', box);
+      tick = el('input', 'margin-top:2px', tickRow); tick.type = 'checkbox';
+      el('span', '', tickRow).textContent = t('seasonTick');
+    }
     var bEnter = el('button', '', btns); bEnter.className = 'avq-btn pri'; bEnter.textContent = t('enterBtn');
-    bEnter.disabled = !st.account || Boolean(ps && ps.entered);
+    function syncEnter() { bEnter.disabled = !st.account || alreadyIn || (tick ? !tick.checked : false); }
+    syncEnter();
+    if (tick) tick.onchange = syncEnter;
     bEnter.onclick = function () { runTx(t('enterBtn'), function () { return web3.enterSeason(); }); };
     if (st.network.faucetUrl) {
       var fl = el('a', 'color:#63f7ff;text-decoration:underline;font-weight:700', btns);
@@ -3683,11 +4272,58 @@
           any = true;
           var r2 = el('div', 'display:flex;justify-content:space-between;gap:8px;align-items:center', prizeList);
           el('span', 'font-family:ui-monospace,monospace', r2).textContent = '#' + (ps2.id + 1) + ' · Top ' + (rank + 1) + ' · ' + A.shortAddr(entry.player) + ' · ' + entry.bestScore + ' pts';
-          var bC = el('button', '', r2); bC.className = 'avq-btn'; bC.textContent = t('claimPrizeBtn');
-          bC.onclick = function () { runTx(t('claimPrizeBtn'), function () { return web3.claimPrize(ps2.id, rank); }); };
+          if (st.account && String(entry.player).toLowerCase() === String(st.account).toLowerCase()) {
+            var bC = el('button', '', r2); bC.className = 'avq-btn'; bC.textContent = t('claimPrizeBtn');
+            bC.onclick = function () { runTx(t('claimPrizeBtn'), function () { return web3.claimPrize(ps2.id, rank); }); };
+          } else {
+            el('span', 'font-size:11px;opacity:.65', r2).textContent = t('winnerOnly');
+          }
         });
       });
       if (!any) prizeList.textContent = t('noPrizes');
+    });
+  }
+
+  var lbKind = 'chain';
+  function loadModeBoard(kind) {
+    if (!web3) return;
+    web3.fetchModeBoard(kind).then(function (b) { modeBoards[kind] = b; }).catch(function () { modeBoards[kind] = { entries: [], failed: true }; }).then(function () {
+      if (w3Overlay.style.display === 'flex') renderWeb3Modal();
+    });
+  }
+  function renderModeBoardBox(kind) {
+    var box = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
+    var board = modeBoards[kind];
+    if (!board) { loadModeBoard(kind); el('div', 'opacity:.75', box).textContent = t('lbLoading'); return; }
+    var mine = web3 && web3.state.account ? String(web3.state.account).toLowerCase() : '';
+    (board.entries || []).forEach(function (e, idx) {
+      var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace', box);
+      if (mine && String(e.player).toLowerCase() === mine) r.style.cssText += ';background:rgba(56,242,255,.16);border-radius:8px;padding:2px 6px';
+      var nm = e.nickname || window.ARC_WEB3.shortAddr(e.player);
+      var res = kind === 'endless' ? 'W' + e.wave + ' · ' + e.score : e.bosses + '/' + BOSS_RUSH_COUNT + ' · ' + (e.timeMs / 1000).toFixed(1) + 's';
+      el('span', '', r).textContent = '#' + (idx + 1) + ' ' + nm;
+      el('span', 'color:#ffd166', r).textContent = res;
+    });
+    if (!(board.entries || []).length) el('div', 'opacity:.75', box).textContent = board.failed ? t('lbError') : t('modeBoardEmpty');
+    el('div', 'opacity:.6;font-size:11.5px', box).textContent = t('modeBoardNote');
+  }
+  function renderFriendsBox() {
+    var fbox = el('div', 'display:flex;flex-direction:column;gap:6px', w3Body);
+    var row = el('div', 'display:flex;gap:6px', fbox);
+    var inp = el('input', 'flex:1', row); inp.className = 'avq-input'; inp.placeholder = t('friendPlaceholder'); inp.maxLength = 64;
+    var add = el('button', '', row); add.className = 'avq-btn pri'; add.textContent = t('friendAdd');
+    var msg = el('div', 'font-size:12px;color:#ffb4a2', fbox);
+    add.onclick = function () {
+      msg.textContent = '';
+      web3.addFriend(inp.value).then(function () { return web3.refreshBoard(true, 'friends'); }).then(function () { renderWeb3Modal(); }).catch(function (err) { msg.textContent = String((err && err.message) || err); });
+    };
+    var friends = (web3.state.friends || []);
+    if (!friends.length) el('div', 'opacity:.7;font-size:12px', fbox).textContent = t('friendEmpty');
+    friends.forEach(function (a) {
+      var fr = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace;font-size:12px', fbox);
+      el('span', '', fr).textContent = window.ARC_WEB3.shortAddr(a);
+      var rm = el('button', 'padding:1px 8px;font-size:11px', fr); rm.className = 'avq-btn'; rm.textContent = t('friendRemove');
+      rm.onclick = function () { web3.removeFriend(a); web3.refreshBoard(true, 'friends').then(function () { renderWeb3Modal(); }); };
     });
   }
 
@@ -3707,6 +4343,8 @@
       renderQuestsTab();
     } else if (activeTab === 'shop') {
       renderShopTab();
+    } else if (activeTab === 'pass') {
+      renderPassTab();
     } else if (activeTab === 'season') {
       renderSeasonTab();
     } else if (activeTab === 'wallet') {
@@ -3767,27 +4405,45 @@
         bOut.onclick = function () { web3.logout().then(function () { refreshStaticTexts(); renderWeb3Modal(); }); };
       }
     } else if (activeTab === 'leaderboard') {
+      var kinds = el('div', 'display:flex;gap:6px;flex-wrap:wrap', w3Body);
+      [['chain', t('lbKindChain')], ['endless', t('lbKindEndless')], ['bossrush', t('lbKindBoss')]].forEach(function (k) {
+        var kb = el('button', '', kinds); kb.className = 'avq-btn' + (lbKind === k[0] ? ' pri' : ''); kb.textContent = k[1];
+        kb.onclick = function () { lbKind = k[0]; if (k[0] !== 'chain') loadModeBoard(k[0]); renderWeb3Modal(); };
+      });
+      if (lbKind !== 'chain') {
+        renderModeBoardBox(lbKind);
+        return;
+      }
       el('div', 'font-weight:800;color:#ffd166', w3Body).textContent = t('lbModeChain');
-      var filters = el('div', 'display:flex;gap:6px', w3Body);
-      [['all', t('lbAll')], ['season', t('lbSeasonF')]].forEach(function (f) {
+      var filters = el('div', 'display:flex;gap:6px;flex-wrap:wrap', w3Body);
+      [['all', t('lbAll')], ['season', t('lbDay')], ['week', t('lbWeek')], ['friends', t('lbFriends')]].forEach(function (f) {
         var fb = el('button', '', filters); fb.className = 'avq-btn' + (st.boardScope === f[0] ? ' pri' : ''); fb.textContent = f[1];
         fb.onclick = function () { web3.refreshBoard(true, f[0]).then(function () { renderWeb3Modal(); renderEmbeddedLeaderboard(); }); };
       });
+      if (st.boardScope === 'friends') renderFriendsBox();
       var listBox = el('div', 'background:#091224;border:1px solid rgba(120,230,255,.2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px', w3Body);
-      var lbRows = getMergedLeaderboard();
+      var lbRows = getMergedLeaderboard('filtered');
       lbRows.forEach(function (entry, idx) {
         var r = el('div', 'display:flex;justify-content:space-between;gap:8px;font-family:ui-monospace,monospace', listBox);
         var link = entry.url ? ' <a href="' + entry.url + '" target="_blank" rel="noreferrer" style="color:#4ade80;text-decoration:none">tx ↗</a>' : '';
         if (entry.mine) r.style.cssText += ';background:rgba(56,242,255,.16);border-radius:8px;padding:2px 6px';
         r.innerHTML = '<span title="' + escHtml(entry.addr) + '">#' + (idx + 1) + ' ' + escHtml(entry.name) + (entry.hasNick ? ' <span style="opacity:.55;font-size:11px">' + escHtml(entry.addr) + '</span>' : '') + (entry.wave ? ' · W' + entry.wave : '') + (entry.heroName ? ' · ' + escHtml(entry.heroName) : '') + '</span><span style="color:#ffd166">' + entry.score + ' pts' + link + '</span>';
       });
-      if (!lbRows.length) el('div', 'opacity:.75', listBox).textContent = boardSyncNote() || t('lbEmpty');
+      if (!lbRows.length) el('div', 'opacity:.75', listBox).textContent = boardEmptyText();
     } else {
+      var lockBox = el('div', 'padding:8px 10px;border-radius:10px;background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.6);color:#fecaca;font-size:12.5px;line-height:1.5;display:flex;flex-direction:column;gap:6px', w3Body);
+      el('div', 'font-weight:800;color:#fda4af', lockBox).textContent = '🔒 ' + t('advLockTitle');
+      el('div', '', lockBox).textContent = t('advLockWarn');
+      var lockRow = el('label', 'display:flex;gap:8px;align-items:flex-start;cursor:pointer', lockBox);
+      var unlockChk = el('input', 'margin-top:2px', lockRow); unlockChk.type = 'checkbox';
+      el('span', '', lockRow).textContent = t('advLockCheck');
       el('div', 'font-weight:700', w3Body).textContent = t('contractLabel');
       var cInput = el('input', '', w3Body); cInput.className = 'avq-input'; cInput.placeholder = '0x...'; cInput.value = st.contractAddress || '';
       el('div', 'opacity:.72;font-size:12px', w3Body).textContent = t('contractHint');
       var bSaveC = el('button', 'align-self:flex-start', w3Body); bSaveC.className = 'avq-btn pri'; bSaveC.textContent = t('saveContract');
       bSaveC.onclick = function () {
+        var official = String((window.ARC_WEB3_CONFIG && window.ARC_WEB3_CONFIG.defaultContract) || '').toLowerCase();
+        if (String(cInput.value).trim().toLowerCase() !== official && !window.confirm(t('contractChangeConfirm'))) return;
         try { web3.setContractAddress(cInput.value); w3Status.textContent = '✅ ' + t('statusSavedContract'); refreshStaticTexts(); }
         catch (err) { w3Status.textContent = '⚠️ ' + ((err && err.message) || err); }
       };
@@ -3805,11 +4461,15 @@
       };
       var bResetNet = el('button', '', nRow); bResetNet.className = 'avq-btn'; bResetNet.textContent = t('resetArc');
       bResetNet.onclick = function () { web3.resetDefaultNetwork(); w3Status.textContent = '✅ Arc Testnet (5042002)'; renderWeb3Modal(); };
+      var advControls = [cInput, bSaveC, nName, nId, nRpc, nSym, nExp, bApplyNet];
+      function syncLock() { advControls.forEach(function (c) { c.disabled = !unlockChk.checked; }); }
+      unlockChk.onchange = syncLock;
+      syncLock(); // the official contract and network stay locked until the player ticks the box
     }
   }
 
   function openWeb3Modal() { w3Overlay.style.display = 'flex'; w3Status.textContent = ''; renderWeb3Modal(); }
-  function closeWeb3Modal() { w3Overlay.style.display = 'none'; }
+  function closeWeb3Modal() { w3Overlay.style.display = 'none'; releaseFocus(); }
 
   langBtn.onclick = function () {
     lang = lang === 'vi' ? 'en' : 'vi';
@@ -3819,7 +4479,7 @@
     if (w3Overlay.style.display === 'flex') renderWeb3Modal();
     if (cnOverlay.style.display === 'flex') renderConnectModal();
   };
-  soundBtn.onclick = function () { muted = !muted; refreshStaticTexts(); };
+  soundBtn.onclick = toggleMute;
   seasonPill.onclick = function () { activeTab = 'season'; if (web3 && web3.state.account) openWeb3Modal(); else openConnectModal(); };
   web3Btn.onclick = function () { if (!web3 || web3.state.account) openWeb3Modal(); else openConnectModal(); };
   w3Close.onclick = closeWeb3Modal;
@@ -3831,30 +4491,40 @@
   function setPaused(value) {
     if (phase !== 'playing' || paused === value) return;
     paused = value;
+    if (levelUpChoices) lvlOverlay.style.display = value ? 'none' : 'flex'; // the upgrade choice waits while paused
     updateCardTexts();
     musicSync();
   }
   pauseBtn.onclick = function () { setPaused(!paused); };
   document.addEventListener('visibilitychange', function () { if (document.hidden && !levelUpChoices) setPaused(true); });
+  var playAgainArmedAt = 0;
+  function tickPlayAgain() {
+    if (!playAgainArmedAt) return;
+    var left = 5 - Math.floor((performance.now() - playAgainArmedAt) / 1000);
+    if (left <= 0) { playAgainArmedAt = 0; cardPlayBtn.textContent = t('playAgainBtn'); return; }
+    cardPlayBtn.textContent = fill(t('playAgainConfirm'), { s: left });
+    setTimeout(tickPlayAgain, 300);
+  }
   cardPlayBtn.onclick = function () {
     if (phase === 'playing' && paused) { setPaused(false); return; } // the pause card resumes the run instead of restarting it
+    if ((phase === 'won' || phase === 'lost') && !canRestart()) return;
+    // A signed-in player whose run is not saved yet must confirm (second press within 5 seconds) before it is thrown away.
+    if ((phase === 'won' || phase === 'lost') && score > 0 && !runClaimed && !runGuest && web3 && web3.state.account) {
+      var nowMs = performance.now();
+      if (!playAgainArmedAt || nowMs - playAgainArmedAt > 5000) { playAgainArmedAt = nowMs; tickPlayAgain(); return; }
+      playAgainArmedAt = 0;
+    }
     requestStart();
   };
   dashBtn.addEventListener('pointerdown', function (e) { e.stopPropagation(); triggerPulseDash(); });
   async function doClaim(freeGas) {
+    if (runMode !== 'normal') return; // Endless and Boss Rush results go to the game server's boards, never onchain
     if (score <= 0 || runClaimed) return;
-    if (!web3) {
-      runClaimed = true;
-      claimStatusText = t('claimedDemoOk') + ' (+' + score + ' ARCQ)';
+    // A practice run (no wallet) is never saved. Offer to sign in instead of recording anything.
+    if (!web3 || !web3.state.account || !window.ARC_WEB3.isValidAddress(web3.state.contractAddress) || runGuest) {
+      claimStatusText = t('guestSavedNote');
       updateCardTexts();
-      return;
-    }
-    var canRealChain = web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress);
-    if (!canRealChain) {
-      var resDemo = web3.claimDemoRun({ score: score, gems: gems, maxCombo: maxCombo });
-      runClaimed = true;
-      claimStatusText = t('claimedDemoOk') + ' (+' + score + ' ARCQ, TX ' + window.ARC_WEB3.shortAddr(resDemo.txHash) + ')';
-      updateCardTexts();
+      if (web3 && !web3.state.account) openConnectModal();
       return;
     }
     if (!freeGas && web3.state.kind !== 'passkey' && web3.state.kind !== 'email' && web3.state.usdcBalance === 0n) { // passkey and email wallets never pay gas
@@ -3870,6 +4540,7 @@
     try {
       var txRes = freeGas ? await web3.submitRunGasless(run) : await web3.submitRunOnChain(run);
       runClaimed = true;
+      markRecentSaved();
       claimStatusText = t('claimedOk') + ' (+' + ((txRes.points || 0) * 0.2).toFixed(1).replace(/\.0$/u, '') + ' ARCQ, ' + (txRes.points || 0) + ' pts)';
       lastTxExplorerUrl = txRes.explorerUrl || '';
       web3.refreshBoard(true).then(renderEmbeddedLeaderboard);
@@ -3908,6 +4579,25 @@
     if (lastTxExplorerUrl) { g.fillStyle = '#9fb7d9'; g.font = '500 24px ui-monospace,monospace'; g.fillText(lastTxExplorerUrl.replace(/^https?:\/\//u, '').slice(0, 64), 540, 1000); }
     return c;
   }
+  function shareText() {
+    return 'I scored ' + score + ' (wave ' + wave + ') in Arc Voxel Quest on Arc Testnet.' + (lastTxExplorerUrl ? ' Verified onchain: ' + lastTxExplorerUrl : '');
+  }
+  cardXBtn.onclick = function () {
+    var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText()) + '&url=' + encodeURIComponent(window.location.origin + '/');
+    window.open(url, '_blank', 'noopener');
+  };
+  cardDiscordBtn.onclick = function () {
+    try { navigator.clipboard.writeText(shareText() + ' ' + window.location.origin + '/'); } catch (e) { /* clipboard unavailable */ }
+    makeShareCard().toBlob(function (blob) {
+      if (blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'arc-voxel-score.png';
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+      claimStatusText = t('shareDiscordDone');
+      updateCardTexts();
+    }, 'image/png');
+  };
   cardShareBtn.onclick = function () {
     var text = 'I scored ' + score + ' (wave ' + wave + ') in Arc Voxel Quest on Arc Testnet.' + (lastTxExplorerUrl ? ' Verified onchain: ' + lastTxExplorerUrl : '');
     makeShareCard().toBlob(function (blob) {
@@ -3931,21 +4621,25 @@
   var KEYMAP = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right' };
   window.addEventListener('keydown', function (event) {
     if (document.activeElement === nickInput) return;
+    if (tutOverlay.style.display === 'flex') { if (event.code === 'Escape') closeTutorial(); return; }
     if (cnOverlay.style.display === 'flex') { if (event.code === 'Escape') closeConnectModal(); return; }
     if (w3Overlay.style.display === 'flex') { if (event.code === 'Escape') closeWeb3Modal(); return; }
+    if (phase === 'playing' && (event.code === 'KeyP' || event.code === 'Escape')) { setPaused(!paused); return; }
     if (levelUpChoices) {
+      if (paused) return;
       if (event.code === 'Digit1' && levelUpChoices[0]) applyUpgrade(levelUpChoices[0]);
       else if (event.code === 'Digit2' && levelUpChoices[1]) applyUpgrade(levelUpChoices[1]);
       else if (event.code === 'Digit3' && levelUpChoices[2]) applyUpgrade(levelUpChoices[2]);
       return;
     }
-    if (event.code === 'KeyM') { muted = !muted; refreshStaticTexts(); return; }
+    if (event.code === 'KeyM') { toggleMute(); return; }
     if (phase === 'playing' && event.code === 'KeyP') { setPaused(!paused); return; }
     if (phase === 'playing' && (event.code === 'Space' || event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
       event.preventDefault(); triggerPulseDash(); return;
     }
     if (KEYMAP[event.code]) { keys[KEYMAP[event.code]] = true; event.preventDefault(); }
-    if (phase !== 'playing' && canRestart() && (event.code === 'Enter' || event.code === 'Space')) requestStart();
+    // Space and Enter start a run from the menu only. On the results screen they do nothing, so a dash tap cannot start a new run.
+    if (phase === 'title' && canRestart() && (event.code === 'Enter' || event.code === 'Space')) requestStart();
   });
   window.addEventListener('keyup', function (event) { if (KEYMAP[event.code]) keys[KEYMAP[event.code]] = false; });
   window.addEventListener('blur', function () { keys = {}; });
@@ -3953,8 +4647,8 @@
   var drag = null;
   canvas.addEventListener('pointerdown', function (event) {
     canvas.focus();
-    if (w3Overlay.style.display === 'flex' || cnOverlay.style.display === 'flex' || levelUpChoices) return;
-    if (phase !== 'playing') { if (canRestart()) requestStart(); return; }
+    if (w3Overlay.style.display === 'flex' || cnOverlay.style.display === 'flex' || tutOverlay.style.display === 'flex' || levelUpChoices) return;
+    if (phase !== 'playing') { if (phase === 'title' && canRestart()) requestStart(); return; }
     if (!drag) {
       drag = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0 };
       joyBase.style.display = 'block';
@@ -4003,6 +4697,10 @@
 
     if (phase === 'playing' && !paused && !levelUpChoices) {
       elapsed += dt;
+      coachTick();
+      var hasBoss = false;
+      for (var bi0 = 0; bi0 < enemies.length; bi0++) if (enemies[bi0].kind === 'boss') { hasBoss = true; break; }
+      if (hasBoss !== bossAlive) { bossAlive = hasBoss; musicSync(); } // the boss gets its own, tenser music
       // Telemetry for the server's plausibility check: a checkpoint every few seconds, sparser in very long runs.
       if (elapsed - lastCpAt >= 5 + Math.floor(elapsed / 600) * 5 && telemetry.length < 390) {
         lastCpAt = Math.floor(elapsed);
@@ -4029,6 +4727,11 @@
           : (t('waveBanner') + ' ' + wave + ' · ' + tierLbl + ' · ' + t('waveWarn'));
         showBanner(tierMsg);
         blip(620, 0.2, 'triangle', 0.06, 980);
+        if (runMode === 'endless' && wave % 5 === 0) {
+          hearts = Math.min(maxHearts, hearts + 1);
+          invulnerable = Math.max(invulnerable, 3);
+          showBanner(fill(t('endlessMilestone'), { w: wave }));
+        }
       }
 
       var dir = inputDirection();
@@ -4042,6 +4745,15 @@
       hero.vz = lerp(hero.vz, dir.z * R.heroSpeed * speedMult, Math.min(1, dt * 14));
       moveOnIsland(hero, hero.vx * dt, hero.vz * dt, 0.32, true);
       if (Math.abs(hero.vx) + Math.abs(hero.vz) > 0.4) hero.facing = Math.atan2(hero.vx, hero.vz);
+      // An equipped effect (items 10..12) leaves a glowing trail while you move. Cosmetic only.
+      var fxId = web3 && web3.state.account && web3.state.skinState ? web3.state.skinState.fx : 0;
+      if (fxId && Math.hypot(hero.vx, hero.vz) > 0.8) {
+        fxTrailT -= dt;
+        if (fxTrailT <= 0) {
+          fxTrailT = fxId === 12 ? 0.07 : 0.11;
+          spawnFxRing(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.12, hero.z, SKIN_COLORS[fxId], 0.25, fxId === 11 ? 2.2 : 1.5, 0.38, false);
+        }
+      }
 
       // Abyss check (punishes careless edge running)
       if (groundAt(hero.x, hero.z) === 0) {
@@ -4055,8 +4767,11 @@
       spawnTimer += dt;
       var curTier = getThreatTier(wave);
       var curSpawnEvery = Math.max(curTier.spawnFloor, R.enemySpawnEvery - (wave - 1) * 0.09);
-      var waveMaxEnemies = Math.min(54, curTier.maxMobs + (wave - 1) * 2);
-      if (spawnTimer >= curSpawnEvery && enemies.length < waveMaxEnemies) {
+      var waveMaxEnemies = Math.min(runMode === 'endless' ? 80 : 54, curTier.maxMobs + (wave - 1) * 2);
+      if (runMode === 'bossrush') waveMaxEnemies = 0; // only bosses
+      // Waves 1-2 are gentler: 4 seconds with no spawns, about a third fewer mobs.
+      if (wave <= 2) { curSpawnEvery /= 0.65; waveMaxEnemies = Math.round(waveMaxEnemies * 0.65); }
+      if (elapsed >= 4 && spawnTimer >= curSpawnEvery && enemies.length < waveMaxEnemies) {
         spawnTimer = 0;
         var roll = Math.random();
         if (curTier.casterRatio > 0 && roll < curTier.casterRatio) spawnEnemy('caster');
@@ -4064,7 +4779,7 @@
         else spawnEnemy('stalker');
       }
       if (elapsed >= nextBossAt) {
-        nextBossAt += R.bossEvery;
+        nextBossAt = runMode === 'bossrush' ? Infinity : nextBossAt + R.bossEvery;
         spawnEnemy('boss');
       }
 
@@ -4453,6 +5168,7 @@
       var ambientCount = pickups.filter(function (pk) { return !pk.isXp; }).length;
       while (ambientCount < R.maxPickups) { addShard(undefined, undefined, 15, false); ambientCount++; }
       if (R.duration > 0 && timeLeft <= 0) finish(true);
+      if (bossRushDone) { bossRushDone = false; finish(true); }
     }
 
     function lerpAngle(a, b, tVal) {
@@ -4539,6 +5255,9 @@
   /* 15. CAMERA & LOOP */
   var PITCH = 47 * Math.PI / 180;
   var focus = new THREE.Vector3(0, groundAt(0, 0), 0);
+  var shakeT = 0;
+  var reduceMotion = false;
+  try { reduceMotion = Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { /* ignore */ }
   function cameraDistance() {
     var aspect = camera.aspect;
     return aspect >= 1 ? 34 : 34 + (1 - aspect) * 34;
@@ -4549,6 +5268,10 @@
     focus.y = lerp(focus.y, hero.y, Math.min(1, dt * 4));
     var distance = cameraDistance();
     camera.position.set(focus.x, focus.y + Math.sin(PITCH) * distance, focus.z + Math.cos(PITCH) * distance);
+    if (shakeT > 0) { // a short screen shake when the hero is hit
+      shakeT = Math.max(0, shakeT - dt);
+      if (!reduceMotion) { var amp = shakeT * 1.8; camera.position.x += (Math.random() - 0.5) * amp; camera.position.y += (Math.random() - 0.5) * amp; }
+    }
     camera.lookAt(focus.x, focus.y + 0.6, focus.z);
     scene.fog.near = distance * 1.05;
     scene.fog.far = distance * 2.45;
