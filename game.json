@@ -53,7 +53,7 @@
     "enemySpeedGrowth": 0.06,
     "enemySpawnEvery": 0.9,
     "maxEnemies": 36,
-    "maxPickups": 6,
+    "maxPickups": 9,
     "bossEvery": 30,
     "heroSize": 1.9,
     "enemySize": 1.65,
@@ -63,7 +63,7 @@
       "every": 15,
       "seconds": 2
     },
-    "worldSize": 38,
+    "worldSize": 50,
     "seed": 11,
     "palette": {
       "skyTop": "#060b1e",

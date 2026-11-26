@@ -360,7 +360,7 @@ contract ArcVoxelSkins is ArcVoxelArt {
 
 /**
  * @title ArcVoxelGameFi
- * @notice v7: ERC-20 ARCQ rewards, relayed signed runs, quests, 13 badge tiers, a cosmetics shop, a 30-level
+ * @notice v8: ERC-20 ARCQ rewards, relayed signed runs, quests, 13 badge tiers, a cosmetics shop, a 30-level
  *         battle pass, auto-rolling empty seasons, and USDC tournaments.
  * @dev On Arc Testnet deploy with usdc_ = 0x3600000000000000000000000000000000000000.
  *      ENTRY_FEE and all prize pools are denominated in 6-decimal ERC-20 USDC, not native value.
@@ -492,7 +492,7 @@ contract ArcVoxelGameFi {
     mapping(address => uint16) private _ownedSkins;
     mapping(address => uint8) private _equippedSkin;
     mapping(address => uint8) private _equippedFx;
-    // Bit (hero - 5) is set once heroes 5..7 are unlocked with ARCQ. Heroes 0..4 are free.
+    // Bit (hero - 8) is set once heroes 8..9 are unlocked with ARCQ. Heroes 0..7 are free.
     mapping(address => uint8) private _heroMask;
     mapping(uint256 => mapping(address => PassState)) private _pass;
     mapping(address => WeekState) private _weekly;
@@ -648,7 +648,7 @@ contract ArcVoxelGameFi {
         if (block.timestamp > r.deadline) revert Expired();
         if (usedRun[r.runId]) revert RunAlreadyUsed();
         if (r.score == 0 || r.score > MAX_SCORE_PER_RUN) revert InvalidScore();
-        if (r.hero >= 8) revert InvalidHero();
+        if (r.hero >= 10) revert InvalidHero();
         if (!heroUnlocked(r.player, r.hero)) revert HeroLocked();
         if (r.player == address(0)) revert ZeroAddress();
         if (_recover(_runDigest(r), signature) != signer) revert BadSignature();
@@ -845,10 +845,10 @@ contract ArcVoxelGameFi {
         return (_ownedSkins[player], _equippedSkin[player], _equippedFx[player]);
     }
 
-    /// @notice Heroes 5..7 are unlocked once with ARCQ. They are not stronger: the unlock only opens them for ranked runs.
+    /// @notice Heroes 8..9 are unlocked once with ARCQ. They are not stronger: the unlock only opens them for ranked runs.
     function unlockHero(uint8 hero) external nonReentrant {
-        if (hero < 5 || hero > 7) revert InvalidHero();
-        uint8 bit = uint8(1) << (hero - 5);
+        if (hero < 8 || hero > 9) revert InvalidHero();
+        uint8 bit = uint8(1) << (hero - 8);
         if ((_heroMask[msg.sender] & bit) != 0) revert HeroAlreadyUnlocked();
         _burn(msg.sender, HERO_UNLOCK_COST);
         _heroMask[msg.sender] |= bit;
@@ -856,8 +856,8 @@ contract ArcVoxelGameFi {
     }
 
     function heroUnlocked(address player, uint8 hero) public view returns (bool) {
-        if (hero < 5) return true;
-        return hero < 8 && ((_heroMask[player] >> (hero - 5)) & 1) == 1;
+        if (hero < 8) return true;
+        return hero < 10 && ((_heroMask[player] >> (hero - 8)) & 1) == 1;
     }
 
     function getHeroMask(address player) external view returns (uint8) {

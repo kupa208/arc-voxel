@@ -270,16 +270,16 @@ async function main() {
     await wait(await sub(deployer, await signTicket(dave.account.address, pts, 1n)))
     ok(`${pts}-point run earns milestone badge tier ${tier}`, (await tierOfPlayer(dave.account.address)) === tier, String(await tierOfPlayer(dave.account.address)))
   }
-  ok('a run with a hero that is not unlocked reverts', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 5)), 'HeroLocked'))
-  ok('heroes above 7 are invalid', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 8)), 'InvalidHero'))
-  ok('a free hero needs no unlock', (await call('heroUnlocked', [dave.account.address, 3])) === true && (await call('heroUnlocked', [dave.account.address, 6])) === false)
-  ok('unlocking a free hero is invalid', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [3] }), 'InvalidHero'))
-  ok('unlocking without ARCQ reverts', await reverts(dave.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [5] }), 'InsufficientBalance'))
+  ok('a run with a hero that is not unlocked reverts', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 8)), 'HeroLocked'))
+  ok('heroes above 7 are invalid', await reverts(sub(deployer, await signTicket(dave.account.address, 20, 1n, 0, undefined, 10)), 'InvalidHero'))
+  ok('a free hero needs no unlock', (await call('heroUnlocked', [dave.account.address, 7])) === true && (await call('heroUnlocked', [dave.account.address, 9])) === false)
+  ok('unlocking a free hero is invalid', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [7] }), 'InvalidHero'))
+  ok('unlocking without ARCQ reverts', await reverts(dave.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [8] }), 'InsufficientBalance'))
   const balBeforeUnlock = (await call('balanceOf', [alice.account.address])) as bigint
-  await send(alice, 'unlockHero', [5])
-  ok('unlock burns 800 ARCQ and opens the hero', balBeforeUnlock - ((await call('balanceOf', [alice.account.address])) as bigint) === 800n * 10n ** 18n && (await call('heroUnlocked', [alice.account.address, 5])) === true)
-  ok('a hero cannot be unlocked twice', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [5] }), 'HeroAlreadyUnlocked'))
-  await wait(await sub(deployer, await signTicket(alice.account.address, 40, 1n, 0, undefined, 5)))
+  await send(alice, 'unlockHero', [8])
+  ok('unlock burns 800 ARCQ and opens the hero', balBeforeUnlock - ((await call('balanceOf', [alice.account.address])) as bigint) === 800n * 10n ** 18n && (await call('heroUnlocked', [alice.account.address, 8])) === true)
+  ok('a hero cannot be unlocked twice', await reverts(alice.writeContract({ address: game, abi: gAbi, functionName: 'unlockHero', args: [8] }), 'HeroAlreadyUnlocked'))
+  await wait(await sub(deployer, await signTicket(alice.account.address, 40, 1n, 0, undefined, 8)))
   ok('an unlocked hero can save a run', true)
 
   // alice earns ARCQ again on the new day (two capped runs) to shop for the new items

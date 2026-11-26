@@ -173,13 +173,51 @@
         [2.2, 2.1, 1.4, 0.85, 0.85, 1.1, '#c4b5fd', true],
       ],
     },
+    {
+      id: 'lecter',
+      short: 'Lecter',
+      nameEn: 'Lecter · Community Builder',
+      nameVi: 'Lecter · Community Builder',
+      tagEn: 'Curly Red Hair & Round Glasses · Blue USDC Shirt · Orbital Strike beams call down on packs (4 HP)',
+      tagVi: 'Tóc xoăn đỏ · Kính tròn · Áo xanh USDC · Thiên Lôi Arc giáng chùm sáng xuống đám đông (4 HP)',
+      weaponId: 'orbital',
+      hp: 4,
+      speedMult: 1.06,
+      magnet: 4.6,
+      dashCd: 1.9,
+      color: '#3b82f6',
+      boxes: [
+        [-1.0, 1, -0.7, 1.0, 2, 1.0, '#e2e8f0'], [1.0, 1, -0.7, 1.0, 2, 1.0, '#e2e8f0'],
+        [0, 3.1, 0, 3.5, 2.7, 3.2, '#1d4ed8'], [0, 6.1, 0.2, 3.6, 3.1, 3.3, '#f5d0b0'],
+        [0, 8.1, 0.1, 3.9, 1.4, 3.5, '#9a3412'],
+      ],
+    },
+    {
+      id: 'teddyz',
+      short: 'Teddyz',
+      nameEn: 'Teddyz · Community Builder',
+      nameVi: 'Teddyz · Community Builder',
+      tagEn: 'Short Black Hair & White Tee · Black Pants · Chain Lightning, a sturdy brawler (5 HP)',
+      tagVi: 'Tóc đen ngắn · Áo thun trắng · Quần đen · Sét chuyền, chiến binh trâu bò (5 HP)',
+      weaponId: 'lightning',
+      hp: 5,
+      speedMult: 1.0,
+      magnet: 3.8,
+      dashCd: 2.0,
+      color: '#f8fafc',
+      boxes: [
+        [-1.1, 1, -0.8, 1.1, 2, 1.1, '#111827'], [1.1, 1, -0.8, 1.1, 2, 1.1, '#111827'],
+        [0, 3.1, 0, 3.9, 2.8, 3.4, '#f8fafc'], [0, 6.1, 0.2, 3.8, 3.2, 3.4, '#f1c9a5'],
+        [0, 8.1, 0.1, 3.9, 1.1, 3.5, '#111827'],
+      ],
+    },
   ];
   var selectedHeroIdx = 0;
 
   /* 1B. 12 ARC GLOBAL COMMUNITY MAPS (Themed Landscapes, Monsters & Unique Bosses) */
   var MAPS = [
     {
-      id: 'vietnam', shape: 'cross', style: 'pagoda', seed: 11,
+      id: 'vietnam', shape: 'plateau', style: 'pagoda', seed: 11,
       nameEn: '🇻🇳 Vietnam', nameVi: '🇻🇳 Vietnam',
       skyTop: '#061a14', skyBottom: '#134e3a', fog: '#0b3024',
       grass: '#15803d', dirt: '#44403c', sand: '#dc2626', water: '#064e3b', waterGlow: false,
@@ -243,7 +281,7 @@
       boss: { nameVi: '☀️ Solar Pharaoh Titan', nameEn: '☀️ Solar Pharaoh Titan', crown: 'sun', body: '#451a03', armor: '#fbbf24', glow: '#38f2ff', visor: '#fef08a', pattern: 'spiral' },
     },
     {
-      id: 'india', shape: 'cross', style: 'stupa', seed: 43,
+      id: 'india', shape: 'plateau', style: 'stupa', seed: 43,
       nameEn: '🇮🇳 India', nameVi: '🇮🇳 India',
       skyTop: '#1f081a', skyBottom: '#6b1d45', fog: '#3d0f28',
       grass: '#c2410c', dirt: '#7c2d12', sand: '#fed7aa', water: '#4c1d95', waterGlow: false,
@@ -578,6 +616,7 @@
       coachLevel: 'First level up! Pick one upgrade (1, 2, 3 or tap).',
       statHp: 'HP', statSpeed: 'Speed', statDmg: 'Damage', weaponLabel: 'Weapon', outfitLabel: 'Look', adviceLabel: 'Tip',
       mapLayoutIsland: 'Wide round island: lots of room to dodge.',
+      mapLayoutPlateau: 'Broad open land with a ragged coast: the biggest play area.',
       mapLayoutGlacier: 'Square ice shelf: edges are slippery tight spots.',
       mapLayoutCaldera: 'Ring around a crater: you circle the hole, mobs cut you off.',
       mapLayoutCross: 'Four narrow bridges around a small centre: little room to dodge.',
@@ -590,6 +629,10 @@
       modeDescEndless: 'No end: mobs keep growing. Every 5 waves you heal 1 heart and get 3 seconds of protection. Your best wave goes on the Endless board (not onchain).',
       modeDescBossRush: 'Defeat 5 bosses back to back, no regular mobs. The fastest time wins the Boss Rush board (not onchain).',
       endlessMilestone: 'Wave {w} milestone! +1 heart and 3 seconds of protection.',
+      enemyNew: '⚠️ New threat: {name}', enemyNames: { swarmer: 'Swarmers (fast and fragile)', bruiser: 'Bruiser (slow tank)', splitter: 'Splitter (splits when killed)' },
+      bossEnraged: '🔥 {boss} is enraged!', bossReward: '🎁 Boss reward: +1 heart and bonus coins!', levelUpBanner: '⬆️ LEVEL UP!', comboUp: 'COMBO ×{n}!',
+      pathOff: 'Attack', pathDef: 'Defense', pathGrow: 'Growth',
+      patPack: '⚠️ A pack is closing in', patPincer: '⚠️ Pincer! Enemies from both sides', patRing: '⚠️ Surrounded! Break the ring',
       modeSaving: 'Sending your result to the board...', modeNewBest: 'Saved: a new best on this board!', modeKeptBest: 'Sent. Your best on this board is still higher.',
       modeFailed: 'Could not save to the board:', modeNoResult: 'Too short to rank: reach wave 2 (Endless) or defeat a boss (Boss Rush).',
       modeGuest: 'Practice: sign in to be ranked on this board.',
@@ -756,10 +799,12 @@
         drill: { name: 'Bamboo Drill Lance', desc: 'Heavy piercing lance knocking back elites.' },
         pulse: { name: 'Sonic Pulse', desc: 'Shockwave around you: damages and pushes back every mob in range.' },
         boomerang: { name: 'Returning Boomerang', desc: 'Flies out and comes back, hitting mobs on both passes. Lv.4 throws two.' },
-        mines: { name: 'Proximity Mines', desc: 'Drops mines as you move. They blast mobs that step close.' },
+        mines: { name: 'Proximity Mines', desc: 'Lays a trail of mines as you move. They arm after a blink, blast mobs that step close and set off their neighbours.' },
         blades: { name: 'Orbiting Plasma Blades', desc: 'Spinning barrier slicing foes & melee threats.' },
         orbital: { name: 'Arc Orbital Strike', desc: 'Calls down orbital beams on dense packs.' },
         overclock: { name: 'Overclock Core', desc: '+20% Fire Rate & -18% Dash Cooldown.' },
+        critical: { name: 'Lucky Strike', desc: '+8% chance per level to deal double damage.' },
+        scholar: { name: 'Quick Study', desc: '+12% XP from every gem per level.' },
         magnet: { name: 'Arc Magnet Field', desc: '+45% Pickup Range & +14% Move Speed.' },
         vitality: { name: 'Emergency Medic', desc: 'Restore +2 HP (and +1 Max HP on Lv.1).' },
       },
@@ -940,6 +985,7 @@
       coachLevel: 'Lên cấp đầu tiên! Chọn một nâng cấp (1, 2, 3 hoặc chạm).',
       statHp: 'Máu', statSpeed: 'Tốc độ', statDmg: 'Sát thương', weaponLabel: 'Vũ khí', outfitLabel: 'Trang phục', adviceLabel: 'Gợi ý',
       mapLayoutIsland: 'Đảo tròn rộng: nhiều chỗ để né.',
+      mapLayoutPlateau: 'Vùng đất rộng, bờ biển lởm chởm: khu chơi lớn nhất.',
       mapLayoutGlacier: 'Tảng băng vuông: các mép là chỗ hẹp.',
       mapLayoutCaldera: 'Vành quanh miệng núi lửa: bạn chạy vòng quanh hố, quái dễ chặn đường.',
       mapLayoutCross: 'Bốn cây cầu hẹp quanh vùng giữa nhỏ: ít chỗ để né.',
@@ -952,6 +998,10 @@
       modeDescEndless: 'Không có điểm kết: quái tăng mãi. Cứ 5 wave bạn hồi 1 tim và được bảo vệ 3 giây. Wave cao nhất lên bảng Vô tận (không onchain).',
       modeDescBossRush: 'Hạ liên tiếp 5 boss, không có quái thường. Thời gian nhanh nhất thắng bảng Boss Rush (không onchain).',
       endlessMilestone: 'Mốc wave {w}! +1 tim và được bảo vệ 3 giây.',
+      enemyNew: '⚠️ Quái mới: {name}', enemyNames: { swarmer: 'Bầy nhỏ (nhanh và mỏng)', bruiser: 'Tướng giáp (chậm, trâu)', splitter: 'Quái phân thân (chết thì tách đôi)' },
+      bossEnraged: '🔥 {boss} nổi cơn thịnh nộ!', bossReward: '🎁 Quà boss: +1 tim và thêm xu!', levelUpBanner: '⬆️ LÊN CẤP!', comboUp: 'COMBO ×{n}!',
+      pathOff: 'Tấn công', pathDef: 'Phòng thủ', pathGrow: 'Phát triển',
+      patPack: '⚠️ Một đàn quái đang áp sát', patPincer: '⚠️ Gọng kìm! Quái đến từ hai phía', patRing: '⚠️ Bị bao vây! Hãy phá vòng vây',
       modeSaving: 'Đang gửi kết quả lên bảng...', modeNewBest: 'Đã lưu: kỷ lục mới trên bảng này!', modeKeptBest: 'Đã gửi. Kỷ lục của bạn trên bảng này vẫn cao hơn.',
       modeFailed: 'Không lưu được lên bảng:', modeNoResult: 'Quá ngắn để xếp hạng: đạt wave 2 (Vô tận) hoặc hạ một boss (Boss Rush).',
       modeGuest: 'Luyện tập: đăng nhập để được xếp hạng trên bảng này.',
@@ -1118,10 +1168,12 @@
         drill: { name: 'Mũi Khoan Tre', desc: 'Mũi khoan hạng nặng đẩy lùi quái tinh anh.' },
         pulse: { name: 'Sóng Âm', desc: 'Sóng xung quanh bạn: gây sát thương và đẩy lùi mọi quái trong tầm.' },
         boomerang: { name: 'Boomerang Quay Về', desc: 'Bay ra rồi quay về, trúng quái cả hai lượt. Lv.4 ném hai cái.' },
-        mines: { name: 'Mìn Cảm Biến', desc: 'Thả mìn khi di chuyển. Quái bước lại gần sẽ bị nổ.' },
+        mines: { name: 'Mìn Cảm Biến', desc: 'Thả một vệt mìn khi bạn di chuyển. Mìn kích hoạt sau một nhịp nháy, nổ khi quái lại gần và kích nổ các mìn bên cạnh.' },
         blades: { name: 'Kiếm Plasma Hộ Thân', desc: 'Lưỡi kiếm xoay quanh chém quái áp sát.' },
         orbital: { name: 'Thiên Lôi Arc', desc: 'Giáng sét hủy diệt xuống cụm đông địch.' },
         overclock: { name: 'Ép Xung Năng Lượng', desc: '+20% Tốc độ bắn & -18% Hồi chiêu Lướt.' },
+        critical: { name: 'Đòn May Mắn', desc: '+8% xác suất gây sát thương gấp đôi mỗi cấp.' },
+        scholar: { name: 'Học Nhanh', desc: '+12% kinh nghiệm từ mỗi viên ngọc mỗi cấp.' },
         magnet: { name: 'Từ Trường Arc', desc: '+45% Tầm hút ngọc & +14% Tốc chạy.' },
         vitality: { name: 'Tiếp Tế Khẩn Cấp', desc: 'Hồi ngay +2 Máu (+1 Máu tối đa ở Lv.1).' },
       },
@@ -1152,13 +1204,13 @@
     enemySpeedGrowth: 0.06,
     enemySpawnEvery: 0.9,
     maxEnemies: 36,
-    maxPickups: 6,
+    maxPickups: 9,
     bossEvery: 30,
     heroSize: 1.9,
     enemySize: 1.65,
     pickupSize: 1.15,
     shield: { enabled: false, every: 15, seconds: 2 },
-    worldSize: 38,
+    worldSize: 50,
     seed: 11,
     palette: {
       skyTop: '#060b1e', skyBottom: '#183363', fog: '#102347',
@@ -1359,9 +1411,41 @@
   sun.shadow.bias = -0.0008;
   scene.add(sun, sun.target);
 
+  /* Colours that stand out against the ground of the current map: enemy bullets and gems are picked per map so they never blend in. */
+  function colorStats(hex) { var c = new THREE.Color(hex), o = {}; c.getHSL(o); return o; }
+  function pickContrast(candidates, groundHexes) {
+    var best = candidates[0], bestScore = -1;
+    candidates.forEach(function (cand) {
+      var ch = colorStats(cand), total = 0, weights = [0.6, 0.25, 0.15]; // the grass covers most of the screen, so it counts most
+      groundHexes.forEach(function (g, gi) {
+        var gh = colorStats(g);
+        var dh = Math.abs(ch.h - gh.h); dh = dh > 0.5 ? 1 - dh : dh;
+        if (gh.s < 0.15) dh = 0.5; // grey ground: every hue stands out
+        total += (dh + Math.abs(ch.l - gh.l) * 0.6) * (weights[gi] || 0.1);
+      });
+      if (total > bestScore) { bestScore = total; best = cand; }
+    });
+    return best;
+  }
+  var hostileHex = '#ff2e4d', gemHexSmall = '#34d399', gemHexBig = '#c084fc';
+  function updateContrastColors(mp) {
+    var ground = [mp.grass, mp.dirt, mp.sand];
+    // Enemy bullets are red dots. On warm grounds (red, orange, brown) red would vanish, so those maps get cyan instead.
+    var gs = colorStats(mp.grass);
+    var warm = gs.s >= 0.25 && (gs.h < 0.14 || gs.h > 0.94);
+    hostileHex = warm ? '#00e1ff' : '#ff2e4d';
+    var gems = ['#34d399', '#38bdf8', '#c084fc', '#f0abfc', '#ffffff'].filter(function (g) {
+      var a = colorStats(g), b = colorStats(hostileHex), d = Math.abs(a.h - b.h); d = d > 0.5 ? 1 - d : d;
+      return a.s < 0.1 || d > 0.12; // a gem never shares a hue with the bullets
+    });
+    gemHexSmall = pickContrast(gems, ground);
+    gemHexBig = pickContrast(gems.filter(function (g) { return g !== gemHexSmall; }), ground);
+  }
+
   function buildArena(mapIdx) {
     selectedMapIdx = clamp(Math.floor(mapIdx || 0), 0, MAPS.length - 1);
     var mp = activeMapSpec();
+    updateContrastColors(mp);
     if (typeof musicSync === 'function' && typeof music !== 'undefined' && music) musicSync();
     while (arenaGroup.children.length) {
       var old = arenaGroup.children.pop();
@@ -1384,6 +1468,13 @@
           var isEdge = !inCenter && (Math.abs(wx) > 3.2 && Math.abs(wz) > 3.2);
           height[i0] = radial < 0.24 ? 2 : 1;
           if (isEdge || Math.abs(wx) > HALF - 2.6 || Math.abs(wz) > HALF - 2.6) sandy[i0] = 1;
+        } else if (mp.shape === 'plateau') {
+          // one broad landmass that fills almost the whole square: only the corners are rounded off and the coast is ragged
+          var edgeP = Math.max(Math.abs(wx), Math.abs(wz)) / HALF;
+          var landP = 1 - (edgeP * 0.55 + radial * 0.45) + (n - 0.5) * 0.3;
+          if (landP < 0.03 && radial > 0.25) continue;
+          height[i0] = clamp(1 + Math.floor(clamp(landP, 0, 1) * 1.8 + n * 0.9), 1, 3);
+          if (landP < 0.14 && radial > 0.3) { height[i0] = 1; sandy[i0] = 1; }
         } else if (mp.shape === 'caldera') {
           var crater = 1 - radial + (n - 0.5) * 0.28;
           if (crater < 0.08 && radial > 0.25) continue;
@@ -1593,6 +1684,20 @@
       coat: '#f1f5f9', coatDark: '#94a3b8', inner: '#ffffff', pants: '#1e293b',
       boot: '#334155', trim: '#a78bfa', glow: '#a78bfa', scarf: '#334155',
       shortSleeve: false, capeStyle: 'long_hair', width: 0.9, collar: true, smile: 'coral', weapon: 'mine_case'
+    },
+    lecter: {
+      skin: '#f5d0b0', blush: '#e39a82', brow: '#7c2d12', eye: '#1d4ed8',
+      hair: '#b45309', hair2: '#9a3412', hairStyle: 'short_wavy', glasses: 'thick',
+      coat: '#1d4ed8', coatDark: '#1e3a8a', inner: '#2563eb', pants: '#e2e8f0',
+      boot: '#f8fafc', trim: '#93c5fd', glow: '#60a5fa', scarf: '#1d4ed8',
+      shortSleeve: true, capeStyle: 'none', width: 0.96, collar: true, smile: 'warm', weapon: 'pulse_amp'
+    },
+    teddyz: {
+      skin: '#f1c9a5', blush: '#df8f76', brow: '#111827', eye: '#1f2937',
+      hair: '#0b0f19', hair2: '#1f2937', hairStyle: 'undercut',
+      coat: '#f8fafc', coatDark: '#cbd5e1', inner: '#ffffff', pants: '#0b0f19',
+      boot: '#f8fafc', trim: '#ef4444', glow: '#fb7185', scarf: '#f8fafc',
+      shortSleeve: true, capeStyle: 'none', width: 1.1, collar: false, smile: 'calm', weapon: 'cyclone_shuriken'
     }
   };
 
@@ -2296,8 +2401,12 @@
   }
 
   var PROJ_GEO = new THREE.BoxGeometry(0.45, 0.45, 0.45);
-  var EBULLET_GEO = new THREE.SphereGeometry(0.34, 8, 8);
+  var EBULLET_GEO = new THREE.SphereGeometry(0.13, 12, 8); // a tiny glowing dot
+  var EB_GLOW_MAT = null;
   var GEM_GEO = new THREE.OctahedronGeometry(0.42, 0);
+  var COIN_GEO = new THREE.CylinderGeometry(0.55, 0.55, 0.14, 18);
+  var COIN_RIM_GEO = new THREE.CylinderGeometry(0.36, 0.36, 0.17, 18);
+  var COIN_RING_GEO = new THREE.RingGeometry(0.7, 0.9, 20);
   var STRIKE_GEO = new THREE.RingGeometry(0.25, 2.3, 24);
   var HAZARD_GEO = new THREE.RingGeometry(0.2, 2.6, 24);
 
@@ -2378,6 +2487,7 @@
 
   var styleEl = document.createElement('style');
   styleEl.textContent = '@media (pointer:coarse){.avq-btn{min-height:44px;padding-top:9px;padding-bottom:9px}}'
+    + '@media (max-width:640px){.avq-dock{top:calc(100px + env(safe-area-inset-top,0px)) !important;font-size:12px;padding:6px 8px !important}}'
     + '.avq-btn{pointer-events:auto;cursor:pointer;border:1px solid rgba(110,235,255,.38);background:linear-gradient(180deg,rgba(24,52,96,.92),rgba(13,26,56,.95));color:#eefaff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:inherit;transition:transform .14s cubic-bezier(.34,1.56,.64,1),box-shadow .14s,border-color .14s;box-shadow:0 4px 0 rgba(7,15,36,.75),0 6px 14px rgba(0,0,0,.35);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}'
     + '.avq-btn:hover{transform:translateY(-2px);border-color:#63f7ff}'
     + '.avq-btn:active{transform:translateY(2px) scale(.96);box-shadow:0 1px 0 rgba(7,15,36,.85)}'
@@ -2414,6 +2524,42 @@
   var topBar = el('div', 'position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:none;z-index:10', hud);
   var leftGroup = el('div', 'display:flex;align-items:center;gap:6px;flex-wrap:wrap', topBar);
   var statPill = el('div', '', leftGroup); statPill.className = 'avq-pill';
+  /* Fixed status card: health, coins, level and the upgrades you hold, always in the same corner. */
+  var statusDock = el('div', 'position:fixed;left:calc(10px + env(safe-area-inset-left,0px));top:calc(58px + env(safe-area-inset-top,0px));display:none;flex-direction:column;gap:5px;padding:8px 10px;border-radius:14px;background:rgba(8,16,36,.72);border:1px solid rgba(120,230,255,.24);backdrop-filter:blur(8px);pointer-events:none;z-index:9;max-width:min(300px,calc(100vw - 20px));font-weight:700', hud);
+  statusDock.className = 'avq-dock';
+  var dockTop = el('div', 'display:flex;align-items:center;justify-content:space-between;gap:12px', statusDock);
+  var dockHearts = el('span', 'color:#ff6b8b;letter-spacing:.06em;font-size:1.15em', dockTop);
+  var dockCoins = el('span', 'color:#ffc928;font-variant-numeric:tabular-nums;display:inline-block;transition:transform .12s', dockTop);
+  var dockLvlRow = el('div', 'display:flex;align-items:center;gap:8px', statusDock);
+  var dockLvl = el('span', 'color:#ffd166;white-space:nowrap', dockLvlRow);
+  var dockXpTrack = el('div', 'flex:1;height:7px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden', dockLvlRow);
+  var dockXpFill = el('div', 'height:100%;width:0%;background:linear-gradient(90deg,#34d399,#c084fc)', dockXpTrack);
+  var dockChips = el('div', 'display:flex;flex-wrap:wrap;gap:4px', statusDock);
+  var DOCK_ICONS = { critical: '🎯', scholar: '📘', dragon: '🐉', lightning: '⚡', shuriken: '✴️', coloa: '🏹', drill: '🔩', pulse: '🔊', boomerang: '🪃', mines: '💣', blades: '🌀', orbital: '☄️', overclock: '⏩', magnet: '🧲', vitality: '❤️' };
+  var dockLast = 0, dockSig = '';
+  function updateStatusDock(now) {
+    if (now - dockLast < 120) return;
+    dockLast = now;
+    dockHearts.textContent = '♥'.repeat(Math.max(0, hearts)) + '♡'.repeat(Math.max(0, maxHearts - hearts));
+    dockCoins.textContent = '🪙 ' + gems;
+    dockCoins.style.transform = coinPulseT > 0 ? 'scale(1.25)' : 'scale(1)';
+    dockLvl.textContent = '⭐ ' + t('lvlShort') + ' ' + level;
+    dockXpFill.style.width = clamp((xp / xpNeed) * 100, 0, 100) + '%';
+    var names = t('upgrades');
+    var sig = '';
+    Object.keys(upLevels).forEach(function (id) { if (upLevels[id] > 0) sig += id + upLevels[id] + ','; });
+    if (sig !== dockSig) {
+      dockSig = sig;
+      dockChips.innerHTML = '';
+      Object.keys(upLevels).forEach(function (id) {
+        if (!(upLevels[id] > 0)) return;
+        var chip = el('span', 'padding:1px 6px;border-radius:99px;background:rgba(120,230,255,.12);border:1px solid rgba(120,230,255,.28);font-size:11.5px', dockChips);
+        chip.textContent = (DOCK_ICONS[id] || '•') + ' ' + upLevels[id];
+        chip.title = (names[id] && names[id].name) || id;
+      });
+    }
+  }
+  var dmgFlash = el('div', 'position:fixed;inset:0;pointer-events:none;opacity:0;z-index:8;transition:opacity .28s;background:radial-gradient(ellipse at center,rgba(255,0,60,0) 52%,rgba(255,0,60,.5) 100%)', hud);
   var heartsEl = el('span', 'color:#ff7b9c;letter-spacing:.04em', statPill);
   var scoreEl = el('span', 'color:#63f7ff', statPill);
   var waveEl = el('span', 'color:#f43f5e', statPill);
@@ -2593,7 +2739,7 @@
   var heroRightCol = el('div', 'flex:1;min-width:210px;display:flex;flex-direction:column;align-items:center;gap:6px', heroMainRow);
   var heroListEl = el('div', 'display:flex;justify-content:center;gap:6px;flex-wrap:wrap', heroRightCol);
   var heroDescEl = el('div', 'font-size:12.5px;color:#aef9ff;font-weight:600;text-align:center', heroRightCol);
-  var heroStatsEl = el('div', 'display:flex;flex-direction:column;gap:3px;font-size:11.5px;text-align:left', heroRightCol);
+  var heroStatsEl = el('div', 'display:flex;flex-direction:column;gap:5px;font-size:12px;text-align:left;width:100%;max-width:460px;margin:0 auto;box-sizing:border-box', heroRightCol);
 
   var cardStats = el('div', 'margin-top:10px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-weight:800;color:#ffd166', card);
   var cardActions = el('div', 'margin-top:12px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap', card);
@@ -2631,12 +2777,12 @@
   var cardHint = el('div', 'margin-top:8px;font-size:11.5px;opacity:.76;line-height:1.35', card);
 
   // Level-up 1-of-3 Modal
-  var lvlOverlay = el('div', 'position:fixed;inset:58px 0 0 0;background:rgba(4,9,24,.74);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:25', hud);
+  var lvlOverlay = el('div', 'position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(350px,calc(100vw - 124px));max-height:70vh;overflow-y:auto;display:none;flex-direction:column;pointer-events:auto;z-index:25', hud);
   stopPtr(lvlOverlay);
-  var lvlModal = el('div', 'width:min(94vw,620px);background:#0b1530;border:1px solid rgba(255,209,102,.48);border-radius:20px;padding:18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7)', lvlOverlay);
-  var lvlTitleEl = el('div', 'font-size:20px;font-weight:900;color:#ffd166', lvlModal);
-  var lvlCardsEl = el('div', 'margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center', lvlModal);
-  var lvlHintEl = el('div', 'margin-top:10px;font-size:12px;opacity:.75', lvlModal);
+  var lvlModal = el('div', 'width:100%;box-sizing:border-box;background:rgba(11,21,48,.95);border:1px solid rgba(255,209,102,.6);border-radius:16px;padding:12px;text-align:left;box-shadow:0 10px 36px rgba(0,0,0,.6)', lvlOverlay);
+  var lvlTitleEl = el('div', 'font-size:16px;font-weight:900;color:#ffd166', lvlModal);
+  var lvlCardsEl = el('div', 'margin-top:8px;display:flex;flex-direction:column;gap:6px', lvlModal);
+  var lvlHintEl = el('div', 'margin-top:8px;font-size:11.5px;opacity:.75', lvlModal);
 
   // Web3 / Arc L1 Modal
   var w3Overlay = el('div', 'position:fixed;inset:0;background:rgba(4,8,20,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;pointer-events:auto;z-index:30', hud);
@@ -2730,10 +2876,10 @@
   }
   function activeHeroSpec() { return HEROES[selectedHeroIdx]; }
   function heroNameOf(i) { var h = HEROES[i]; return h ? (lang === 'vi' ? h.nameVi : h.nameEn) : ''; }
-  /* Heroes 5..7 must be unlocked with ARCQ before they can save a ranked run (practice and the extra modes stay open). */
+  /* Heroes 8 and 9 (Lecter, Teddyz) must be unlocked with ARCQ before they can save a ranked run (practice and the extra modes stay open). */
   function heroLocked(idx) {
-    if (idx < 5 || !web3 || !web3.state.account || !window.ARC_WEB3.isValidAddress(web3.state.contractAddress)) return false;
-    return ((web3.state.heroMask || 0) & (1 << (idx - 5))) === 0;
+    if (idx < 8 || !web3 || !web3.state.account || !window.ARC_WEB3.isValidAddress(web3.state.contractAddress)) return false;
+    return ((web3.state.heroMask || 0) & (1 << (idx - 8))) === 0;
   }
   /* Every upgrade NFT the wallet owns is one level; each level widens the item pickup range by 20%. */
   var MAGNET_STEPS = [0.04, 0.06, 0.08, 0.10, 0.12, 0.15]; // each level adds a bit more than the one before: +4% ... +15%
@@ -2801,8 +2947,8 @@
     var curMap = activeMapSpec();
     var bossName = lang === 'vi' ? curMap.boss.nameVi : curMap.boss.nameEn;
     var mobNames = lang === 'vi' ? curMap.mobs.namesVi : curMap.mobs.namesEn;
-    var diff = { island: 1, glacier: 2, caldera: 2, cross: 3 }[curMap.shape] || 2;
-    var layoutKey = { island: 'mapLayoutIsland', glacier: 'mapLayoutGlacier', caldera: 'mapLayoutCaldera', cross: 'mapLayoutCross' }[curMap.shape] || 'mapLayoutIsland';
+    var diff = { plateau: 1, island: 1, glacier: 2, caldera: 2, cross: 3 }[curMap.shape] || 2;
+    var layoutKey = { plateau: 'mapLayoutPlateau', island: 'mapLayoutIsland', glacier: 'mapLayoutGlacier', caldera: 'mapLayoutCaldera', cross: 'mapLayoutCross' }[curMap.shape] || 'mapLayoutIsland';
     if (typeof mapDescEl !== 'undefined') mapDescEl.textContent = (lang === 'vi' ? '🐾 Quái: ' : '🐾 Mobs: ') + mobNames + ' · Boss: ' + bossName + ' · ' + t('mapDifficulty') + ' ' + '★'.repeat(diff) + '☆'.repeat(3 - diff) + ' · ' + t(layoutKey);
     if (typeof mapEl !== 'undefined') mapEl.textContent = '🗺️ ' + (lang === 'vi' ? curMap.nameVi : curMap.nameEn);
   }
@@ -2816,23 +2962,26 @@
     kien_trinh: { dmg: 4, advEn: 'Very sturdy with a piercing lance. Slow but forgiving.', advVi: 'Rất trâu, mũi khoan xuyên. Chậm nhưng dễ tha thứ.' },
     hieu_nguyen: { dmg: 3, advEn: 'Stay close: the shockwave pushes mobs back. Good against swarms.', advVi: 'Đứng gần quái: sóng âm đẩy lùi, hợp đánh đám đông.' },
     quoc_vuong: { dmg: 4, advEn: 'Slow and sturdy. Throw the boomerang through lines of mobs.', advVi: 'Chậm và trâu. Ném boomerang xuyên hàng quái.' },
-    miley_nguyen: { dmg: 3, advEn: 'Fast but only 3 HP. Keep moving and drop mines behind you.', advVi: 'Nhanh nhưng chỉ 3 máu. Vừa chạy vừa thả mìn phía sau.' },
+    lecter: { dmg: 3, advEn: 'Orbital beams hit packs from far away. Keep your distance and let them land.', advVi: 'Chùm sáng từ trên giáng xuống đám đông ở xa. Giữ khoảng cách và để chùm sáng làm việc.' },
+    teddyz: { dmg: 4, advEn: 'Sturdy brawler. Chain lightning loves crowds: stay in the middle of them.', advVi: 'Chiến binh trâu bò. Sét chuyền hợp đám đông, cứ lao vào giữa.' },
+    miley_nguyen: { dmg: 4, advEn: 'Fast but only 3 HP. Keep moving and drop mines behind you.', advVi: 'Nhanh nhưng chỉ 3 máu. Vừa chạy vừa thả mìn phía sau.' },
   };
   function renderHeroStats(h) {
     heroStatsEl.innerHTML = '';
     var meta = HERO_META[h.id] || { dmg: 3, advEn: '', advVi: '' };
     var parts = String(lang === 'vi' ? h.tagVi : h.tagEn).split(' · ');
     var weaponPart = String(parts.pop() || '').replace(/\s*\(\d+ HP\)\s*$/u, '');
-    function bar(label, value, color, text) {
-      var r = el('div', 'display:flex;align-items:center;gap:6px', heroStatsEl);
-      el('span', 'width:74px;opacity:.8', r).textContent = label;
-      var track = el('div', 'flex:1;height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden', r);
-      el('div', 'height:100%;border-radius:99px;background:' + color + ';width:' + Math.round(clamp(value, 0.06, 1) * 100) + '%', track);
-      el('span', 'width:34px;text-align:right;font-variant-numeric:tabular-nums', r).textContent = text;
+    /* Every stat is shown on the same 5-step scale, so bars of different heroes line up and can be compared at a glance. */
+    function bar(label, steps, color, text) {
+      var r = el('div', 'display:grid;grid-template-columns:78px 1fr 46px;align-items:center;gap:8px', heroStatsEl);
+      el('span', 'opacity:.8', r).textContent = label;
+      var track = el('div', 'display:grid;grid-template-columns:repeat(5,1fr);gap:3px', r);
+      for (var k = 1; k <= 5; k++) el('div', 'height:8px;border-radius:3px;background:' + (k <= steps ? color : 'rgba(255,255,255,.12)'), track);
+      el('span', 'text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap', r).textContent = text;
     }
-    bar(t('statHp'), h.hp / 6, '#ff7b9c', '♥' + h.hp);
-    bar(t('statSpeed'), (h.speedMult - 0.85) / 0.45, '#63f7ff', h.speedMult.toFixed(2));
-    bar(t('statDmg'), meta.dmg / 5, '#ffd166', meta.dmg + '/5');
+    bar(t('statHp'), clamp(h.hp - 1, 1, 5), '#ff7b9c', '♥ ' + h.hp);
+    bar(t('statSpeed'), clamp(Math.round((h.speedMult - 0.85) / 0.1), 1, 5), '#63f7ff', clamp(Math.round((h.speedMult - 0.85) / 0.1), 1, 5) + '/5');
+    bar(t('statDmg'), clamp(meta.dmg, 1, 5), '#ffd166', clamp(meta.dmg, 1, 5) + '/5');
     var upg = t('upgrades')[h.weaponId] || { name: weaponPart, desc: '' };
     var wl = el('div', 'margin-top:3px;line-height:1.4', heroStatsEl);
     el('b', 'color:#ffd166', wl).textContent = t('weaponLabel') + ': ';
@@ -2882,26 +3031,91 @@
     return null;
   }
 
+  /* A faceted, glowing crystal: lit core, a pale outline shell and a soft halo, so it reads on any ground colour. */
+  var GEM_MATS = {};
+  function makeGem(hex) {
+    var m = GEM_MATS[hex];
+    if (!m) {
+      m = GEM_MATS[hex] = {
+        core: new THREE.MeshPhongMaterial({ color: hex, emissive: hex, emissiveIntensity: 0.6, shininess: 120, specular: '#ffffff', flatShading: true }),
+        shell: new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.4, side: THREE.BackSide, depthWrite: false }),
+        halo: new THREE.SpriteMaterial({ map: GLOW, color: hex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.9 }),
+      };
+    }
+    var g = new THREE.Group();
+    var core = new THREE.Mesh(GEM_GEO, m.core); core.scale.set(1, 1.4, 1);
+    var shell = new THREE.Mesh(GEM_GEO, m.shell); shell.scale.set(1.22, 1.7, 1.22);
+    var halo = new THREE.Sprite(m.halo); halo.scale.set(1.9, 1.9, 1);
+    g.add(shell, core, halo);
+    return g;
+  }
+
   function addShard(xOpt, zOpt, valueOpt, isXp) {
     var p = (xOpt !== undefined) ? { x: xOpt, z: zOpt } : randomLand(4, false);
     if (!p) return;
     if (isXp) {
-      var mesh = new THREE.Mesh(GEM_GEO, new THREE.MeshBasicMaterial({ color: valueOpt >= 20 ? '#ffd166' : '#38f2ff' }));
+      var mesh = makeGem(valueOpt >= 20 ? gemHexBig : gemHexSmall);
       mesh.position.set(p.x, (groundAt(p.x, p.z) || 1) + 0.55, p.z);
       scene.add(mesh);
       pickups.push({ x: p.x, z: p.z, phase: Math.random() * 6, xp: valueOpt || 8, scoreVal: valueOpt >= 20 ? 25 : 8, isXp: true, node: mesh });
     } else {
-      var node = makeCharacter('pickup', R.pickupSize, MODELS.pickup, 'pickup');
+      var node = new THREE.Group(); // a spinning gold coin on a ground ring
+      var disc = new THREE.Mesh(COIN_GEO, new THREE.MeshBasicMaterial({ color: '#ffc928' }));
+      disc.rotation.x = Math.PI / 2; disc.position.y = 0.75;
+      var rim = new THREE.Mesh(COIN_RIM_GEO, new THREE.MeshBasicMaterial({ color: '#fff3b0' }));
+      rim.rotation.x = Math.PI / 2; rim.position.y = 0.75;
+      var ringMk = new THREE.Mesh(COIN_RING_GEO, new THREE.MeshBasicMaterial({ color: '#ffc928', transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
+      ringMk.rotation.x = -Math.PI / 2; ringMk.position.y = 0.08;
+      node.add(disc, rim, ringMk);
       var glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: '#ffd166', transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
       glow.scale.set(R.pickupSize * 2.5, R.pickupSize * 2.5, 1);
-      glow.position.y = R.pickupSize * 0.5;
+      glow.position.y = 0.75;
       node.add(glow);
       pickups.push({ x: p.x, z: p.z, phase: Math.random() * 6, xp: 18, scoreVal: 40, isXp: false, node: node });
     }
   }
 
-  function spawnEnemy(kind) {
-    var p = randomLand(wave <= 2 ? 15 : 11, true) || randomLand(wave <= 2 ? 12 : 8, false);
+  /* Spawn patterns: a point on a ring around the hero, moved to the nearest land cell. */
+  function landAround(angle, dist, spread) {
+    for (var tries = 0; tries < 14; tries++) {
+      var a = angle + (Math.random() - 0.5) * (spread || 0.3);
+      var d = dist + (Math.random() - 0.5) * 3;
+      var x = hero.x + Math.sin(a) * d, z = hero.z + Math.cos(a) * d;
+      if (Math.abs(x) < HALF - 1 && Math.abs(z) < HALF - 1 && groundAt(x, z) > 0) return { x: x, z: z };
+    }
+    return null;
+  }
+  var patternAt = { pack: 10, pincer: 30, ring: 55 }; // elapsed seconds of the next pattern
+  var seenKinds = {};
+  function announceKind(kind) {
+    if (seenKinds[kind]) return;
+    seenKinds[kind] = true;
+    showBanner(fill(t('enemyNew'), { name: t('enemyNames')[kind] }));
+  }
+  function runSpawnPatterns(room) {
+    if (room <= 4) return;
+    if (elapsed >= patternAt.pack && wave >= 2) {
+      patternAt.pack = elapsed + Math.max(9, 17 - wave * 0.6);
+      var n = Math.min(room, 3 + Math.floor(wave / 3), 8), a0 = Math.random() * Math.PI * 2;
+      for (var i = 0; i < n; i++) { var pp = landAround(a0, 14, 0.5); if (pp) spawnEnemy('stalker', pp); }
+      if (wave >= 3) showBanner(t('patPack'));
+    }
+    if (elapsed >= patternAt.pincer && wave >= 4) {
+      patternAt.pincer = elapsed + Math.max(20, 32 - wave);
+      var m = Math.min(Math.floor(room / 2), 4 + Math.floor(wave / 4)), a1 = Math.random() * Math.PI * 2;
+      for (var k = 0; k < m; k++) { var p1 = landAround(a1, 14, 0.45); if (p1) spawnEnemy(k % 3 === 2 ? 'charger' : 'stalker', p1); var p2 = landAround(a1 + Math.PI, 14, 0.45); if (p2) spawnEnemy('stalker', p2); }
+      showBanner(t('patPincer'));
+    }
+    if (elapsed >= patternAt.ring && wave >= 6) {
+      patternAt.ring = elapsed + Math.max(30, 48 - wave);
+      var rn = Math.min(room, 10);
+      for (var r = 0; r < rn; r++) { var pr = landAround((r / rn) * Math.PI * 2, 15, 0.1); if (pr) spawnEnemy(r % 4 === 0 ? 'caster' : 'stalker', pr); }
+      showBanner(t('patRing'));
+    }
+  }
+
+  function spawnEnemy(kind, at) {
+    var p = at || randomLand(wave <= 2 ? 15 : 11, true) || randomLand(wave <= 2 ? 12 : 8, false);
     if (!p) return;
     var mp = activeMapSpec();
     var tier = getThreatTier(wave);
@@ -2924,7 +3138,7 @@
       blip(130, 0.45, 'sawtooth', 0.08, 70);
     } else if (kind === 'charger') {
       var telGeo = new THREE.PlaneGeometry(0.9, 10);
-      var telMesh = new THREE.Mesh(telGeo, new THREE.MeshBasicMaterial({ color: '#ef4444', side: THREE.DoubleSide, transparent: true, opacity: 0.65 }));
+      var telMesh = new THREE.Mesh(telGeo, new THREE.MeshBasicMaterial({ color: hostileHex, side: THREE.DoubleSide, transparent: true, opacity: 0.7 }));
       telMesh.rotation.order = 'YXZ';
       telMesh.rotation.x = -Math.PI / 2;
       telMesh.visible = false;
@@ -2941,8 +3155,21 @@
         kind: 'caster', type: 'caster', isElite: isElite, x: p.x, z: p.z, y: groundAt(p.x, p.z),
         hp: Math.round(3.5 * wScale * eMultHp), maxHp: Math.round(3.5 * wScale * eMultHp),
         speed: R.enemySpeed * 0.75 * spdScale, radius: 0.85 * eMultSize, wobble: Math.random() * 6, flash: 0,
-        aiTimer: 1.6 + Math.random(),
+        aiTimer: 2.4 + Math.random(),
         node: makeCharacter('enemy', 1.72 * eMultSize, CASTER_BOXES, 'caster', mp, isElite),
+      });
+    } else if (kind === 'swarmer' || kind === 'bruiser' || kind === 'splitter') {
+      var cfg = kind === 'swarmer' ? { hp: 1.2, sp: 1.55, rad: 0.5, size: 1.05, col: '#fde047', boxes: STALKER_BOXES, key: 'stalker', ty: 'stalker' }
+        : kind === 'bruiser' ? { hp: 9, sp: 0.62, rad: 1.2, size: 2.4, col: '#fb923c', boxes: CHARGER_BOXES, key: 'charger', ty: 'charger' }
+        : { hp: 4.5, sp: 0.95, rad: 0.95, size: 1.9, col: '#c084fc', boxes: STALKER_BOXES, key: 'stalker', ty: 'stalker' };
+      var holderN = makeCharacter('enemy', cfg.size, cfg.boxes, cfg.key, mp, false);
+      var markRing = new THREE.Mesh(new THREE.RingGeometry(cfg.size * 0.42, cfg.size * 0.58, 24), new THREE.MeshBasicMaterial({ color: cfg.col, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false }));
+      markRing.rotation.x = -Math.PI / 2; markRing.position.y = 0.06;
+      holderN.add(markRing);
+      enemies.push({
+        kind: kind, type: cfg.ty, isElite: false, x: p.x, z: p.z, y: groundAt(p.x, p.z),
+        hp: Math.round(cfg.hp * wScale * 10) / 10, maxHp: Math.round(cfg.hp * wScale * 10) / 10,
+        speed: R.enemySpeed * cfg.sp * spdScale, radius: cfg.rad, wobble: Math.random() * 6, flash: 0, node: holderN,
       });
     } else {
       enemies.push({
@@ -2964,12 +3191,14 @@
     enemies.forEach(removeEnemyVisual);
     pickups.forEach(function (e) { scene.remove(e.node); disposeNode(e.node); });
     projectiles.forEach(function (pr) { scene.remove(pr.mesh); disposeNode(pr.mesh); });
-    enemyBullets.forEach(function (eb) { scene.remove(eb.mesh); eb.mesh.material.dispose(); });
+    enemyBullets.forEach(function (eb) { scene.remove(eb.mesh); });
     hazards.forEach(function (hz) { scene.remove(hz.mesh); hz.mesh.material.dispose(); });
     bolts.forEach(function (bl) { scene.remove(bl.line); disposeNode(bl.line); });
     strikes.forEach(function (st) { scene.remove(st.mesh); st.mesh.material.dispose(); });
     mines.forEach(function (mn) { scene.remove(mn.mesh); disposeNode(mn.mesh); });
     fxRings.forEach(function (fx) { scene.remove(fx.mesh); disposeNode(fx.mesh); });
+    if (typeof flashes !== 'undefined' && flashes) { flashes.forEach(function (f) { scene.remove(f.sprite); f.sprite.material.dispose(); }); }
+    flashes = [];
     enemies = []; pickups = []; projectiles = []; enemyBullets = []; hazards = []; bolts = []; strikes = []; fxRings = []; mines = [];
     syncBladesMesh(0);
   }
@@ -2980,18 +3209,21 @@
     bannerTimer = 2.8;
   }
 
-  function spawnPopup(worldX, worldY, worldZ, text, col) {
-    if (popups.length > 18) return;
+  function spawnPopup(worldX, worldY, worldZ, text, col, small) {
+    if (popups.length > (small ? 12 : 18)) return;
     var node = document.createElement('div');
     node.className = 'avq-pop';
     node.textContent = text;
     if (col) node.style.color = col;
+    if (small) { node.style.fontSize = '12px'; node.style.opacity = '0.9'; }
     popupsEl.appendChild(node);
     popups.push({ x: worldX, y: worldY, z: worldZ, life: 0.85, el: node });
   }
 
   /* 10. UPGRADES & COMBAT */
-  var UPGRADE_POOL = ['dragon', 'lightning', 'shuriken', 'coloa', 'drill', 'pulse', 'boomerang', 'mines', 'blades', 'orbital', 'overclock', 'magnet', 'vitality'];
+  var UPGRADE_POOL = ['dragon', 'lightning', 'shuriken', 'coloa', 'drill', 'pulse', 'boomerang', 'mines', 'blades', 'orbital', 'overclock', 'magnet', 'vitality', 'critical', 'scholar'];
+  var UPGRADE_PATH = { overclock: 'off', critical: 'off', vitality: 'def', magnet: 'grow', scholar: 'grow' }; // everything else is a weapon (attack)
+  var PATH_COLORS = { off: '#fb7185', def: '#38bdf8', grow: '#34d399' };
   function openLevelUp() {
     var available = UPGRADE_POOL.filter(function (id) { return (upLevels[id] || 0) < 5; });
     if (available.length === 0) return;
@@ -3000,6 +3232,8 @@
       var tmp = available[i]; available[i] = available[j]; available[j] = tmp;
     }
     levelUpChoices = available.slice(0, 3);
+    spawnFxRing(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.15, hero.z, '#ffd166', 0.5, 5.5, 0.5, false);
+    spawnPopup(hero.x, hero.y + 2.6, hero.z, t('levelUpBanner'), '#ffd166');
     renderLevelUpModal();
     lvlOverlay.style.display = 'flex';
   }
@@ -3028,9 +3262,11 @@
       var curLv = upLevels[id] || 0;
       var c = document.createElement('button');
       c.className = 'avq-card';
+      c.style.flex = 'none';
+      c.style.padding = '8px 10px';
       stopPtr(c);
       c.innerHTML = '<div style="display:flex;justify-content:space-between;width:100%;font-weight:900;color:#63f7ff">'
-        + '<span>[' + (idx + 1) + '] ' + info.name + '</span>'
+        + '<span>[' + (idx + 1) + '] ' + info.name + ' <span style="font-size:10.5px;padding:0 6px;border-radius:99px;border:1px solid ' + PATH_COLORS[UPGRADE_PATH[id] || 'off'] + ';color:' + PATH_COLORS[UPGRADE_PATH[id] || 'off'] + '">' + t({ off: 'pathOff', def: 'pathDef', grow: 'pathGrow' }[UPGRADE_PATH[id] || 'off']) + '</span></span>'
         + '<span style="color:#ffd166">Lv.' + (curLv + 1) + '</span></div>'
         + '<div style="font-size:12px;color:#dbeafe;opacity:.92">' + info.desc + '</div>';
       c.onclick = function () { applyUpgrade(id); };
@@ -3045,6 +3281,29 @@
       if (d < bestD) { bestD = d; bestE = enemies[i]; }
     }
     return bestE;
+  }
+
+  /* A mine: dark disc, glowing rim, a pulsing core and a faint ring on the ground that shows where it reacts. */
+  var MINE_GEO = { base: new THREE.CylinderGeometry(0.55, 0.62, 0.2, 14), rim: new THREE.TorusGeometry(0.52, 0.06, 6, 18), core: new THREE.SphereGeometry(0.22, 12, 8), ring: new THREE.RingGeometry(1.9, 2.0, 28) };
+  function makeMine() {
+    var g = new THREE.Group();
+    var base = new THREE.Mesh(MINE_GEO.base, new THREE.MeshPhongMaterial({ color: '#2e1065', shininess: 40 }));
+    var rim = new THREE.Mesh(MINE_GEO.rim, new THREE.MeshBasicMaterial({ color: '#a78bfa' })); rim.rotation.x = Math.PI / 2; rim.position.y = 0.1;
+    var core = new THREE.Mesh(MINE_GEO.core, new THREE.MeshPhongMaterial({ color: '#ddd6fe', emissive: '#a78bfa', emissiveIntensity: 1, shininess: 100 })); core.position.y = 0.26;
+    var halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: '#c4b5fd', transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.6 })); halo.scale.set(1.5, 1.5, 1); halo.position.y = 0.3;
+    var ring = new THREE.Mesh(MINE_GEO.ring, new THREE.MeshBasicMaterial({ color: '#a78bfa', transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false })); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.04;
+    g.add(base, rim, core, halo, ring);
+    g.userData.core = core; g.userData.halo = halo; g.userData.ring = ring;
+    return g;
+  }
+  /* A quick additive flash: grows while it fades. */
+  var flashes = [];
+  function spawnFlash(x, y, z, col, size, dur) {
+    if (flashes.length > 14) return;
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: col, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 1 }));
+    sp.position.set(x, y, z); sp.scale.setScalar(size * 0.5);
+    scene.add(sp);
+    flashes.push({ sprite: sp, life: dur, max: dur, size: size });
   }
 
   function spawnFxRing(x, y, z, col, s0, s1, dur, isPillar) {
@@ -3064,8 +3323,15 @@
   }
 
   function damageEnemy(e, dmg, kx, kz) {
+    var crit = Boolean(upLevels.critical) && Math.random() < 0.08 * upLevels.critical;
+    if (crit) dmg *= 2;
     e.hp -= dmg;
     e.flash = 0.12;
+    if (e.hp > 0) { // damage number and a spark for hits that do not kill, so every shot reads
+      var dealt = Math.max(1, Math.round(dmg));
+      spawnPopup(e.x + (Math.random() - 0.5) * 0.8, e.y + 1.9, e.z, (crit ? '💥' : '') + dealt, crit ? '#ffd166' : (dealt >= 6 ? '#ffb4a2' : '#ffffff'), true);
+      if (Math.random() < 0.5) burst(e.x, e.y + 0.9, e.z, 2);
+    }
     if ((kx || kz) && e.kind !== 'boss') moveOnIsland(e, kx, kz, 0.35);
     if (e.hp <= 0) {
       var idx = enemies.indexOf(e);
@@ -3074,9 +3340,11 @@
       kills += 1;
       streak += 1;
       streakTimer = 4.0;
+      var prevMult = Math.min(10, 1 + Math.floor((streak - 1) / 4));
       var mult = Math.min(10, 1 + Math.floor(streak / 4));
+      if (mult > prevMult) spawnPopup(hero.x, hero.y + 3.0, hero.z, fill(t('comboUp'), { n: mult }), '#fb923c');
       if (mult > maxCombo) maxCombo = mult;
-      var basePts = e.kind === 'boss' ? 300 : ((e.kind === 'charger' || e.kind === 'caster' ? 28 : 12) * (e.isElite ? 2 : 1));
+      var basePts = e.kind === 'boss' ? 300 : (e.kind === 'bruiser' ? 45 : e.kind === 'splitter' ? 24 : e.kind === 'swarmer' ? 6 : ((e.kind === 'charger' || e.kind === 'caster' ? 28 : 12) * (e.isElite ? 2 : 1)));
       var pts = basePts * mult;
       score += pts;
       burst(e.x, e.y + 1.0, e.z, e.kind === 'boss' ? 36 : (e.isElite ? 22 : 12));
@@ -3086,16 +3354,26 @@
         onBossKilled();
         showBanner(t('bossDefeated'));
         for (var b = 0; b < 6; b++) addShard(e.x + (Math.random() - 0.5) * 3, e.z + (Math.random() - 0.5) * 3, 25, true);
+        for (var bc = 0; bc < 3; bc++) addShard(e.x + (bc - 1) * 1.4, e.z + 1.8, 18, false); // bonus coins
+        if (hearts < maxHearts) hearts += 1;
+        spawnPopup(e.x, e.y + 2.4, e.z, '+1 ♥', '#ff5d7a');
+        showBanner(t('bossReward'));
         blip(520, 0.35, 'triangle', 0.08, 1040);
       } else if (e.isElite) {
         for (var eb2 = 0; eb2 < 3; eb2++) addShard(e.x + (eb2 - 1) * 0.7, e.z + (Math.random() - 0.5) * 0.6, 25, true);
+      } else if (e.kind === 'splitter') {
+        for (var sp = 0; sp < 2; sp++) spawnEnemy('swarmer', { x: e.x + (sp ? 1 : -1) * 0.9, z: e.z + (Math.random() - 0.5) });
+        addShard(e.x, e.z, 20, true);
+      } else if (e.kind === 'bruiser') {
+        addShard(e.x - 0.6, e.z, 20, true); addShard(e.x + 0.6, e.z, 20, true);
       } else {
-        addShard(e.x, e.z, e.kind !== 'stalker' ? 20 : 10, true);
+        addShard(e.x, e.z, e.kind === 'swarmer' ? 6 : (e.kind !== 'stalker' ? 20 : 10), true);
       }
       post({ type: 'state', phase: phase, score: score });
     }
   }
 
+  var PROJ_GLOW = {};
   function spawnProjectile(vx, vz, dmg, colorHex, pierce, homing, explosive, kindOpt) {
     var mesh = new THREE.Group();
     var k = kindOpt || (explosive ? 'dragon' : (homing ? 'coloa' : ((pierce || 1) >= 4 ? 'drill' : 'shuriken')));
@@ -3127,6 +3405,10 @@
       mesh.add(d1, d2);
       mesh.rotation.y = Math.atan2(vx, vz);
     }
+    var pGlow = PROJ_GLOW[colorHex];
+    if (!pGlow) pGlow = PROJ_GLOW[colorHex] = new THREE.SpriteMaterial({ map: GLOW, color: colorHex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.7 });
+    var pHalo = new THREE.Sprite(pGlow); pHalo.scale.set(1.7, 1.7, 1);
+    mesh.add(pHalo);
     mesh.position.set(hero.x, hero.y + 0.9, hero.z);
     scene.add(mesh);
     projectiles.push({
@@ -3135,19 +3417,34 @@
     });
   }
 
+  var EB_MATS = {};
   function spawnEnemyBullet(x, z, vx, vz, colorHex) {
-    var mesh = new THREE.Mesh(EBULLET_GEO, new THREE.MeshBasicMaterial({ color: colorHex || '#f43f5e' }));
+    var hex = hostileHex;
+    var m = EB_MATS[hex];
+    if (!m) {
+      m = EB_MATS[hex] = {
+        core: new THREE.MeshPhongMaterial({ color: hex, emissive: hex, emissiveIntensity: 0.85, shininess: 80, flatShading: true }),
+        outline: new THREE.MeshBasicMaterial({ color: '#12020a', side: THREE.BackSide }),
+        bright: new THREE.MeshBasicMaterial({ color: '#ffffff' }),
+        halo: new THREE.SpriteMaterial({ map: GLOW, color: hex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.9 }),
+      };
+    }
+    var mesh = new THREE.Mesh(EBULLET_GEO, m.core); // a 3D orb with a dark outline, a white hot centre and a halo
+    var outline = new THREE.Mesh(EBULLET_GEO, m.outline); outline.scale.setScalar(1.18);
+    var hot = new THREE.Mesh(EBULLET_GEO, m.bright); hot.scale.setScalar(0.35);
+    var halo = new THREE.Sprite(m.halo); halo.scale.set(0.6, 0.6, 1);
+    mesh.add(outline, hot, halo);
     mesh.position.set(x, (groundAt(x, z) || 1) + 1.0, z);
     scene.add(mesh);
-    enemyBullets.push({ x: x, z: z, vx: vx, vz: vz, life: 3.4, mesh: mesh });
+    enemyBullets.push({ x: x, z: z, vx: vx, vz: vz, life: 3.4, mesh: mesh, seed: Math.random() * 6 });
   }
 
   function spawnMeteorHazard(x, z) {
-    var mesh = new THREE.Mesh(HAZARD_GEO, new THREE.MeshBasicMaterial({ color: '#ff2e63', side: THREE.DoubleSide, transparent: true, opacity: 0.78 }));
+    var mesh = new THREE.Mesh(HAZARD_GEO, new THREE.MeshBasicMaterial({ color: hostileHex, side: THREE.DoubleSide, transparent: true, opacity: 0.8 }));
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set(x, (groundAt(x, z) || 1) + 0.14, z);
     scene.add(mesh);
-    hazards.push({ x: x, z: z, delay: 1.15, radius: 2.6, mesh: mesh });
+    hazards.push({ x: x, z: z, delay: 1.5, radius: 2.6, mesh: mesh });
   }
 
   function fireChainLightning(lv) {
@@ -3202,6 +3499,9 @@
   function triggerHeroDamage(knockX, knockZ, reasonText) {
     if (invulnerable > 0 || dashTimer > 0) return;
     hearts -= 1;
+    dmgFlash.style.opacity = '1';
+    setTimeout(function () { dmgFlash.style.opacity = '0'; }, 140);
+    spawnPopup(hero.x, hero.y + 2.4, hero.z, '-1 ♥', '#ff5d7a');
     streak = 0; streakTimer = 0;
     invulnerable = 1.0;
     shakeT = 0.3;
@@ -3230,7 +3530,7 @@
     // Dash clears nearby enemy bullets & knocks back monsters
     for (var b = enemyBullets.length - 1; b >= 0; b--) {
       if (Math.hypot(enemyBullets[b].x - hero.x, enemyBullets[b].z - hero.z) < 5.6) {
-        scene.remove(enemyBullets[b].mesh); enemyBullets[b].mesh.material.dispose();
+        scene.remove(enemyBullets[b].mesh);
         enemyBullets.splice(b, 1);
       }
     }
@@ -3384,6 +3684,7 @@
     surrenderBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     pauseBtn.style.display = next === 'playing' ? 'inline-flex' : 'none';
     statPill.style.display = next === 'playing' ? '' : 'none'; // no zero-score HUD on the menu
+    statusDock.style.display = next === 'playing' ? 'flex' : 'none';
     if (next === 'playing') { surrenderArmedAt = 0; surrenderBtn.textContent = t('surrenderBtn'); }
     if (next !== 'playing') { bossBarWrap.style.display = 'none'; lvlOverlay.style.display = 'none'; levelUpChoices = null; }
     playAgainArmedAt = 0;
@@ -3395,7 +3696,7 @@
   /* A wallet is only needed to save a run onchain: without one the run is a free practice run. */
   var runGuest = false;
   var gameMode = 'normal', runMode = 'normal';
-  var fxTrailT = 0;
+  var fxTrailT = 0, coinPulseT = 0;
   try { var savedMode = window.localStorage.getItem('arc-voxel-quest:mode'); if (savedMode === 'endless' || savedMode === 'bossrush') gameMode = savedMode; } catch (e) { /* ignore */ }
   var BOSS_RUSH_COUNT = 5;
   var bossesKilled = 0, bossRushDone = false, bossRushMs = 0, modeStatusText = '';
@@ -3525,6 +3826,8 @@
     runMode = gameMode; bossesKilled = 0; bossRushDone = false; bossRushMs = 0; modeStatusText = '';
     if (runMode === 'bossrush') nextBossAt = 4; // the first boss arrives after the usual 4 quiet seconds
     coachShown = {};
+    patternAt = { pack: 10, pincer: 30, ring: 55 };
+    seenKinds = {};
     if (web3 && !web3.state.account) countGuestRun();
     runGuest = !(web3 && web3.state.account && window.ARC_WEB3.isValidAddress(web3.state.contractAddress));
     if (!runGuest) {
@@ -3960,9 +4263,9 @@
     var box = panel(w3Body);
     heading(box, t('shopHeroesTitle'));
     hint(box, t('heroUnlockNote'));
-    for (var hi = 5; hi <= 7; hi++) {
+    for (var hi = 8; hi <= 9; hi++) {
       (function (idx) {
-        var open = ((st.heroMask || 0) & (1 << (idx - 5))) !== 0;
+        var open = ((st.heroMask || 0) & (1 << (idx - 8))) !== 0;
         var row = el('div', 'display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:rgba(120,230,255,.06)', box);
         el('span', 'flex:1;font-weight:800', row).textContent = heroNameOf(idx);
         if (open) { el('span', 'color:#7dffb1;font-weight:800', row).textContent = '✅ ' + t('unlockedWord'); return; }
@@ -4767,14 +5070,22 @@
       spawnTimer += dt;
       var curTier = getThreatTier(wave);
       var curSpawnEvery = Math.max(curTier.spawnFloor, R.enemySpawnEvery - (wave - 1) * 0.09);
-      var waveMaxEnemies = Math.min(runMode === 'endless' ? 80 : 54, curTier.maxMobs + (wave - 1) * 2);
+      var waveMaxEnemies = Math.min(runMode === 'endless' ? 96 : 66, Math.round(curTier.maxMobs + (wave - 1) * 2.4)); // density grows gradually with the wave
       if (runMode === 'bossrush') waveMaxEnemies = 0; // only bosses
       // Waves 1-2 are gentler: 4 seconds with no spawns, about a third fewer mobs.
       if (wave <= 2) { curSpawnEvery /= 0.65; waveMaxEnemies = Math.round(waveMaxEnemies * 0.65); }
+      if (elapsed >= 4 && runMode !== 'bossrush') runSpawnPatterns(waveMaxEnemies - enemies.length);
       if (elapsed >= 4 && spawnTimer >= curSpawnEvery && enemies.length < waveMaxEnemies) {
         spawnTimer = 0;
-        var roll = Math.random();
-        if (curTier.casterRatio > 0 && roll < curTier.casterRatio) spawnEnemy('caster');
+        var roll = Math.random(), extra = Math.random();
+        if (wave >= 7 && extra < 0.07) { announceKind('splitter'); spawnEnemy('splitter'); }
+        else if (wave >= 5 && extra < 0.13) { announceKind('bruiser'); spawnEnemy('bruiser'); }
+        else if (wave >= 3 && extra < 0.26) { // a small swarm arriving together
+          announceKind('swarmer');
+          var sa = Math.random() * Math.PI * 2;
+          for (var sw = 0; sw < 4; sw++) { var sp0 = landAround(sa, 14, 0.4); if (sp0) spawnEnemy('swarmer', sp0); }
+        }
+        else if (curTier.casterRatio > 0 && roll < curTier.casterRatio) spawnEnemy('caster');
         else if (roll < curTier.casterRatio + curTier.chargerRatio) spawnEnemy('charger');
         else spawnEnemy('stalker');
       }
@@ -4859,44 +5170,68 @@
         }
         blip(380, 0.06, 'triangle', 0.03, 300);
       }
-      // Proximity Mines: dropped where the hero walks, armed after a moment, blast when a mob steps close
+      // Proximity Mines: a trail dropped as the hero moves, armed after a blink, chain-reacting blasts
       if (upLevels.mines && wTimers.mines <= 0) {
-        var lvM = upLevels.mines, tooClose = false;
-        for (var mj = 0; mj < mines.length; mj++) if (Math.hypot(mines[mj].x - hero.x, mines[mj].z - hero.z) < 1.4) tooClose = true;
-        if (tooClose || mines.length >= 4 + lvM) {
-          wTimers.mines = 0.3;
+        var lvM = upLevels.mines, tooClose = false, lastMine = mines.length ? mines[mines.length - 1] : null;
+        var minGap = Math.hypot(hero.vx, hero.vz) > 0.8 ? 2.2 : 1.6; // moving: lay them out along the path
+        for (var mj = 0; mj < mines.length; mj++) if (Math.hypot(mines[mj].x - hero.x, mines[mj].z - hero.z) < minGap) tooClose = true;
+        if (tooClose || mines.length >= 6 + lvM * 2) {
+          wTimers.mines = 0.12;
         } else {
-          wTimers.mines = Math.max(0.9, 1.9 - lvM * 0.2);
-          var mineMesh = new THREE.Group();
-          mineMesh.add(new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.22, 0.9), new THREE.MeshBasicMaterial({ color: '#4c1d95' })));
-          var mineCore = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.4), new THREE.MeshBasicMaterial({ color: '#c4b5fd', transparent: true, opacity: 0.9 }));
-          mineCore.position.set(0, 0.2, 0);
-          mineMesh.add(mineCore);
-          mineMesh.position.set(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.15, hero.z);
+          wTimers.mines = Math.max(0.35, 0.8 - lvM * 0.09);
+          var mineMesh = makeMine();
+          mineMesh.position.set(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.12, hero.z);
           scene.add(mineMesh);
-          mines.push({ x: hero.x, z: hero.z, life: 10, arm: 0.5, dmg: 4.2 + lvM * 1.1, radius: 2.8 + lvM * 0.25, mesh: mineMesh });
+          spawnFxRing(hero.x, (groundAt(hero.x, hero.z) || 1) + 0.1, hero.z, '#a78bfa', 0.2, 1.1, 0.25, false); // a small pulse where it lands
+          mines.push({ x: hero.x, z: hero.z, life: 14, arm: 0.35, fuse: -1, dmg: 5 + lvM * 1.3, radius: 3.3 + lvM * 0.3, mesh: mineMesh });
+          blip(520, 0.05, 'triangle', 0.03, 380);
         }
       }
       for (var mi = mines.length - 1; mi >= 0; mi--) {
         var mn = mines[mi];
         mn.life -= dt; mn.arm -= dt;
-        mn.mesh.children[1].material.opacity = 0.55 + Math.sin(tNow * 8 + mi) * 0.35;
+        // blinking while arming, a slow heartbeat when armed
+        var armed = mn.arm <= 0;
+        var blink = armed ? 0.75 + Math.sin(tNow * 5 + mi) * 0.25 : (Math.sin(tNow * 30) > 0 ? 1 : 0.25);
+        mn.mesh.userData.core.material.emissiveIntensity = 0.5 + blink * 1.4;
+        mn.mesh.userData.core.scale.setScalar(0.9 + blink * 0.3);
+        mn.mesh.userData.halo.material.opacity = 0.25 + blink * 0.65;
+        mn.mesh.userData.ring.material.opacity = armed ? 0.16 + Math.sin(tNow * 4 + mi) * 0.06 : 0.06;
+        mn.mesh.rotation.y += dt * (armed ? 0.6 : 3);
+        if (mn.life < 2) mn.mesh.visible = Math.sin(tNow * 24) > -0.2; // fades out by flickering before it expires
         var boom = false;
-        if (mn.arm <= 0) {
-          for (var me = 0; me < enemies.length; me++) {
-            if (Math.hypot(enemies[me].x - mn.x, enemies[me].z - mn.z) < 1.5 + enemies[me].radius) { boom = true; break; }
+        if (armed) {
+          if (mn.fuse >= 0) { mn.fuse -= dt; if (mn.fuse <= 0) boom = true; } // set off by a neighbour's blast
+          else {
+            for (var me = 0; me < enemies.length; me++) {
+              if (Math.hypot(enemies[me].x - mn.x, enemies[me].z - mn.z) < 2.0 + enemies[me].radius) { boom = true; break; }
+            }
           }
         }
         if (boom) {
           var my = (groundAt(mn.x, mn.z) || 1) + 0.25;
-          burst(mn.x, my + 0.7, mn.z, 16);
-          spawnFxRing(mn.x, my, mn.z, '#a78bfa', 0.8, mn.radius * 1.2, 0.34, false);
-          blip(240, 0.14, 'sawtooth', 0.05, 110);
+          burst(mn.x, my + 0.7, mn.z, 30);
+          spawnFlash(mn.x, my + 0.8, mn.z, '#c4b5fd', mn.radius * 1.5, 0.3);
+          spawnFxRing(mn.x, my, mn.z, '#e9d5ff', 0.6, mn.radius * 1.3, 0.3, false);
+          spawnFxRing(mn.x, my, mn.z, '#8b5cf6', 0.3, mn.radius * 0.8, 0.5, false);
+          blip(180, 0.2, 'sawtooth', 0.06, 70);
+          if (Math.hypot(mn.x - hero.x, mn.z - hero.z) < 9) shakeT = Math.max(shakeT, 0.14);
           for (var mk = enemies.length - 1; mk >= 0; mk--) {
-            if (Math.hypot(enemies[mk].x - mn.x, enemies[mk].z - mn.z) <= mn.radius + enemies[mk].radius) damageEnemy(enemies[mk], mn.dmg, (enemies[mk].x - mn.x) * 0.3, (enemies[mk].z - mn.z) * 0.3);
+            if (Math.hypot(enemies[mk].x - mn.x, enemies[mk].z - mn.z) <= mn.radius + enemies[mk].radius) damageEnemy(enemies[mk], mn.dmg, (enemies[mk].x - mn.x) * 0.35, (enemies[mk].z - mn.z) * 0.35);
+          }
+          for (var mc = 0; mc < mines.length; mc++) { // chain reaction: nearby armed mines go off a moment later
+            if (mc !== mi && mines[mc].fuse < 0 && Math.hypot(mines[mc].x - mn.x, mines[mc].z - mn.z) < mn.radius * 0.9) mines[mc].fuse = 0.12 + Math.random() * 0.1;
           }
         }
         if (boom || mn.life <= 0) { scene.remove(mn.mesh); disposeNode(mn.mesh); mines.splice(mi, 1); }
+      }
+      for (var fi = flashes.length - 1; fi >= 0; fi--) {
+        var fl = flashes[fi];
+        fl.life -= dt;
+        var fr = Math.max(0, fl.life / fl.max);
+        fl.sprite.scale.setScalar(fl.size * (1.4 - fr * 0.9));
+        fl.sprite.material.opacity = fr;
+        if (fl.life <= 0) { scene.remove(fl.sprite); fl.sprite.material.dispose(); flashes.splice(fi, 1); }
       }
 
       if (upLevels.blades) {
@@ -4975,14 +5310,15 @@
         eb.life -= dt;
         eb.x += eb.vx * dt; eb.z += eb.vz * dt;
         eb.mesh.position.set(eb.x, (groundAt(eb.x, eb.z) || 1) + 1.0, eb.z);
-        if (Math.hypot(eb.x - hero.x, eb.z - hero.z) < 0.95) {
-          scene.remove(eb.mesh); eb.mesh.material.dispose(); enemyBullets.splice(ebi, 1);
+        eb.mesh.scale.setScalar(1 + Math.sin(tNow * 16 + eb.seed) * 0.08);
+        if (Math.hypot(eb.x - hero.x, eb.z - hero.z) < 0.65) {
+          scene.remove(eb.mesh); enemyBullets.splice(ebi, 1);
           triggerHeroDamage((eb.vx * 0.08), (eb.vz * 0.08));
           if (phase !== 'playing') return;
           continue;
         }
         if (eb.life <= 0 || Math.abs(eb.x) > N || Math.abs(eb.z) > N) {
-          scene.remove(eb.mesh); eb.mesh.material.dispose(); enemyBullets.splice(ebi, 1);
+          scene.remove(eb.mesh); enemyBullets.splice(ebi, 1);
         }
       }
 
@@ -5037,6 +5373,13 @@
 
         if (e.kind === 'boss') {
           activeBoss = e;
+          if (!e.enraged && e.hp < e.maxHp * 0.5) { // second phase: faster, and it fires sooner
+            e.enraged = true;
+            e.speed *= 1.2;
+            e.aiTimer = Math.min(e.aiTimer, 0.8);
+            showBanner(fill(t('bossEnraged'), { boss: e.bossName || t('bossTitle') }));
+            blip(110, 0.4, 'sawtooth', 0.08, 60);
+          }
           e.aiTimer -= dt;
           e.meteorTimer -= dt;
           if (e.aiTimer <= 0) {
@@ -5066,15 +5409,15 @@
               var phaseOffset = tNow * 0.7;
               for (var rb = 0; rb < ringCount; rb++) {
                 var ba2 = phaseOffset + (rb * Math.PI * 2) / ringCount;
-                spawnEnemyBullet(e.x, e.z, Math.sin(ba2) * 7.2, Math.cos(ba2) * 7.2, bCol);
+                spawnEnemyBullet(e.x, e.z, Math.sin(ba2) * 6.0, Math.cos(ba2) * 6.0, bCol);
                 if (e.bossPattern === 'doubleRing' && rb % 2 === 0) {
-                  spawnEnemyBullet(e.x, e.z, Math.sin(ba2 + 0.2) * 5.2, Math.cos(ba2 + 0.2) * 5.2, '#ffd166');
+                  spawnEnemyBullet(e.x, e.z, Math.sin(ba2 + 0.2) * 4.6, Math.cos(ba2 + 0.2) * 4.6, '#ffd166');
                 }
               }
             }
           }
           if (e.meteorTimer <= 0) {
-            e.meteorTimer = Math.max(1.9, 3.6 - wave * 0.14);
+            e.meteorTimer = Math.max(2.4, 3.9 - wave * 0.12);
             spawnMeteorHazard(hero.x + (Math.random() - 0.5) * 2.5, hero.z + (Math.random() - 0.5) * 2.5);
           }
           moveOnIsland(e, (tx / dist) * e.speed * dt, (tz / dist) * e.speed * dt, 0.4);
@@ -5084,7 +5427,7 @@
             moveOnIsland(e, (tx / dist) * e.speed * dt, (tz / dist) * e.speed * dt, 0.35);
             if (e.stateTimer <= 0 && dist < 11) {
               e.state = 'telegraph';
-              e.stateTimer = 0.75;
+              e.stateTimer = wave <= 3 ? 1.05 : 0.9; // the red lane stays visible long enough to step out of it
               e.dirX = tx / dist; e.dirZ = tz / dist;
               if (e.telMesh) {
                 e.telMesh.visible = true;
@@ -5100,16 +5443,22 @@
               blip(280, 0.12, 'sawtooth', 0.04, 140);
             }
           } else {
-            moveOnIsland(e, e.dirX * (e.speed * 3.2) * dt, e.dirZ * (e.speed * 3.2) * dt, 0.35);
-            if (e.stateTimer <= 0) { e.state = 'chase'; e.stateTimer = 2.4; }
+            moveOnIsland(e, e.dirX * (e.speed * 2.8) * dt, e.dirZ * (e.speed * 2.8) * dt, 0.35);
+            if (e.stateTimer <= 0) { e.state = 'chase'; e.stateTimer = 3.0; }
           }
         } else if (e.kind === 'caster') {
           e.aiTimer -= dt;
+          if (e.aiTimer <= 0.55 && !e.warned) { // a ring flashes on the caster just before it fires
+            e.warned = true;
+            spawnFxRing(e.x, (groundAt(e.x, e.z) || 1) + 0.15, e.z, hostileHex, 0.4, 2.2, 0.5, false);
+          }
           if (dist > 8.5) moveOnIsland(e, (tx / dist) * e.speed * dt, (tz / dist) * e.speed * dt, 0.35);
           else if (dist < 5.5) moveOnIsland(e, (-tx / dist) * e.speed * 0.7 * dt, (-tz / dist) * e.speed * 0.7 * dt, 0.35);
           if (e.aiTimer <= 0) {
-            e.aiTimer = Math.max(1.5, 2.7 - wave * 0.1);
-            spawnEnemyBullet(e.x, e.z, (tx / dist) * (8.2 + Math.min(3.5, wave * 0.3)), (tz / dist) * (8.2 + Math.min(3.5, wave * 0.3)), '#e879f9');
+            e.aiTimer = Math.max(1.8, 3.0 - wave * 0.1);
+            e.warned = false;
+            var bSpeed = 6.0 + Math.min(2.6, wave * 0.22); // slower than before: a bullet can be sidestepped, not just outrun
+            spawnEnemyBullet(e.x, e.z, (tx / dist) * bSpeed, (tz / dist) * bSpeed, '#ff3b5c');
           }
         } else {
           var ax = tx / dist, az = tz / dist;
@@ -5153,8 +5502,12 @@
           pickups.splice(k, 1);
           gems += 1;
           score += p.scoreVal;
-          xp += p.xp;
+          xp += Math.round(p.xp * (1 + 0.12 * (upLevels.scholar || 0)));
           burst(p.x, (groundAt(p.x, p.z) || 1) + 0.8, p.z, 8);
+          // collect feedback: a ring and a floating label in the item's own colour (gold coin, green or violet gem)
+          spawnFxRing(p.x, (groundAt(p.x, p.z) || 1) + 0.12, p.z, p.isXp ? (p.xp >= 20 ? gemHexBig : gemHexSmall) : '#ffc928', 0.3, 1.9, 0.3, false);
+          spawnPopup(p.x, (groundAt(p.x, p.z) || 1) + 1.6, p.z, p.isXp ? '+' + p.xp + ' XP' : '+1 🪙', p.isXp ? (p.xp >= 20 ? gemHexBig : gemHexSmall) : '#ffc928', true);
+          coinPulseT = 0.25;
           blip(840 + Math.min(400, level * 30), 0.08, 'triangle', 0.04, 1260);
           if (xp >= xpNeed) {
             xp -= xpNeed;
@@ -5313,6 +5666,8 @@
       timeEl.textContent = '⏱ ' + (R.duration > 0 ? formatDuration(Math.ceil(timeLeft)) : formatDuration(elapsed));
       dashBtn.textContent = dashCooldown > 0 ? Math.ceil(dashCooldown) + 's' : t('dashBtn');
       dashBtn.disabled = dashCooldown > 0;
+      coinPulseT = Math.max(0, coinPulseT - dt);
+      updateStatusDock(now);
       if (phase === 'playing' && !levelUpChoices && tutorialStage > 0) {
         tutEl.style.display = 'block';
         tutEl.textContent = tutorialStage === 1 ? t('tutStep1') : t('tutStep2');

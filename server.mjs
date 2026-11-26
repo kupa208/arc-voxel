@@ -59,7 +59,7 @@ const SIG_TTL_SECONDS = 10 * 60
 const MAX_SESSIONS = 5_000
 const SEASON_LENGTH_S = 86_400 // matches ArcVoxelGameFi.SEASON_LENGTH
 const REFRESH_MIN_GAP_MS = 2_000
-const HEROES = 8 // number of playable heroes (contract hero id < 8)
+const HEROES = 10 // number of playable heroes (contract hero id < 10)
 const MAX_ROOM_ID = 1_000_000_000
 const RELAY_PER_PLAYER_PER_DAY = 10
 const RELAY_PER_DAY = 300
@@ -327,9 +327,9 @@ function int(v, max) {
 }
 
 const HERO_ABI = parseAbi(['function heroUnlocked(address,uint8) view returns (bool)'])
-/** Heroes 0..4 are free. For the others the contract decides; if the chain cannot be reached the contract still checks at submit. */
+/** Heroes 0..7 are free. For the others the contract decides; if the chain cannot be reached the contract still checks at submit. */
 async function heroAllowed(player, hero) {
-  if (hero < 5) return true
+  if (hero < 8) return true
   try {
     const contract = await contractAddress()
     const data = await chainCall(contract, encodeFunctionData({ abi: HERO_ABI, functionName: 'heroUnlocked', args: [player, hero] }))
@@ -345,7 +345,7 @@ async function handleRunStart(body) {
   const roomId = int(body.roomId ?? 0, MAX_ROOM_ID)
   const hero = int(body.hero ?? 0, HEROES - 1)
   if (roomId === null || hero === null) throw new HttpError(400, 'Invalid room or hero')
-  // Heroes 5..7 are unlocked with ARCQ before they can save a ranked run (Endless and Boss Rush send ranked: false).
+  // Heroes 8..9 are unlocked with ARCQ before they can save a ranked run (Endless and Boss Rush send ranked: false).
   if (body.ranked !== false && !(await heroAllowed(s.address, hero))) throw new HttpError(403, 'HERO_LOCKED: unlock this hero with ARCQ in the Shop first')
   const now = Date.now()
   prune(now)

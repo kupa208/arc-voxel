@@ -1421,7 +1421,7 @@
 
     async function unlockHero(hero) {
       needContract();
-      return sendAction('unlock-hero', { hero: hero }, function () { return state.heroMask && (state.heroMask & (1 << (hero - 5))) !== 0; });
+      return sendAction('unlock-hero', { hero: hero }, function () { return state.heroMask && (state.heroMask & (1 << (hero - 8))) !== 0; });
     }
 
     var PASS_PRICE_USDC = 3000000n; // matches ArcVoxelGameFi.PASS_PRICE

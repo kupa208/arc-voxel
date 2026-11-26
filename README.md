@@ -6,7 +6,7 @@ Built with [Arc Studio](https://studio.arc.io)
 
 ## What you can do
 
-- **Play** an endless run with 8 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
+- **Play** an endless run with 10 heroes and 12 maps (English and Vietnamese). Each map has its own background music, generated in the browser (the sound button or the M key turns it off).
 - **Practice for free:** play without a wallet or an account. A short how-to-play screen appears before the first run (and from the ❔ button). Practice runs are never saved; sign in to save a run onchain.
 - **Connect** MetaMask, OKX, Rabby, Coinbase, Trust, Bitget, Phantom, Rainbow, Zerion or Brave. Arc Testnet is added for you.
 - **Sign in with email:** enter your Gmail (or any email), type the one-time code Circle sends you, set a PIN once and your Arc wallet is created. Gas is sponsored, and you approve each transaction with your PIN. If you lose the PIN nobody can recover the wallet.
@@ -15,10 +15,11 @@ Built with [Arc Studio](https://studio.arc.io)
 - **Daily seasons:** enter for 1 USDC, the top 3 split the pool.
 - **Daily quests and streaks** pay ARCQ automatically when you save a run. **Badges** start at 10 points (13 tiers), so your first badge comes in your first runs.
 - **Battle Pass:** 30 levels over 30 days with a free and a premium track (3 USDC, paid into the prize pool), plus weekly quests. XP comes from saved runs and quests.
-- **Shop:** pickup-range upgrades, cosmetic skins and trail effects (no gameplay bonus), and three heroes you unlock once with ARCQ. Rewards and unlocks are not pay-to-win.
+- **Shop:** pickup-range upgrades, cosmetic skins and trail effects (no gameplay bonus), and two heroes (Lecter, Teddyz) you unlock once with ARCQ. Rewards and unlocks are not pay-to-win.
 - **Seasons:** the prize rules are readable on the contract, and an empty season's pool rolls into the next one on its own.
 - **Hero upgrades** and **skins** (soulbound NFTs) burn ARCQ. Badge NFTs show your best tier.
 - **Nickname:** set a 3-16 character nickname (Wallet & Stats tab, or the box above the hero list) so the leaderboard shows your name instead of your wallet address. It is tied to your wallet and unique per player.
+- **Combat:** a larger map, enemies that arrive in packs, pincers and rings, new enemy types (swarmers, bruisers, splitters), bosses that get angry at half health, red spiky enemy bullets (nothing you collect looks like them), damage numbers, and a fixed status card (health, coins, level, upgrades). Upgrades sit in a corner panel and are tagged Attack, Defense or Growth.
 - **Game modes:** Ranked (saved onchain), Endless (no end, a heal every 5 waves) and Boss Rush (5 bosses in a row, fastest time wins). Endless and Boss Rush have their own boards kept by the game server, not onchain.
 - **Leaderboards:** all time, today, this week and a friends board (add friends by wallet address or nickname).
 - **Save rule:** a run is saved onchain only if it lasted 60 seconds or reached 200 points.
