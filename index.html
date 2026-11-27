@@ -6752,7 +6752,7 @@ void main() {
       enemyNew: '⚠️ New threat: {name}', enemyNames: { swarmer: 'Swarmers (fast and fragile)', bruiser: 'Bruiser (slow tank)', splitter: 'Splitter (splits when killed)' },
       bossEnraged: '🔥 {boss} is enraged!', bossReward: '🎁 Boss reward: +1 heart and bonus coins!', levelUpBanner: '⬆️ LEVEL UP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Attack', pathDef: 'Defense', pathGrow: 'Growth',
-      settingsTitle: 'Settings', lowGfx: 'Low graphics (smoother on phones)', cbMode: 'Colour-blind mode (white bullets with a bold dark outline)',
+      dofMode: 'Soft depth of field (blurred top and bottom edges, desktop)', settingsTitle: 'Settings', lowGfx: 'Low graphics (smoother on phones)', cbMode: 'Colour-blind mode (white bullets with a bold dark outline)',
       mapHpNote: 'enemies +{p}% health', legalTerms: 'Terms', legalPrivacy: 'Privacy',
       patPack: '⚠️ A pack is closing in', patPincer: '⚠️ Pincer! Enemies from both sides', patRing: '⚠️ Surrounded! Break the ring',
       modeSaving: 'Sending your result to the board...', modeNewBest: 'Saved: a new best on this board!', modeKeptBest: 'Sent. Your best on this board is still higher.',
@@ -7123,7 +7123,7 @@ void main() {
       enemyNew: '⚠️ Quái mới: {name}', enemyNames: { swarmer: 'Bầy nhỏ (nhanh và mỏng)', bruiser: 'Tướng giáp (chậm, trâu)', splitter: 'Quái phân thân (chết thì tách đôi)' },
       bossEnraged: '🔥 {boss} nổi cơn thịnh nộ!', bossReward: '🎁 Quà boss: +1 tim và thêm xu!', levelUpBanner: '⬆️ LÊN CẤP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Tấn công', pathDef: 'Phòng thủ', pathGrow: 'Phát triển',
-      settingsTitle: 'Cài đặt', lowGfx: 'Đồ họa thấp (mượt hơn trên điện thoại)', cbMode: 'Chế độ mù màu (đạn trắng, viền tối đậm)',
+      dofMode: 'Làm mờ chiều sâu nhẹ (mép trên và dưới, trên máy tính)', settingsTitle: 'Cài đặt', lowGfx: 'Đồ họa thấp (mượt hơn trên điện thoại)', cbMode: 'Chế độ mù màu (đạn trắng, viền tối đậm)',
       mapHpNote: 'quái +{p}% máu', legalTerms: 'Điều khoản', legalPrivacy: 'Quyền riêng tư',
       patPack: '⚠️ Một đàn quái đang áp sát', patPincer: '⚠️ Gọng kìm! Quái đến từ hai phía', patRing: '⚠️ Bị bao vây! Hãy phá vòng vây',
       modeSaving: 'Đang gửi kết quả lên bảng...', modeNewBest: 'Đã lưu: kỷ lục mới trên bảng này!', modeKeptBest: 'Đã gửi. Kỷ lục của bạn trên bảng này vẫn cao hơn.',
@@ -7374,9 +7374,9 @@ void main() {
   try { lowFxEarly = window.localStorage.getItem('arc-voxel-quest:lowfx') === '1'; } catch (e) { /* ignore */ }
   renderer.setPixelRatio(lowFxEarly ? 1 : Math.min(window.innerWidth < 820 ? 1.5 : 2, window.devicePixelRatio || 1));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 1.12;
   renderer.setClearColor(0x000000, 0);
   canvas.style.background = 'linear-gradient(to bottom,' + R.palette.skyTop + ' 0%,' + R.palette.skyTop + ' 20%,' + R.palette.skyBottom + ' 100%)';
 
@@ -7530,13 +7530,71 @@ void main() {
   scene.add(hemiLight);
   var sun = new THREE.DirectionalLight('#cceeff', 2.4);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(1024, 1024);
+  sun.shadow.mapSize.set(window.innerWidth < 820 ? 1024 : 2048, window.innerWidth < 820 ? 1024 : 2048);
+  sun.shadow.normalBias = 0.035;
   sun.shadow.camera.left = sun.shadow.camera.bottom = -25;
   sun.shadow.camera.right = sun.shadow.camera.top = 25;
   sun.shadow.camera.near = 1;
   sun.shadow.camera.far = 80;
   sun.shadow.bias = -0.0008;
   scene.add(sun, sun.target);
+
+  /* HD-2D style lighting: a warm key (sun), a cool fill from the other side and a rim light that keeps the hero readable. */
+  var fillLight = new THREE.DirectionalLight('#8fb7ff', 0.55);
+  fillLight.position.set(18, 10, -10);
+  scene.add(fillLight, fillLight.target);
+  var rimLight = new THREE.DirectionalLight('#9be7ff', 0.9);
+  scene.add(rimLight, rimLight.target);
+
+  /* Layered atmosphere: drifting low mist and glowing motes (fireflies or pollen) around the hero. */
+  var mistTex = radialTexture([[0, 'rgba(255,255,255,0.55)'], [0.5, 'rgba(255,255,255,0.18)'], [1, 'rgba(255,255,255,0)']], 128);
+  var mistSprites = [];
+  for (var mi = 0; mi < 12; mi++) {
+    var mistMat = new THREE.SpriteMaterial({ map: mistTex, color: '#cfe8ff', transparent: true, opacity: 0.22, depthWrite: false, fog: false });
+    var mistS = new THREE.Sprite(mistMat);
+    var mistSize = 26 + (mi % 4) * 6;
+    mistS.scale.set(mistSize, mistSize * 0.34, 1);
+    mistS.userData = { ox: (mi / 12) * 90 - 45, oz: ((mi * 7) % 12) * 6 - 36, oy: 1.4 + (mi % 3) * 0.7, speed: 0.25 + (mi % 5) * 0.08 };
+    scene.add(mistS);
+    mistSprites.push(mistS);
+  }
+  var MOTES = 80, moteGeo = new THREE.BufferGeometry(), motePos = new Float32Array(MOTES * 3), moteSpeed = new Float32Array(MOTES);
+  for (var mj = 0; mj < MOTES; mj++) { motePos[mj * 3] = (Math.random() - 0.5) * 44; motePos[mj * 3 + 1] = 1 + Math.random() * 7; motePos[mj * 3 + 2] = (Math.random() - 0.5) * 44; moteSpeed[mj] = 0.15 + Math.random() * 0.4; }
+  moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
+  var moteMat = new THREE.PointsMaterial({ color: '#ffe9a8', size: 0.24, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+  var motePoints = new THREE.Points(moteGeo, moteMat);
+  motePoints.frustumCulled = false;
+  scene.add(motePoints);
+  function updateAtmosphere(dt, tSec, fx, fz) {
+    var quality = typeof lowFx !== 'undefined' && lowFx;
+    motePoints.visible = true;
+    moteGeo.setDrawRange(0, quality ? 24 : MOTES);
+    for (var q = 0; q < mistSprites.length; q++) {
+      var ms = mistSprites[q], ud = ms.userData;
+      ms.visible = !quality;
+      ud.ox += dt * ud.speed;
+      if (ud.ox > 48) ud.ox -= 96;
+      ms.position.set(fx + ud.ox, 0.9 + ud.oy + Math.sin(tSec * 0.2 + q) * 0.25, fz + ud.oz);
+    }
+    for (var m = 0; m < (quality ? 24 : MOTES); m++) {
+      var i3 = m * 3;
+      motePos[i3 + 1] += dt * moteSpeed[m];
+      motePos[i3] += Math.sin(tSec * 0.6 + m) * dt * 0.3;
+      var wx = motePos[i3] - fx, wz = motePos[i3 + 2] - fz;
+      if (motePos[i3 + 1] > 9 || Math.abs(wx) > 24 || Math.abs(wz) > 24) { motePos[i3] = fx + (Math.random() - 0.5) * 44; motePos[i3 + 1] = 0.8 + Math.random() * 2; motePos[i3 + 2] = fz + (Math.random() - 0.5) * 44; }
+    }
+    moteGeo.attributes.position.needsUpdate = true;
+  }
+  function applySky(mp) {
+    var sunC = color(mp.sun);
+    var glow = 'rgba(' + Math.round(sunC.r * 255) + ',' + Math.round(sunC.g * 255) + ',' + Math.round(sunC.b * 255) + ',0.34)';
+    canvas.style.background = 'radial-gradient(ellipse 58% 38% at 78% 14%, ' + glow + ', rgba(0,0,0,0) 72%), linear-gradient(to bottom,' + mp.skyTop + ' 0%,' + mp.skyTop + ' 20%,' + mp.skyBottom + ' 100%)';
+    var fogC = color(mp.fog).lerp(color('#ffffff'), 0.35);
+    mistSprites.forEach(function (ms) { ms.material.color.copy(fogC); });
+    moteMat.color.set(mp.glowB || mp.glowA);
+    fillLight.color.copy(color(mp.hemiSky).lerp(color('#8fb7ff'), 0.5));
+    rimLight.color.copy(color(mp.glowA).lerp(color('#ffffff'), 0.45));
+  }
 
   /* Colours that stand out against the ground of the current map: enemy bullets and gems are picked per map so they never blend in. */
   function colorStats(hex) { var c = new THREE.Color(hex), o = {}; c.getHSL(o); return o; }
@@ -7568,6 +7626,39 @@ void main() {
     });
     gemHexSmall = pickContrast(gems, ground);
     gemHexBig = pickContrast(gems.filter(function (g) { return g !== gemHexSmall; }), ground);
+  }
+
+  /* Living scenery: grass tufts, flowers, bushes and pebbles. Purely visual, never solid, so gameplay is unchanged. */
+  function scatterDecor(mp, tint) {
+    var tuft = blockMesh(3 * N * N, new THREE.MeshLambertMaterial(), arenaGroup);
+    var bloom = blockMesh(2 * N * N, new THREE.MeshLambertMaterial(), arenaGroup);
+    var bushes = blockMesh(2 * N * N, new THREE.MeshLambertMaterial(), arenaGroup);
+    var pebbles = blockMesh(N * N, new THREE.MeshLambertMaterial(), arenaGroup);
+    [tuft, bloom, bushes, pebbles].forEach(function (m) { m.castShadow = false; });
+    bushes.castShadow = true;
+    var grassC = color(mp.grass), stoneC = color(mp.stoneA);
+    var flowerCols = ['#fb7185', '#fde047', '#f8fafc', '#a78bfa', '#38bdf8', '#fb923c'].map(color);
+    var density = window.innerWidth < 820 ? 0.55 : 1;
+    for (var d = 0; d < N * N; d++) {
+      if (!height[d] || sandy[d] || solid[d] || isShore(d)) continue;
+      var roll = hash2(d, 7), cc = cellCenter(d), top = height[d];
+      var ox = (hash2(d, 11) - 0.5) * 0.6, oz = (hash2(d, 12) - 0.5) * 0.6;
+      if (roll < 0.36 * density) {
+        for (var bl = 0; bl < 3; bl++) {
+          tint.copy(grassC).multiplyScalar(0.85 + hash2(d, 30 + bl) * 0.5);
+          addBlock(tuft, cc.x + ox + (bl - 1) * 0.13, top + 0.15 + bl * 0.02, cc.z + oz + ((bl % 2) - 0.5) * 0.13, 0.07, 0.3 + hash2(d, 20 + bl) * 0.22, 0.07, tint);
+        }
+      } else if (roll < 0.42 * density) {
+        addBlock(tuft, cc.x + ox, top + 0.14, cc.z + oz, 0.05, 0.28, 0.05, tint.copy(grassC).multiplyScalar(0.8));
+        addBlock(bloom, cc.x + ox, top + 0.33, cc.z + oz, 0.17, 0.12, 0.17, tint.copy(flowerCols[Math.floor(hash2(d, 40) * flowerCols.length) % flowerCols.length]));
+      } else if (roll < 0.45 * density) {
+        addBlock(bushes, cc.x + ox, top + 0.25, cc.z + oz, 0.78, 0.5, 0.78, tint.copy(grassC).multiplyScalar(0.62));
+        addBlock(bushes, cc.x + ox, top + 0.56, cc.z + oz, 0.52, 0.22, 0.52, tint.copy(grassC).multiplyScalar(0.92));
+      } else if (roll < 0.485 * density) {
+        addBlock(pebbles, cc.x + ox, top + 0.08, cc.z + oz, 0.3, 0.16, 0.26, tint.copy(stoneC).multiplyScalar(0.9 + hash2(d, 41) * 0.2));
+      }
+    }
+    [tuft, bloom, bushes, pebbles].forEach(function (m) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
   }
 
   function buildArena(mapIdx) {
@@ -7644,15 +7735,29 @@ void main() {
       if (!height[s]) continue;
       var c0 = cellCenter(s), top = height[s];
       var jitter = 0.9 + hash2(s, 99) * 0.16;
-      if (groundTexture) tint.setRGB(jitter, jitter, jitter);
-      else tint.set(sandy[s] ? mp.sand : mp.grass).multiplyScalar(jitter);
+      // Baked ambient occlusion: cells next to taller neighbours are darker, so the terrain reads with depth for free.
+      var scx = Math.floor(s / N), scz = s % N, occ = 0;
+      for (var adx = -1; adx <= 1; adx++) for (var adz = -1; adz <= 1; adz++) {
+        if (!adx && !adz) continue;
+        var ax = scx + adx, az = scz + adz;
+        var nh = ax < 0 || az < 0 || ax >= N || az >= N ? 0 : height[ax * N + az];
+        if (nh > top) occ += (nh - top) * (adx && adz ? 0.55 : 1);
+      }
+      var ao = clamp(1 - occ * 0.075, 0.7, 1);
+      var patch = fbm(scx * 0.23 + 40, scz * 0.23 + 7); // broad colour patches break up flat grass
+      if (groundTexture) tint.setRGB(jitter * ao, jitter * ao, jitter * ao);
+      else {
+        tint.set(sandy[s] ? mp.sand : mp.grass).multiplyScalar(jitter * ao * (0.9 + patch * 0.2));
+        if (!sandy[s]) tint.lerp(color(mp.sun), (patch - 0.5) * 0.1);
+      }
       addBlock(tops, c0.x, top - 0.5, c0.z, 1, 1, 1, tint);
       for (var y = 0; y < top - 1; y++) {
-        tint.set(sandy[s] ? mp.sand : mp.dirt).multiplyScalar((0.75 + y * 0.06) * (0.92 + hash2(s, y) * 0.1));
+        tint.set(sandy[s] ? mp.sand : mp.dirt).multiplyScalar((0.75 + y * 0.06) * (0.92 + hash2(s, y) * 0.1) * (0.85 + ao * 0.15));
         addBlock(sides, c0.x, y + 0.5, c0.z, 1, 1, 1, tint);
       }
     }
     tops.instanceMatrix.needsUpdate = sides.instanceMatrix.needsUpdate = true;
+    scatterDecor(mp, tint);
 
     var pillarBodies = blockMesh(pillars.length * 6, new THREE.MeshLambertMaterial(), arenaGroup);
     var pillarGlows = blockMesh(pillars.length * 4, new THREE.MeshBasicMaterial(), arenaGroup);
@@ -7700,7 +7805,7 @@ void main() {
     });
     [pillarBodies, pillarGlows, stones].forEach(function (mesh) { mesh.instanceMatrix.needsUpdate = true; });
 
-    canvas.style.background = 'linear-gradient(to bottom,' + mp.skyTop + ' 0%,' + mp.skyTop + ' 20%,' + mp.skyBottom + ' 100%)';
+    applySky(mp);
     scene.fog.color.set(mp.fog);
     water.material.color.set(mp.water);
     water.material.emissive.set(mp.waterGlow ? '#b93805' : '#000000');
@@ -8126,6 +8231,8 @@ void main() {
       armR: armR,
       cape: cape,
       head: head,
+      torso: torso,
+      blend: 0,
       weapon: weaponPivot
     };
     return root;
@@ -8471,10 +8578,10 @@ void main() {
       var look = HERO_LOOKS[hSpec.id] || HERO_LOOKS.toan_nhu;
       var hexKey = function (c) { return new THREE.Color(c).getHexString(); };
       var baseC = new THREE.Color(skinHex), recolor = {};
-      recolor[hexKey(look.coat)] = baseC;
-      recolor[hexKey(look.coatDark)] = baseC.clone().multiplyScalar(0.55);
-      recolor[hexKey(look.inner)] = baseC.clone().multiplyScalar(0.8);
-      recolor[hexKey(look.trim)] = baseC.clone().lerp(new THREE.Color('#ffffff'), 0.5);
+      if (look.coat) recolor[hexKey(look.coat)] = baseC;
+      if (look.coatDark) recolor[hexKey(look.coatDark)] = baseC.clone().multiplyScalar(0.55);
+      if (look.inner) recolor[hexKey(look.inner)] = baseC.clone().multiplyScalar(0.8);
+      if (look.trim) recolor[hexKey(look.trim)] = baseC.clone().lerp(new THREE.Color('#ffffff'), 0.5);
       if (look.scarf) recolor[hexKey(look.scarf)] = baseC;
       body.traverse(function (n) {
         if (n.material && n.material.color) {
@@ -8713,13 +8820,28 @@ void main() {
   var langBtn = el('button', '', rightGroup); langBtn.className = 'avq-btn'; stopPtr(langBtn);
   var soundBtn = el('button', '', rightGroup); soundBtn.className = 'avq-btn'; stopPtr(soundBtn);
   var pauseBtn = el('button', 'display:none', rightGroup); pauseBtn.className = 'avq-btn'; pauseBtn.textContent = '⏸'; stopPtr(pauseBtn);
+  var vignetteEl = el('div', 'position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse at center, rgba(0,0,0,0) 58%, rgba(4,8,24,.42) 100%)', document.body);
+  var dofTop = el('div', 'position:fixed;left:0;right:0;top:0;height:16%;pointer-events:none;z-index:3;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px);-webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,transparent 100%)', document.body);
+  var dofBottom = el('div', 'position:fixed;left:0;right:0;bottom:0;height:16%;pointer-events:none;z-index:3;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px);-webkit-mask-image:linear-gradient(to top,#000 0%,transparent 100%);mask-image:linear-gradient(to top,#000 0%,transparent 100%)', document.body);
+  var dofOn = false;
+  try {
+    var savedDof = window.localStorage.getItem('arc-voxel-quest:dof');
+    dofOn = savedDof === null ? !(window.matchMedia && window.matchMedia('(pointer:coarse)').matches) && !lowFx : savedDof === '1';
+  } catch (e) { /* ignore */ }
+  function applyCinematic() {
+    var on = dofOn && !lowFx;
+    dofTop.style.display = dofBottom.style.display = on ? 'block' : 'none';
+    vignetteEl.style.display = lowFx ? 'none' : 'block';
+  }
+  applyCinematic();
   var gearBtn = el('button', '', rightGroup); gearBtn.className = 'avq-btn'; gearBtn.textContent = '⚙'; stopPtr(gearBtn);
   var setPanel = el('div', 'position:fixed;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(300px,calc(100vw - 20px));display:none;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(9,18,40,.96);border:1px solid rgba(120,230,255,.35);pointer-events:auto;z-index:40;font-size:13px', hud);
   stopPtr(setPanel);
   function renderSettings() {
     setPanel.innerHTML = '';
     el('div', 'font-weight:800;color:#ffd166', setPanel).textContent = '⚙ ' + t('settingsTitle');
-    [['lowGfx', lowFx, function (v) { lowFx = v; try { window.localStorage.setItem('arc-voxel-quest:lowfx', v ? '1' : '0'); } catch (e) { /* ignore */ } applyPixelRatio(); resize(); }],
+    [['lowGfx', lowFx, function (v) { lowFx = v; try { window.localStorage.setItem('arc-voxel-quest:lowfx', v ? '1' : '0'); } catch (e) { /* ignore */ } applyPixelRatio(); resize(); applyCinematic(); }],
+     ['dofMode', dofOn, function (v) { dofOn = v; try { window.localStorage.setItem('arc-voxel-quest:dof', v ? '1' : '0'); } catch (e) { /* ignore */ } applyCinematic(); }],
      ['cbMode', cbMode, function (v) { cbMode = v; try { window.localStorage.setItem('arc-voxel-quest:cbmode', v ? '1' : '0'); } catch (e) { /* ignore */ } updateContrastColors(activeMapSpec()); }]].forEach(function (o) {
       var row = el('label', 'display:flex;gap:8px;align-items:flex-start;cursor:pointer', setPanel);
       var chk = el('input', 'margin-top:3px', row); chk.type = 'checkbox'; chk.checked = o[1];
@@ -9867,6 +9989,7 @@ void main() {
     lowFx = savedLow === null ? Boolean(window.matchMedia && window.matchMedia('(pointer:coarse)').matches && window.innerWidth < 820) : savedLow === '1';
     cbMode = window.localStorage.getItem('arc-voxel-quest:cbmode') === '1';
   } catch (e) { /* ignore */ }
+  if (typeof applyCinematic === 'function') applyCinematic();
   try { var savedMode = window.localStorage.getItem('arc-voxel-quest:mode'); if (savedMode === 'endless' || savedMode === 'bossrush') gameMode = savedMode; } catch (e) { /* ignore */ }
   var BOSS_RUSH_COUNT = 5;
   var bossesKilled = 0, bossRushDone = false, bossRushMs = 0, modeStatusText = '';
@@ -11789,8 +11912,9 @@ void main() {
     return aspect >= 1 ? 34 : 34 + (1 - aspect) * 34;
   }
   function placeCamera(dt) {
-    focus.x = lerp(focus.x, hero.x, Math.min(1, dt * 5));
-    focus.z = lerp(focus.z, hero.z, Math.min(1, dt * 5));
+    var lookX = hero.x + hero.vx * 0.16, lookZ = hero.z + hero.vz * 0.16; // a little look-ahead, smoothed
+    focus.x = lerp(focus.x, lookX, Math.min(1, dt * 4.2));
+    focus.z = lerp(focus.z, lookZ, Math.min(1, dt * 4.2));
     focus.y = lerp(focus.y, hero.y, Math.min(1, dt * 4));
     var distance = cameraDistance();
     camera.position.set(focus.x, focus.y + Math.sin(PITCH) * distance, focus.z + Math.cos(PITCH) * distance);
@@ -11803,6 +11927,10 @@ void main() {
     scene.fog.far = distance * 2.45;
     sun.position.set(focus.x - 18, focus.y + 15, focus.z + 8);
     sun.target.position.copy(focus);
+    rimLight.position.set(focus.x + 9, focus.y + 7, focus.z - 13);
+    rimLight.target.position.copy(focus);
+    fillLight.target.position.copy(focus);
+    updateAtmosphere(dt, performance.now() / 1000, focus.x, focus.z);
     moon.position.set(camera.position.x + 60, camera.position.y + 30, camera.position.z - 150);
     stars.position.set(camera.position.x, 0, camera.position.z);
   }
@@ -11912,8 +12040,11 @@ void main() {
   function animateRig(rig, moving, tSec, wobble, state) {
     if (!rig) return;
     if (rig.type === 'hero') {
-      var stride = moving ? Math.sin(tSec * 14) * 0.62 : Math.sin(tSec * 2.2) * 0.08;
-      var armSw = moving ? Math.sin(tSec * 14) * 0.5 : Math.sin(tSec * 2.2) * 0.07;
+      rig.blend = (rig.blend || 0) + ((moving ? 1 : 0) - (rig.blend || 0)) * 0.2; // eases between idle and walk so the pose never snaps
+      var bw = rig.blend;
+      var stride = Math.sin(tSec * 14) * 0.62 * bw + Math.sin(tSec * 2.2) * 0.08 * (1 - bw);
+      var armSw = Math.sin(tSec * 14) * 0.5 * bw + Math.sin(tSec * 2.2) * 0.07 * (1 - bw);
+      if (rig.torso) { var breath = Math.sin(tSec * 2.1) * 0.012 * (1 - bw); rig.torso.scale.set(1 + breath * 0.6, 1 + breath, 1 + breath * 0.6); }
       rig.legL.rotation.x = stride;
       rig.legR.rotation.x = -stride;
       rig.armL.rotation.x = rig.hasMic ? (-0.75 + Math.sin(tSec * 2.4) * 0.08) : -armSw;
@@ -12075,6 +12206,37 @@ void main() {
       heroMode: heroMode,
       heroOnScreen: heroOnScreen(),
     };
+  };
+
+  /* Asset registry: one place that lists every swappable visual part. Skins, equipment and collectibles can be added here later
+     without touching the renderer. This is only data and helpers; there is no wallet or token logic in it. */
+  var PART_SLOTS = ['head', 'hair', 'body', 'clothing', 'accessory', 'weapon'];
+  function heroParts(id) {
+    var look = HERO_LOOKS[id];
+    if (!look) return null;
+    return {
+      head: { skin: look.skin, face: look.face || 'default' },
+      hair: { style: look.hairStyle, color: look.hair },
+      body: { build: look.build || 'standard', pants: look.pants },
+      clothing: { coat: look.coat, coatDark: look.coatDark, inner: look.inner, trim: look.trim, scarf: look.scarf },
+      accessory: { glasses: look.glasses || null, mic: Boolean(look.mic), cape: look.cape || null },
+      weapon: { kind: look.weapon, glow: look.glow || null }
+    };
+  }
+  window.ARC_VOXEL_ASSETS = {
+    version: 1,
+    slots: PART_SLOTS,
+    heroes: HEROES.map(function (h) { return { id: h.id, nameEn: h.nameEn, weaponId: h.weaponId, parts: heroParts(h.id) }; }),
+    cosmetics: SKIN_COLORS.map(function (c, i) { return i ? { id: i, slot: i >= 10 ? 'effect' : 'clothing', color: c } : null; }).filter(Boolean),
+    collectibles: [{ id: 'coin', kind: 'pickup', color: '#ffcc33' }, { id: 'gem', kind: 'xp', color: '#34d399' }],
+    maps: MAPS.map(function (m) { return { id: m.id, shape: m.shape, style: m.style }; }),
+    getHeroParts: heroParts,
+    // Compose a new look from parts, so customization can add a hero without a new builder.
+    composeLook: function (base, overrides) {
+      var look = Object.assign({}, HERO_LOOKS[base] || HERO_LOOKS.toan_nhu);
+      Object.keys(overrides || {}).forEach(function (slot) { Object.assign(look, overrides[slot]); });
+      return look;
+    }
   };
 })();
 </script>
