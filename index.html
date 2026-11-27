@@ -7565,7 +7565,27 @@ void main() {
   var motePoints = new THREE.Points(moteGeo, moteMat);
   motePoints.frustumCulled = false;
   scene.add(motePoints);
+  var butterflies = [];
+  for (var bi = 0; bi < 8; bi++) {
+    var bGroup = new THREE.Group(), bMat = new THREE.MeshBasicMaterial({ color: ['#fb7185', '#fde047', '#a78bfa', '#38bdf8'][bi % 4], side: THREE.DoubleSide });
+    var wingL = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.2), bMat), wingR = wingL.clone();
+    wingL.position.x = -0.11; wingR.position.x = 0.11;
+    bGroup.add(wingL, wingR);
+    bGroup.userData = { wl: wingL, wr: wingR, phase: bi * 1.7, radius: 6 + bi * 2.1, speed: 0.25 + (bi % 3) * 0.1, height: 1.3 + (bi % 4) * 0.35 };
+    scene.add(bGroup);
+    butterflies.push(bGroup);
+  }
   function updateAtmosphere(dt, tSec, fx, fz) {
+    water.material.opacity = (water.userData.base || 0.88) + Math.sin(tSec * 1.3) * 0.025; // slow shimmer on the water
+    for (var bf = 0; bf < butterflies.length; bf++) {
+      var bg = butterflies[bf], bu = bg.userData, ang = tSec * bu.speed + bu.phase;
+      bg.visible = !(typeof lowFx !== 'undefined' && lowFx);
+      var bx = fx + Math.cos(ang) * bu.radius, bz = fz + Math.sin(ang * 0.8) * bu.radius;
+      bg.position.set(bx, Math.max(1, groundAt(bx, bz)) + bu.height + Math.sin(tSec * 2 + bu.phase) * 0.25, bz);
+      bg.rotation.y = -ang;
+      var flap = 0.35 + Math.abs(Math.sin(tSec * 14 + bu.phase)) * 1.0;
+      bu.wl.rotation.z = flap; bu.wr.rotation.z = -flap;
+    }
     var quality = typeof lowFx !== 'undefined' && lowFx;
     motePoints.visible = true;
     moteGeo.setDrawRange(0, quality ? 24 : MOTES);
@@ -7658,7 +7678,35 @@ void main() {
         addBlock(pebbles, cc.x + ox, top + 0.08, cc.z + oz, 0.3, 0.16, 0.26, tint.copy(stoneC).multiplyScalar(0.9 + hash2(d, 41) * 0.2));
       }
     }
-    [tuft, bloom, bushes, pebbles].forEach(function (m) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
+    // Foam along the waterline, so land and water meet softly instead of with a hard cut.
+    var foam = blockMesh(N * 6, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.55, depthWrite: false }), arenaGroup);
+    foam.castShadow = false; foam.receiveShadow = false;
+    var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var f = 0; f < N * N; f++) {
+      if (!height[f]) continue;
+      var fx = Math.floor(f / N), fz = f % N, fc = cellCenter(f);
+      for (var di = 0; di < 4; di++) {
+        var nx = fx + dirs[di][0], nz = fz + dirs[di][1];
+        var wet = nx < 0 || nz < 0 || nx >= N || nz >= N || !height[nx * N + nz];
+        if (!wet || foam.count >= N * 6 - 1) continue;
+        var alongX = dirs[di][0] !== 0;
+        addBlock(foam, fc.x + dirs[di][0] * 0.62, WATER_Y + 0.03, fc.z + dirs[di][1] * 0.62, alongX ? 0.28 : 1, 0.04, alongX ? 1 : 0.28, tint.set('#ffffff').multiplyScalar(0.85 + hash2(f, 50 + di) * 0.15));
+      }
+    }
+    // A few lamp posts with a soft glow in the map's accent colour.
+    var posts = blockMesh(12, new THREE.MeshLambertMaterial(), arenaGroup), lamps = blockMesh(12, new THREE.MeshBasicMaterial(), arenaGroup);
+    posts.castShadow = false; lamps.castShadow = false;
+    var placedLamps = 0;
+    for (var lp = 0; lp < N * N && placedLamps < 7; lp++) {
+      var li = (lp * 53 + 17) % (N * N);
+      if (!height[li] || sandy[li] || solid[li] || hash2(li, 61) > 0.06) continue;
+      var lc = cellCenter(li);
+      if (Math.abs(lc.x) < 4 && Math.abs(lc.z) < 4) continue;
+      addBlock(posts, lc.x, height[li] + 0.7, lc.z, 0.12, 1.4, 0.12, tint.set('#2b2f45'));
+      addBlock(lamps, lc.x, height[li] + 1.5, lc.z, 0.32, 0.32, 0.32, tint.set(mp.glowA));
+      placedLamps++;
+    }
+    [tuft, bloom, bushes, pebbles, foam, posts, lamps].forEach(function (m) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
   }
 
   function buildArena(mapIdx) {
@@ -7716,7 +7764,8 @@ void main() {
       }
     }
 
-    var pillars = [], rocks = [];
+    var pillars = [], rocks = [], trees = [];
+    var wantsTrees = !mp.waterGlow && mp.shape !== 'caldera';
     for (var tr = 0; tr < N * N; tr++) {
       if (!height[tr] || sandy[tr] || isShore(tr)) continue;
       var at = cellCenter(tr);
@@ -7724,6 +7773,7 @@ void main() {
       var r = rand();
       if (r < (mp.shape === 'cross' ? 0.017 : 0.015)) { pillars.push(tr); solid[tr] = 1; }
       else if (r < 0.028) { rocks.push(tr); solid[tr] = 1; }
+      else if (wantsTrees && r < 0.047) { trees.push(tr); solid[tr] = 1; }
     }
 
     var columns = 0, stacked = 0;
@@ -7761,7 +7811,9 @@ void main() {
 
     var pillarBodies = blockMesh(pillars.length * 6, new THREE.MeshLambertMaterial(), arenaGroup);
     var pillarGlows = blockMesh(pillars.length * 4, new THREE.MeshBasicMaterial(), arenaGroup);
-    var stones = blockMesh(rocks.length * 2, new THREE.MeshLambertMaterial(), arenaGroup);
+    var stones = blockMesh(rocks.length * 5, new THREE.MeshLambertMaterial(), arenaGroup);
+    var trunks = blockMesh(Math.max(1, trees.length), new THREE.MeshLambertMaterial(), arenaGroup);
+    var leaves = blockMesh(Math.max(1, trees.length * 3), new THREE.MeshLambertMaterial(), arenaGroup);
     pillars.forEach(function (index, k) {
       var p = cellCenter(index), base = height[index];
       var st = mp.style;
@@ -7802,7 +7854,18 @@ void main() {
       var p = cellCenter(index), base = height[index];
       addBlock(stones, p.x, base + 0.3, p.z, 0.82, 0.6, 0.75, tint.set(mp.stoneA));
       if (k % 2) addBlock(stones, p.x + 0.15, base + 0.75, p.z - 0.1, 0.46, 0.35, 0.46, tint.set(mp.stoneB));
+      addBlock(stones, p.x - 0.32, base + 0.2, p.z + 0.3, 0.46, 0.4, 0.44, tint.set(mp.stoneB).multiplyScalar(0.85)); // a smaller stone beside it
+      addBlock(stones, p.x, base + 0.63, p.z, 0.6, 0.08, 0.55, tint.set(mp.grass).multiplyScalar(0.8)); // moss on top
     });
+    trees.forEach(function (index) {
+      var p = cellCenter(index), base = height[index];
+      var th = 1.2 + hash2(index, 3) * 0.9, leafTint = color(mp.grass).multiplyScalar(0.55 + hash2(index, 5) * 0.25).lerp(color(mp.pillarMid), 0.1);
+      addBlock(trunks, p.x, base + th / 2, p.z, 0.36, th, 0.36, tint.set('#6b4423').multiplyScalar(0.85 + hash2(index, 4) * 0.3));
+      addBlock(leaves, p.x, base + th + 0.32, p.z, 1.7, 0.7, 1.7, tint.copy(leafTint));
+      addBlock(leaves, p.x, base + th + 0.86, p.z, 1.2, 0.6, 1.2, tint.copy(leafTint).multiplyScalar(1.12));
+      addBlock(leaves, p.x, base + th + 1.3, p.z, 0.7, 0.5, 0.7, tint.copy(leafTint).multiplyScalar(1.25));
+    });
+    [trunks, leaves].forEach(function (m) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
     [pillarBodies, pillarGlows, stones].forEach(function (mesh) { mesh.instanceMatrix.needsUpdate = true; });
 
     applySky(mp);
@@ -7810,6 +7873,7 @@ void main() {
     water.material.color.set(mp.water);
     water.material.emissive.set(mp.waterGlow ? '#b93805' : '#000000');
     water.material.opacity = mp.waterGlow ? 0.94 : 0.88;
+    water.userData.base = water.material.opacity;
     floor.material.color.copy(color(mp.water).multiplyScalar(0.32));
     hemiLight.color.copy(color(mp.hemiSky).lerp(color('#fff5ec'), 0.45));
     hemiLight.groundColor.set(mp.hemiGnd);
