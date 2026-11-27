@@ -632,7 +632,7 @@
       enemyNew: '⚠️ New threat: {name}', enemyNames: { swarmer: 'Swarmers (fast and fragile)', bruiser: 'Bruiser (slow tank)', splitter: 'Splitter (splits when killed)' },
       bossEnraged: '🔥 {boss} is enraged!', bossReward: '🎁 Boss reward: +1 heart and bonus coins!', levelUpBanner: '⬆️ LEVEL UP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Attack', pathDef: 'Defense', pathGrow: 'Growth',
-      dofMode: 'Soft depth of field (blurred top and bottom edges, desktop)', settingsTitle: 'Settings', lowGfx: 'Low graphics (smoother on phones)', cbMode: 'Colour-blind mode (white bullets with a bold dark outline)',
+      autoLow: 'Switched to low graphics for smoother play. You can change this in ⚙.', postFx: 'Cinematic mode: real depth of field and ambient occlusion (needs a good GPU, off by default)', dofMode: 'Soft depth of field (blurred top and bottom edges, desktop)', settingsTitle: 'Settings', lowGfx: 'Low graphics (smoother on phones)', cbMode: 'Colour-blind mode (white bullets with a bold dark outline)',
       mapHpNote: 'enemies +{p}% health', legalTerms: 'Terms', legalPrivacy: 'Privacy',
       patPack: '⚠️ A pack is closing in', patPincer: '⚠️ Pincer! Enemies from both sides', patRing: '⚠️ Surrounded! Break the ring',
       modeSaving: 'Sending your result to the board...', modeNewBest: 'Saved: a new best on this board!', modeKeptBest: 'Sent. Your best on this board is still higher.',
@@ -1003,7 +1003,7 @@
       enemyNew: '⚠️ Quái mới: {name}', enemyNames: { swarmer: 'Bầy nhỏ (nhanh và mỏng)', bruiser: 'Tướng giáp (chậm, trâu)', splitter: 'Quái phân thân (chết thì tách đôi)' },
       bossEnraged: '🔥 {boss} nổi cơn thịnh nộ!', bossReward: '🎁 Quà boss: +1 tim và thêm xu!', levelUpBanner: '⬆️ LÊN CẤP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Tấn công', pathDef: 'Phòng thủ', pathGrow: 'Phát triển',
-      dofMode: 'Làm mờ chiều sâu nhẹ (mép trên và dưới, trên máy tính)', settingsTitle: 'Cài đặt', lowGfx: 'Đồ họa thấp (mượt hơn trên điện thoại)', cbMode: 'Chế độ mù màu (đạn trắng, viền tối đậm)',
+      autoLow: 'Đã chuyển sang đồ họa thấp để chơi mượt hơn. Bạn đổi lại được trong ⚙.', postFx: 'Chế độ điện ảnh: làm mờ chiều sâu thật và bóng che môi trường (cần card đồ họa tốt, mặc định tắt)', dofMode: 'Làm mờ chiều sâu nhẹ (mép trên và dưới, trên máy tính)', settingsTitle: 'Cài đặt', lowGfx: 'Đồ họa thấp (mượt hơn trên điện thoại)', cbMode: 'Chế độ mù màu (đạn trắng, viền tối đậm)',
       mapHpNote: 'quái +{p}% máu', legalTerms: 'Điều khoản', legalPrivacy: 'Quyền riêng tư',
       patPack: '⚠️ Một đàn quái đang áp sát', patPincer: '⚠️ Gọng kìm! Quái đến từ hai phía', patRing: '⚠️ Bị bao vây! Hãy phá vòng vây',
       modeSaving: 'Đang gửi kết quả lên bảng...', modeNewBest: 'Đã lưu: kỷ lục mới trên bảng này!', modeKeptBest: 'Đã gửi. Kỷ lục của bạn trên bảng này vẫn cao hơn.',
@@ -1459,14 +1459,16 @@
     water.material.opacity = (water.userData.base || 0.88) + Math.sin(tSec * 1.3) * 0.025; // slow shimmer on the water
     for (var bf = 0; bf < butterflies.length; bf++) {
       var bg = butterflies[bf], bu = bg.userData, ang = tSec * bu.speed + bu.phase;
-      bg.visible = !(typeof lowFx !== 'undefined' && lowFx);
+      bg.visible = !((typeof lowFx !== 'undefined' && lowFx) || calm);
       var bx = fx + Math.cos(ang) * bu.radius, bz = fz + Math.sin(ang * 0.8) * bu.radius;
       bg.position.set(bx, Math.max(1, groundAt(bx, bz)) + bu.height + Math.sin(tSec * 2 + bu.phase) * 0.25, bz);
       bg.rotation.y = -ang;
       var flap = 0.35 + Math.abs(Math.sin(tSec * 14 + bu.phase)) * 1.0;
       bu.wl.rotation.z = flap; bu.wr.rotation.z = -flap;
     }
-    var quality = typeof lowFx !== 'undefined' && lowFx;
+    var calm = typeof reduceMotion !== 'undefined' && reduceMotion;
+    if (calm) dt = 0; // no drifting mist or flying motes for people who asked for less motion
+    var quality = (typeof lowFx !== 'undefined' && lowFx) || calm;
     motePoints.visible = true;
     moteGeo.setDrawRange(0, quality ? 24 : MOTES);
     for (var q = 0; q < mistSprites.length; q++) {
@@ -1597,6 +1599,7 @@
     while (arenaGroup.children.length) {
       var old = arenaGroup.children.pop();
       if (old.material) old.material.dispose();
+      if (old.isInstancedMesh) old.dispose(); // frees the instance buffers so changing maps does not leak GPU memory
     }
     height.fill(0); sandy.fill(0); solid.fill(0);
     hashSeed = (Math.round(R.seed) + mp.seed * 7) * 374761393;
@@ -2797,7 +2800,7 @@
     dofOn = savedDof === null ? !(window.matchMedia && window.matchMedia('(pointer:coarse)').matches) && !lowFx : savedDof === '1';
   } catch (e) { /* ignore */ }
   function applyCinematic() {
-    var on = dofOn && !lowFx;
+    var on = dofOn && !lowFx && !postWanted;
     dofTop.style.display = dofBottom.style.display = on ? 'block' : 'none';
     vignetteEl.style.display = lowFx ? 'none' : 'block';
   }
@@ -2809,6 +2812,7 @@
     setPanel.innerHTML = '';
     el('div', 'font-weight:800;color:#ffd166', setPanel).textContent = '⚙ ' + t('settingsTitle');
     [['lowGfx', lowFx, function (v) { lowFx = v; try { window.localStorage.setItem('arc-voxel-quest:lowfx', v ? '1' : '0'); } catch (e) { /* ignore */ } applyPixelRatio(); resize(); applyCinematic(); }],
+     ['postFx', postWanted, function (v) { postWanted = v; try { window.localStorage.setItem('arc-voxel-quest:post', v ? '1' : '0'); } catch (e) { /* ignore */ } if (v) post.failed = false; applyCinematic(); }],
      ['dofMode', dofOn, function (v) { dofOn = v; try { window.localStorage.setItem('arc-voxel-quest:dof', v ? '1' : '0'); } catch (e) { /* ignore */ } applyCinematic(); }],
      ['cbMode', cbMode, function (v) { cbMode = v; try { window.localStorage.setItem('arc-voxel-quest:cbmode', v ? '1' : '0'); } catch (e) { /* ignore */ } updateContrastColors(activeMapSpec()); }]].forEach(function (o) {
       var row = el('label', 'display:flex;gap:8px;align-items:flex-start;cursor:pointer', setPanel);
@@ -3446,7 +3450,7 @@
     strikes.forEach(function (st) { scene.remove(st.mesh); st.mesh.material.dispose(); });
     mines.forEach(function (mn) { scene.remove(mn.mesh); disposeNode(mn.mesh); });
     fxRings.forEach(function (fx) { scene.remove(fx.mesh); disposeNode(fx.mesh); });
-    if (typeof flashes !== 'undefined' && flashes) { flashes.forEach(function (f) { scene.remove(f.sprite); f.sprite.material.dispose(); }); }
+    if (typeof flashes !== 'undefined' && flashes) { flashes.forEach(releaseFlash); }
     flashes = [];
     enemies = []; pickups = []; projectiles = []; enemyBullets = []; hazards = []; bolts = []; strikes = []; fxRings = []; mines = [];
     syncBladesMesh(0);
@@ -3547,10 +3551,12 @@
     return g;
   }
   /* A quick additive flash: grows while it fades. */
-  var flashes = [];
+  var flashes = [], flashPool = [];
+  function releaseFlash(f) { scene.remove(f.sprite); if (flashPool.length < 60) flashPool.push(f.sprite); else f.sprite.material.dispose(); }
   function spawnFlash(x, y, z, col, size, dur) {
     if (lowFx || flashes.length > 40) return;
-    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: col, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 1 }));
+    var sp = flashPool.pop() || new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 1 }));
+    sp.material.color.set(col); sp.material.opacity = 1;
     sp.position.set(x, y, z); sp.scale.setScalar(size * 0.5);
     scene.add(sp);
     flashes.push({ sprite: sp, life: dur, max: dur, size: size });
@@ -3950,11 +3956,12 @@
   /* A wallet is only needed to save a run onchain: without one the run is a free practice run. */
   var runGuest = false;
   var gameMode = 'normal', runMode = 'normal';
-  var fxTrailT = 0, coinPulseT = 0;
+  var fxTrailT = 0, coinPulseT = 0, lowFpsTime = 0, autoLowDone = false;
   var lowFx = false, cbMode = false;
   try {
     var savedLow = window.localStorage.getItem('arc-voxel-quest:lowfx');
-    lowFx = savedLow === null ? Boolean(window.matchMedia && window.matchMedia('(pointer:coarse)').matches && window.innerWidth < 820) : savedLow === '1';
+    var weakDevice = Boolean((navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) || (navigator.deviceMemory && navigator.deviceMemory <= 2));
+    lowFx = savedLow === null ? Boolean(weakDevice || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches && window.innerWidth < 820)) : savedLow === '1';
     cbMode = window.localStorage.getItem('arc-voxel-quest:cbmode') === '1';
   } catch (e) { /* ignore */ }
   if (typeof applyCinematic === 'function') applyCinematic();
@@ -4198,7 +4205,39 @@
     return h + 'h ' + m + 'm';
   }
 
-  var SKIN_COLORS = ['', '#ff4d6d', '#ffb703', '#2ecc71', '#9b5de5', '#6ee7ff', '#ffd700', '#16a34a', '#e11d48', '#fbbf24', '#63f7ff', '#ff7b3d', '#c084fc'];
+  /* Asset catalog: the single data source for items players can own or equip. Colours and prices below feed the shop and the renderer.
+     The prices mirror the contract, which stays the source of truth for ownership. `chainId` is reserved for a future onchain item and
+     stays null: nothing in this file talks to a wallet or a token. */
+  var ASSET_CATALOG = {
+    version: 2,
+    rarities: ['common', 'rare', 'epic', 'legendary'],
+    items: [
+      { id: 1, type: 'upgrade', slot: 'pickup', color: '#ff4d6d', costArcq: 1000, rarity: 'common', source: 'shop' },
+      { id: 2, type: 'upgrade', slot: 'pickup', color: '#ffb703', costArcq: 2000, rarity: 'common', source: 'shop' },
+      { id: 3, type: 'upgrade', slot: 'pickup', color: '#2ecc71', costArcq: 3000, rarity: 'rare', source: 'shop' },
+      { id: 4, type: 'upgrade', slot: 'pickup', color: '#9b5de5', costArcq: 5000, rarity: 'rare', source: 'shop' },
+      { id: 5, type: 'upgrade', slot: 'pickup', color: '#6ee7ff', costArcq: 8000, rarity: 'epic', source: 'shop' },
+      { id: 6, type: 'upgrade', slot: 'pickup', color: '#ffd700', costArcq: 12000, rarity: 'epic', source: 'shop' },
+      { id: 7, type: 'skin', slot: 'clothing', color: '#16a34a', costArcq: 4000, rarity: 'rare', source: 'shop' },
+      { id: 8, type: 'skin', slot: 'clothing', color: '#e11d48', costArcq: 6000, rarity: 'rare', source: 'shop' },
+      { id: 9, type: 'skin', slot: 'clothing', color: '#fbbf24', costArcq: 10000, rarity: 'epic', source: 'shop' },
+      { id: 10, type: 'effect', slot: 'trail', color: '#63f7ff', costArcq: 2500, rarity: 'rare', source: 'shop' },
+      { id: 11, type: 'effect', slot: 'trail', color: '#ff7b3d', costArcq: 6000, rarity: 'epic', source: 'shop' },
+      { id: 12, type: 'effect', slot: 'trail', color: '#c084fc', costArcq: 0, rarity: 'legendary', source: 'pass' }
+    ].map(function (item) { item.chainId = null; return item; }),
+    heroUnlocks: [{ hero: 'lecter', costArcq: 800 }, { hero: 'teddyz', costArcq: 800 }],
+    // Environment pieces: each is a small recipe in voxel boxes tinted from the active map, so new props are data, not new code paths.
+    props: [
+      { id: 'tree', solid: true, parts: ['trunk 0.36x1.2-2.1x0.36 brown', 'canopy 1.7x0.7x1.7 grass*0.55', 'canopy 1.2x0.6x1.2 grass*0.62', 'canopy 0.7x0.5x0.7 grass*0.7'] },
+      { id: 'rock', solid: true, parts: ['stone 0.82x0.6x0.75 stoneA', 'stone 0.46x0.35x0.46 stoneB', 'moss 0.6x0.08x0.55 grass*0.8'] },
+      { id: 'bush', solid: false, parts: ['body 0.78x0.5x0.78 grass*0.62', 'top 0.52x0.22x0.52 grass*0.92'] },
+      { id: 'tuft', solid: false, parts: ['blade 0.07x0.3-0.52x0.07 grass*0.85-1.35 (x3)'] },
+      { id: 'flower', solid: false, parts: ['stem 0.05x0.28x0.05', 'bloom 0.17x0.12x0.17 six colours'] },
+      { id: 'lamp', solid: false, parts: ['post 0.12x1.4x0.12', 'light 0.32 cube glowA'] },
+      { id: 'foam', solid: false, parts: ['strip 0.28x0.04x1 white 55%'] }
+    ]
+  };
+  var SKIN_COLORS = [''].concat(ASSET_CATALOG.items.map(function (item) { return item.color; }));
 
   /* Upgrade-NFT icon: the Arc Voxel "A" arch logo (blue to purple to pink) on a tile tinted by level, with one dot per level. */
   var LOGO_PATH = 'M14 94 L36 94 L38 66 C39 50 44 40 52 40 C60 40 64 50 65 66 L67 94 L90 94 L84 56 C80 26 66 8 50 8 C34 8 20 26 16 56 Z';
@@ -4218,7 +4257,7 @@
       + dots + '</svg>';
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
   }
-  var SKIN_COSTS = [0, 1000, 2000, 3000, 5000, 8000, 12000, 4000, 6000, 10000, 2500, 6000, 0];
+  var SKIN_COSTS = [0].concat(ASSET_CATALOG.items.map(function (item) { return item.costArcq; }));
   var HERO_UNLOCK_COST = 800;
 
   function panel(parent) {
@@ -5492,7 +5531,7 @@
         var fr = Math.max(0, fl.life / fl.max);
         fl.sprite.scale.setScalar(fl.size * (1.4 - fr * 0.9));
         fl.sprite.material.opacity = fr;
-        if (fl.life <= 0) { scene.remove(fl.sprite); fl.sprite.material.dispose(); flashes.splice(fi, 1); }
+        if (fl.life <= 0) { releaseFlash(fl); flashes.splice(fi, 1); }
       }
 
       if (upLevels.blades) {
@@ -5903,11 +5942,95 @@
     stars.position.set(camera.position.x, 0, camera.position.z);
   }
 
+  /* Optional cinematic mode: real depth of field and a depth-based ambient occlusion in one full-screen pass.
+     It is OFF by default (see Settings) and falls back to the normal render at the first sign of trouble. */
+  var postWanted = false;
+  try { postWanted = window.localStorage.getItem('arc-voxel-quest:post') === '1'; } catch (e) { /* ignore */ }
+  var post = { failed: false, rt: null, mat: null, scene: null, cam: null, size: new THREE.Vector2() };
+  renderer.debug.onShaderError = function () { post.failed = true; }; // a shader that does not compile switches the effect off
+  function postReady() {
+    if (post.mat) return true;
+    try {
+      renderer.getDrawingBufferSize(post.size);
+      var depthTex = new THREE.DepthTexture(post.size.x, post.size.y, THREE.UnsignedIntType);
+      post.rt = new THREE.WebGLRenderTarget(post.size.x, post.size.y, { depthBuffer: true, depthTexture: depthTex, samples: 4, type: renderer.extensions.has('EXT_color_buffer_float') ? THREE.HalfFloatType : THREE.UnsignedByteType });
+      post.mat = new THREE.ShaderMaterial({
+        uniforms: { tColor: { value: post.rt.texture }, tDepth: { value: depthTex }, uRes: { value: new THREE.Vector2(post.size.x, post.size.y) }, uNear: { value: camera.near }, uFar: { value: camera.far }, uFocus: { value: 34 }, uBlur: { value: 2.4 }, uAO: { value: 0.42 } },
+        vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+        fragmentShader: [
+          '#include <packing>',
+          'uniform sampler2D tColor; uniform sampler2D tDepth; uniform vec2 uRes; uniform float uNear; uniform float uFar; uniform float uFocus; uniform float uBlur; uniform float uAO;',
+          'varying vec2 vUv;',
+          'float linDepth(vec2 uv) { float d = texture2D(tDepth, uv).x; return -perspectiveDepthToViewZ(d, uNear, uFar); }',
+          'void main() {',
+          '  vec2 px = 1.0 / uRes;',
+          '  float dc = linDepth(vUv);',
+          '  float coc = smoothstep(14.0, 46.0, abs(dc - uFocus)) * uBlur;',
+          '  vec4 col = texture2D(tColor, vUv);',
+          '  if (coc > 0.25) {',
+          '    vec4 acc = col; float wsum = 1.0;',
+          '    for (int i = 0; i < 10; i++) {',
+          '      float a = float(i) * 2.399963;',
+          '      float r = sqrt((float(i) + 0.5) / 10.0) * coc;',
+          '      vec2 uv = vUv + vec2(cos(a), sin(a)) * r * px;',
+          '      float cs = smoothstep(14.0, 46.0, abs(linDepth(uv) - uFocus));',
+          '      float w = 0.12 + cs;',
+          '      acc += texture2D(tColor, uv) * w; wsum += w;',
+          '    }',
+          '    col = acc / wsum;',
+          '  }',
+          '  float occ = 0.0;',
+          '  for (int j = 0; j < 8; j++) {',
+          '    float a = float(j) * 0.785398;',
+          '    float diff = dc - linDepth(vUv + vec2(cos(a), sin(a)) * 3.0 * px);',
+          '    occ += smoothstep(0.15, 1.2, diff) * (1.0 - smoothstep(2.5, 6.0, diff));',
+          '  }',
+          '  col.rgb *= 1.0 - clamp(occ / 8.0, 0.0, 1.0) * uAO;',
+          '  gl_FragColor = vec4(col.rgb, col.a);',
+          '  #include <tonemapping_fragment>',
+          '  #include <colorspace_fragment>',
+          '}'
+        ].join('\n'),
+        depthTest: false, depthWrite: false
+      });
+      var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post.mat);
+      quad.frustumCulled = false;
+      post.scene = new THREE.Scene();
+      post.scene.add(quad);
+      post.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      return true;
+    } catch (error) {
+      post.failed = true;
+      return false;
+    }
+  }
+  function renderWithPost() {
+    if (!postWanted || lowFx || post.failed || !postReady()) { renderer.render(scene, camera); return; }
+    try {
+      post.mat.uniforms.uFocus.value = cameraDistance();
+      post.mat.uniforms.uNear.value = camera.near;
+      post.mat.uniforms.uFar.value = camera.far;
+      renderer.setRenderTarget(post.rt);
+      renderer.render(scene, camera);
+      renderer.setRenderTarget(null);
+      renderer.render(post.scene, post.cam);
+    } catch (error) {
+      post.failed = true;
+      renderer.setRenderTarget(null);
+      renderer.render(scene, camera);
+    }
+  }
+
   function resize() {
     var width = window.innerWidth || 1, heightPx = window.innerHeight || 1;
     renderer.setSize(width, heightPx, false);
     camera.aspect = width / heightPx;
     camera.updateProjectionMatrix();
+    if (post && post.rt) {
+      renderer.getDrawingBufferSize(post.size);
+      post.rt.setSize(post.size.x, post.size.y);
+      post.mat.uniforms.uRes.value.copy(post.size);
+    }
   }
   window.addEventListener('resize', resize);
   resize();
@@ -5917,6 +6040,15 @@
     var dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
     last = now;
     if (dt > 0) fps = lerp(fps, 1 / dt, 0.05);
+    if (phase === 'playing' && !paused && !levelUpChoices && dt > 0 && !autoLowDone && !lowFx) {
+      if (fps < 36) lowFpsTime += dt; else if (fps > 45) lowFpsTime = Math.max(0, lowFpsTime - dt * 2);
+      if (lowFpsTime > 5) { // five seconds of slow frames: switch to low graphics once, and say so
+        autoLowDone = true; lowFx = true;
+        try { window.localStorage.setItem('arc-voxel-quest:lowfx', '1'); } catch (e) { /* ignore */ }
+        applyPixelRatio(); resize(); applyCinematic();
+        showBanner(t('autoLow'));
+      }
+    }
     try {
       update(dt, now);
       placeCamera(dt);
@@ -5946,7 +6078,7 @@
       if (phase !== 'playing' && card.style.display !== 'none' && heroBox.style.display !== 'none') {
         renderHeroPreview(now, false);
       }
-      renderer.render(scene, camera);
+      renderWithPost();
     } catch (error) {
       reportError((error && error.message) || error);
       throw error;
@@ -6194,12 +6326,23 @@
       weapon: { kind: look.weapon, glow: look.glow || null }
     };
   }
+  var customAssets = { items: [], heroes: [], props: [] };
+  function allItems() { return ASSET_CATALOG.items.concat(customAssets.items); }
   window.ARC_VOXEL_ASSETS = {
-    version: 1,
+    version: ASSET_CATALOG.version,
     slots: PART_SLOTS,
-    heroes: HEROES.map(function (h) { return { id: h.id, nameEn: h.nameEn, weaponId: h.weaponId, parts: heroParts(h.id) }; }),
-    cosmetics: SKIN_COLORS.map(function (c, i) { return i ? { id: i, slot: i >= 10 ? 'effect' : 'clothing', color: c } : null; }).filter(Boolean),
-    collectibles: [{ id: 'coin', kind: 'pickup', color: '#ffcc33' }, { id: 'gem', kind: 'xp', color: '#34d399' }],
+    rarities: ASSET_CATALOG.rarities,
+    heroes: HEROES.map(function (h) { return { id: h.id, nameEn: h.nameEn, weaponId: h.weaponId, locked: h.id === 'lecter' || h.id === 'teddyz', parts: heroParts(h.id) }; }),
+    // Items players can own or equip: pickup upgrades, clothing skins and move trails.
+    items: allItems,
+    getItem: function (id) { return allItems().filter(function (item) { return item.id === id; })[0] || null; },
+    list: function (type) { return allItems().filter(function (item) { return !type || item.type === type; }); },
+    // Weapons: the ones heroes start with plus the ones found while levelling.
+    weapons: UPGRADE_POOL.filter(function (id) { return t('upgrades')[id] && !['vitality', 'magnet', 'overclock', 'critical', 'scholar'].includes(id); }).map(function (id) {
+      return { id: id, startsWith: HEROES.filter(function (h) { return h.weaponId === id; }).map(function (h) { return h.id; }) };
+    }),
+    collectibles: [{ id: 'coin', kind: 'pickup', color: '#ffcc33' }, { id: 'gem', kind: 'xp', color: '#34d399' }, { id: 'heart', kind: 'heal', color: '#ff4d6d' }],
+    props: ASSET_CATALOG.props,
     maps: MAPS.map(function (m) { return { id: m.id, shape: m.shape, style: m.style }; }),
     getHeroParts: heroParts,
     swapPart: swapHeroPart,
@@ -6209,6 +6352,28 @@
       var look = Object.assign({}, HERO_LOOKS[base] || HERO_LOOKS.toan_nhu);
       Object.keys(overrides || {}).forEach(function (slot) { Object.assign(look, overrides[slot]); });
       return look;
+    },
+    // Add an item (for example a future collab skin). Ids must be unique and colours valid. The call only registers data for the shop and renderer.
+    register: function (item) {
+      var problems = [];
+      if (!item || typeof item.id === 'undefined') problems.push('missing id');
+      else if (allItems().some(function (existing) { return existing.id === item.id; })) problems.push('duplicate id ' + item.id);
+      if (item && !/^#[0-9a-fA-F]{6}$/.test(item.color || '')) problems.push('color must be #rrggbb');
+      if (item && ASSET_CATALOG.rarities.indexOf(item.rarity) < 0) problems.push('unknown rarity');
+      if (problems.length) return { ok: false, problems: problems };
+      customAssets.items.push(Object.assign({ chainId: null }, item));
+      return { ok: true, problems: [] };
+    },
+    // Quick self-check used by tests and tooling.
+    validate: function () {
+      var problems = [], seen = {};
+      allItems().forEach(function (item) {
+        if (seen[item.id]) problems.push('duplicate id ' + item.id); seen[item.id] = true;
+        if (!/^#[0-9a-fA-F]{6}$/.test(item.color || '')) problems.push('bad colour on ' + item.id);
+        if (ASSET_CATALOG.rarities.indexOf(item.rarity) < 0) problems.push('bad rarity on ' + item.id);
+      });
+      HEROES.forEach(function (h) { if (!HERO_LOOKS[h.id]) problems.push('no look for hero ' + h.id); });
+      return problems;
     }
   };
 })();
