@@ -8856,7 +8856,7 @@ void main() {
   }
 
   var FONT = 'font-family:system-ui,-apple-system,"Segoe UI",sans-serif;';
-  var hud = el('div', 'position:fixed;inset:0;pointer-events:none;user-select:none;color:#eefaff;' + FONT + 'font-size:clamp(12px,1.8vmin,15px);text-shadow:0 2px 6px rgba(0,0,0,.55)');
+  var hud = el('div', 'position:fixed;inset:0;z-index:5;pointer-events:none;user-select:none;color:#eefaff;' + FONT + 'font-size:clamp(12px,1.8vmin,15px);text-shadow:0 2px 6px rgba(0,0,0,.55)');
 
   var topBar = el('div', 'position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:none;z-index:10', hud);
   var leftGroup = el('div', 'display:flex;align-items:center;gap:6px;flex-wrap:wrap', topBar);
@@ -8932,7 +8932,7 @@ void main() {
     setPanel.innerHTML = '';
     el('div', 'font-weight:800;color:#ffd166', setPanel).textContent = '⚙ ' + t('settingsTitle');
     [['lowGfx', lowFx, function (v) { lowFx = v; try { window.localStorage.setItem('arc-voxel-quest:lowfx', v ? '1' : '0'); } catch (e) { /* ignore */ } applyPixelRatio(); resize(); applyCinematic(); }],
-     ['postFx', postWanted, function (v) { postWanted = v; try { window.localStorage.setItem('arc-voxel-quest:post', v ? '1' : '0'); } catch (e) { /* ignore */ } if (v) post.failed = false; applyCinematic(); }],
+     ['postFx', postWanted, function (v) { postWanted = v; try { window.localStorage.setItem('arc-voxel-quest:post', v ? '1' : '0'); } catch (e) { /* ignore */ } if (v) fxPost.failed = false; applyCinematic(); }],
      ['dofMode', dofOn, function (v) { dofOn = v; try { window.localStorage.setItem('arc-voxel-quest:dof', v ? '1' : '0'); } catch (e) { /* ignore */ } applyCinematic(); }],
      ['cbMode', cbMode, function (v) { cbMode = v; try { window.localStorage.setItem('arc-voxel-quest:cbmode', v ? '1' : '0'); } catch (e) { /* ignore */ } updateContrastColors(activeMapSpec()); }]].forEach(function (o) {
       var row = el('label', 'display:flex;gap:8px;align-items:flex-start;cursor:pointer', setPanel);
@@ -12066,16 +12066,16 @@ void main() {
      It is OFF by default (see Settings) and falls back to the normal render at the first sign of trouble. */
   var postWanted = false;
   try { postWanted = window.localStorage.getItem('arc-voxel-quest:post') === '1'; } catch (e) { /* ignore */ }
-  var post = { failed: false, rt: null, mat: null, scene: null, cam: null, size: new THREE.Vector2() };
-  renderer.debug.onShaderError = function () { post.failed = true; }; // a shader that does not compile switches the effect off
+  var fxPost = { failed: false, rt: null, mat: null, scene: null, cam: null, size: new THREE.Vector2() };
+  renderer.debug.onShaderError = function () { fxPost.failed = true; }; // a shader that does not compile switches the effect off
   function postReady() {
-    if (post.mat) return true;
+    if (fxPost.mat) return true;
     try {
-      renderer.getDrawingBufferSize(post.size);
-      var depthTex = new THREE.DepthTexture(post.size.x, post.size.y, THREE.UnsignedIntType);
-      post.rt = new THREE.WebGLRenderTarget(post.size.x, post.size.y, { depthBuffer: true, depthTexture: depthTex, samples: 4, type: renderer.extensions.has('EXT_color_buffer_float') ? THREE.HalfFloatType : THREE.UnsignedByteType });
-      post.mat = new THREE.ShaderMaterial({
-        uniforms: { tColor: { value: post.rt.texture }, tDepth: { value: depthTex }, uRes: { value: new THREE.Vector2(post.size.x, post.size.y) }, uNear: { value: camera.near }, uFar: { value: camera.far }, uFocus: { value: 34 }, uBlur: { value: 2.4 }, uAO: { value: 0.42 } },
+      renderer.getDrawingBufferSize(fxPost.size);
+      var depthTex = new THREE.DepthTexture(fxPost.size.x, fxPost.size.y, THREE.UnsignedIntType);
+      fxPost.rt = new THREE.WebGLRenderTarget(fxPost.size.x, fxPost.size.y, { depthBuffer: true, depthTexture: depthTex, samples: 4, type: renderer.extensions.has('EXT_color_buffer_float') ? THREE.HalfFloatType : THREE.UnsignedByteType });
+      fxPost.mat = new THREE.ShaderMaterial({
+        uniforms: { tColor: { value: fxPost.rt.texture }, tDepth: { value: depthTex }, uRes: { value: new THREE.Vector2(fxPost.size.x, fxPost.size.y) }, uNear: { value: camera.near }, uFar: { value: camera.far }, uFocus: { value: 34 }, uBlur: { value: 2.4 }, uAO: { value: 0.42 } },
         vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
         fragmentShader: [
           '#include <packing>',
@@ -12113,29 +12113,29 @@ void main() {
         ].join('\n'),
         depthTest: false, depthWrite: false
       });
-      var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post.mat);
+      var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fxPost.mat);
       quad.frustumCulled = false;
-      post.scene = new THREE.Scene();
-      post.scene.add(quad);
-      post.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      fxPost.scene = new THREE.Scene();
+      fxPost.scene.add(quad);
+      fxPost.cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       return true;
     } catch (error) {
-      post.failed = true;
+      fxPost.failed = true;
       return false;
     }
   }
   function renderWithPost() {
-    if (!postWanted || lowFx || post.failed || !postReady()) { renderer.render(scene, camera); return; }
+    if (!postWanted || lowFx || fxPost.failed || !postReady()) { renderer.render(scene, camera); return; }
     try {
-      post.mat.uniforms.uFocus.value = cameraDistance();
-      post.mat.uniforms.uNear.value = camera.near;
-      post.mat.uniforms.uFar.value = camera.far;
-      renderer.setRenderTarget(post.rt);
+      fxPost.mat.uniforms.uFocus.value = cameraDistance();
+      fxPost.mat.uniforms.uNear.value = camera.near;
+      fxPost.mat.uniforms.uFar.value = camera.far;
+      renderer.setRenderTarget(fxPost.rt);
       renderer.render(scene, camera);
       renderer.setRenderTarget(null);
-      renderer.render(post.scene, post.cam);
+      renderer.render(fxPost.scene, fxPost.cam);
     } catch (error) {
-      post.failed = true;
+      fxPost.failed = true;
       renderer.setRenderTarget(null);
       renderer.render(scene, camera);
     }
@@ -12146,10 +12146,10 @@ void main() {
     renderer.setSize(width, heightPx, false);
     camera.aspect = width / heightPx;
     camera.updateProjectionMatrix();
-    if (post && post.rt) {
-      renderer.getDrawingBufferSize(post.size);
-      post.rt.setSize(post.size.x, post.size.y);
-      post.mat.uniforms.uRes.value.copy(post.size);
+    if (fxPost && fxPost.rt) {
+      renderer.getDrawingBufferSize(fxPost.size);
+      fxPost.rt.setSize(fxPost.size.x, fxPost.size.y);
+      fxPost.mat.uniforms.uRes.value.copy(fxPost.size);
     }
   }
   window.addEventListener('resize', resize);
