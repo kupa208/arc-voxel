@@ -606,7 +606,9 @@ async function route(req, url, srv) {
         if (googleOn) google = { enabled: true, appId, clientId: googleClientId }
       } catch (e) { console.warn('[email] could not read the Circle app id:', redact(e).split('\n')[0].slice(0, 160)) }
     }
-    return json({ assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, google, saveRule: { minSeconds: MIN_SAVE_SECONDS, minPoints: MIN_SAVE_POINTS }, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
+    let gameContract = ''
+    try { gameContract = await contractAddress() } catch { /* the admin page shows it as unknown */ }
+    return json({ contract: gameContract, assetVersion: assetVersion(), walletConnectProjectId, passkey: { enabled: Boolean(circleClientKey), clientKey: circleClientKey, clientUrl: CIRCLE_CLIENT_URL }, email, google, saveRule: { minSeconds: MIN_SAVE_SECONDS, minPoints: MIN_SAVE_POINTS }, blockchain: 'ARC-TESTNET', relay: { enabled: Boolean(relayer), address: relayer ? relayer.address : '' } })
   }
   if (m === 'GET' && p === '/vendor/circle-sdk.js') {
     return fileResponse(join(root, 'vendor', 'circle-sdk.js'), 'text/javascript; charset=utf-8', 'no-cache')
@@ -667,6 +669,10 @@ async function route(req, url, srv) {
   if (m === 'GET' && p === '/og.png') return fileResponse(join(root, 'vendor', 'og.png'), 'image/png', 'public, max-age=3600')
   if (m === 'GET' && (p === '/' || p === '/index.html')) {
     return fileResponse(join(root, 'index.html'), 'text/html; charset=utf-8', 'no-store')
+  }
+
+  if (m === 'GET' && /^\/(terms|privacy|admin)(\.html)?$/.test(p)) {
+    return fileResponse(join(root, 'pages', p.replace(/^\/|\.html$/g, '') + '.html'), 'text/html; charset=utf-8', 'no-cache')
   }
 
   if (testAuth && m === 'POST' && p === '/api/test/session') {

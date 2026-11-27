@@ -23,6 +23,8 @@ Built with [Arc Studio](https://studio.arc.io)
 - **Game modes:** Ranked (saved onchain), Endless (no end, a heal every 5 waves) and Boss Rush (5 bosses in a row, fastest time wins). Endless and Boss Rush have their own boards kept by the game server, not onchain.
 - **Leaderboards:** all time, today, this week and a friends board (add friends by wallet address or nickname).
 - **Save rule:** a run is saved onchain only if it lasted 60 seconds or reached 200 points.
+- **Settings (⚙):** low graphics for phones and a colour-blind mode for enemy bullets. Terms and privacy pages are at `/terms` and `/privacy`.
+- **Guardian admin page** at `/admin`: pause or resume the game and change the ticket signer with the guardian wallet.
 - **Share** your score as an image with a link to your transaction, or post it on X.
 
 ## Tech stack

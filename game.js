@@ -632,6 +632,8 @@
       enemyNew: '⚠️ New threat: {name}', enemyNames: { swarmer: 'Swarmers (fast and fragile)', bruiser: 'Bruiser (slow tank)', splitter: 'Splitter (splits when killed)' },
       bossEnraged: '🔥 {boss} is enraged!', bossReward: '🎁 Boss reward: +1 heart and bonus coins!', levelUpBanner: '⬆️ LEVEL UP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Attack', pathDef: 'Defense', pathGrow: 'Growth',
+      settingsTitle: 'Settings', lowGfx: 'Low graphics (smoother on phones)', cbMode: 'Colour-blind mode (white bullets with a bold dark outline)',
+      mapHpNote: 'enemies +{p}% health', legalTerms: 'Terms', legalPrivacy: 'Privacy',
       patPack: '⚠️ A pack is closing in', patPincer: '⚠️ Pincer! Enemies from both sides', patRing: '⚠️ Surrounded! Break the ring',
       modeSaving: 'Sending your result to the board...', modeNewBest: 'Saved: a new best on this board!', modeKeptBest: 'Sent. Your best on this board is still higher.',
       modeFailed: 'Could not save to the board:', modeNoResult: 'Too short to rank: reach wave 2 (Endless) or defeat a boss (Boss Rush).',
@@ -1001,6 +1003,8 @@
       enemyNew: '⚠️ Quái mới: {name}', enemyNames: { swarmer: 'Bầy nhỏ (nhanh và mỏng)', bruiser: 'Tướng giáp (chậm, trâu)', splitter: 'Quái phân thân (chết thì tách đôi)' },
       bossEnraged: '🔥 {boss} nổi cơn thịnh nộ!', bossReward: '🎁 Quà boss: +1 tim và thêm xu!', levelUpBanner: '⬆️ LÊN CẤP!', comboUp: 'COMBO ×{n}!',
       pathOff: 'Tấn công', pathDef: 'Phòng thủ', pathGrow: 'Phát triển',
+      settingsTitle: 'Cài đặt', lowGfx: 'Đồ họa thấp (mượt hơn trên điện thoại)', cbMode: 'Chế độ mù màu (đạn trắng, viền tối đậm)',
+      mapHpNote: 'quái +{p}% máu', legalTerms: 'Điều khoản', legalPrivacy: 'Quyền riêng tư',
       patPack: '⚠️ Một đàn quái đang áp sát', patPincer: '⚠️ Gọng kìm! Quái đến từ hai phía', patRing: '⚠️ Bị bao vây! Hãy phá vòng vây',
       modeSaving: 'Đang gửi kết quả lên bảng...', modeNewBest: 'Đã lưu: kỷ lục mới trên bảng này!', modeKeptBest: 'Đã gửi. Kỷ lục của bạn trên bảng này vẫn cao hơn.',
       modeFailed: 'Không lưu được lên bảng:', modeNoResult: 'Quá ngắn để xếp hạng: đạt wave 2 (Vô tận) hoặc hạ một boss (Boss Rush).',
@@ -1245,7 +1249,10 @@
     window.__gameState = function () { return { phase: 'error', score: 0, renderer: 'none' }; };
     return;
   }
-  renderer.setPixelRatio(Math.min(window.innerWidth < 820 ? 1.5 : 2, window.devicePixelRatio || 1)); // a lower cap on phones keeps the game smooth
+  function applyPixelRatio() { renderer.setPixelRatio(lowFx ? 1 : Math.min(window.innerWidth < 820 ? 1.5 : 2, window.devicePixelRatio || 1)); } // a lower cap on phones keeps the game smooth
+  var lowFxEarly = false;
+  try { lowFxEarly = window.localStorage.getItem('arc-voxel-quest:lowfx') === '1'; } catch (e) { /* ignore */ }
+  renderer.setPixelRatio(lowFxEarly ? 1 : Math.min(window.innerWidth < 820 ? 1.5 : 2, window.devicePixelRatio || 1));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1434,6 +1441,7 @@
     var gs = colorStats(mp.grass);
     var warm = gs.s >= 0.25 && (gs.h < 0.14 || gs.h > 0.94);
     hostileHex = warm ? '#00e1ff' : '#ff2e4d';
+    if (cbMode) hostileHex = '#ffffff'; // colour-blind mode: judged by brightness and a heavy outline, not by hue
     var gems = ['#34d399', '#38bdf8', '#c084fc', '#f0abfc', '#ffffff'].filter(function (g) {
       var a = colorStats(g), b = colorStats(hostileHex), d = Math.abs(a.h - b.h); d = d > 0.5 ? 1 - d : d;
       return a.s < 0.1 || d > 0.12; // a gem never shares a hue with the bullets
@@ -2339,10 +2347,20 @@
     }
     var skinHex = skinTintHex();
     if (skinHex && !body.userData.sprite) {
-      // Equipped skin (soulbound NFT): tint a private copy of every material of the hero model.
-      var skinColor = new THREE.Color(skinHex);
+      // Equipped skin: recolour only the clothes (coat, inner layer, trim and scarf), so the face, hair and trousers stay as they were.
+      var look = HERO_LOOKS[hSpec.id] || HERO_LOOKS.toan_nhu;
+      var hexKey = function (c) { return new THREE.Color(c).getHexString(); };
+      var baseC = new THREE.Color(skinHex), recolor = {};
+      if (look.coat) recolor[hexKey(look.coat)] = baseC;
+      if (look.coatDark) recolor[hexKey(look.coatDark)] = baseC.clone().multiplyScalar(0.55);
+      if (look.inner) recolor[hexKey(look.inner)] = baseC.clone().multiplyScalar(0.8);
+      if (look.trim) recolor[hexKey(look.trim)] = baseC.clone().lerp(new THREE.Color('#ffffff'), 0.5);
+      if (look.scarf) recolor[hexKey(look.scarf)] = baseC;
       body.traverse(function (n) {
-        if (n.material && n.material.color) { n.material = n.material.clone(); n.material.color.lerp(skinColor, 0.5); }
+        if (n.material && n.material.color) {
+          var target = recolor[n.material.color.getHexString()];
+          if (target) { n.material = n.material.clone(); n.material.color.copy(target); }
+        }
       });
     }
     hero.node.add(body);
@@ -2386,6 +2404,7 @@
   for (var sp = 0; sp < SPARKS; sp++) sparks.push({ life: 0, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0 });
   scene.add(sparkMesh);
   function burst(x, y, z, count) {
+    if (lowFx) count = Math.ceil((count || 14) / 2);
     var made = 0;
     for (var i = 0; i < SPARKS && made < (count || 14); i++) {
       var p = sparks[i];
@@ -2574,6 +2593,21 @@
   var langBtn = el('button', '', rightGroup); langBtn.className = 'avq-btn'; stopPtr(langBtn);
   var soundBtn = el('button', '', rightGroup); soundBtn.className = 'avq-btn'; stopPtr(soundBtn);
   var pauseBtn = el('button', 'display:none', rightGroup); pauseBtn.className = 'avq-btn'; pauseBtn.textContent = '⏸'; stopPtr(pauseBtn);
+  var gearBtn = el('button', '', rightGroup); gearBtn.className = 'avq-btn'; gearBtn.textContent = '⚙'; stopPtr(gearBtn);
+  var setPanel = el('div', 'position:fixed;top:calc(54px + env(safe-area-inset-top,0px));right:10px;width:min(300px,calc(100vw - 20px));display:none;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(9,18,40,.96);border:1px solid rgba(120,230,255,.35);pointer-events:auto;z-index:40;font-size:13px', hud);
+  stopPtr(setPanel);
+  function renderSettings() {
+    setPanel.innerHTML = '';
+    el('div', 'font-weight:800;color:#ffd166', setPanel).textContent = '⚙ ' + t('settingsTitle');
+    [['lowGfx', lowFx, function (v) { lowFx = v; try { window.localStorage.setItem('arc-voxel-quest:lowfx', v ? '1' : '0'); } catch (e) { /* ignore */ } applyPixelRatio(); resize(); }],
+     ['cbMode', cbMode, function (v) { cbMode = v; try { window.localStorage.setItem('arc-voxel-quest:cbmode', v ? '1' : '0'); } catch (e) { /* ignore */ } updateContrastColors(activeMapSpec()); }]].forEach(function (o) {
+      var row = el('label', 'display:flex;gap:8px;align-items:flex-start;cursor:pointer', setPanel);
+      var chk = el('input', 'margin-top:3px', row); chk.type = 'checkbox'; chk.checked = o[1];
+      el('span', '', row).textContent = t(o[0]);
+      chk.onchange = function () { o[2](chk.checked); };
+    });
+  }
+  gearBtn.onclick = function () { if (setPanel.style.display === 'flex') setPanel.style.display = 'none'; else { renderSettings(); setPanel.style.display = 'flex'; } };
   var helpBtn = el('button', '', rightGroup); helpBtn.className = 'avq-btn'; helpBtn.textContent = '❔'; stopPtr(helpBtn);
   helpBtn.onclick = function () { if (phase === 'playing' && !paused) setPaused(true); openTutorial(); };
   var web3Btn = el('button', '', rightGroup); web3Btn.className = 'avq-btn'; stopPtr(web3Btn);
@@ -2775,6 +2809,9 @@
   var cardLbTitle = el('div', 'font-weight:800;font-size:12.5px;color:#ffd166;margin-bottom:6px', cardLbBox);
   var cardLbTable = el('table', '', cardLbBox); cardLbTable.className = 'avq-lb';
   var cardHint = el('div', 'margin-top:8px;font-size:11.5px;opacity:.76;line-height:1.35', card);
+  var legalEl = el('div', 'margin-top:6px;font-size:11px;opacity:.65;text-align:center', card);
+  var legalTerms = el('a', 'color:#63f7ff;margin:0 8px', legalEl); legalTerms.href = '/terms'; legalTerms.target = '_blank'; legalTerms.rel = 'noreferrer';
+  var legalPrivacy = el('a', 'color:#63f7ff;margin:0 8px', legalEl); legalPrivacy.href = '/privacy'; legalPrivacy.target = '_blank'; legalPrivacy.rel = 'noreferrer';
 
   // Level-up 1-of-3 Modal
   var lvlOverlay = el('div', 'position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(350px,calc(100vw - 124px));max-height:70vh;overflow-y:auto;display:none;flex-direction:column;pointer-events:auto;z-index:25', hud);
@@ -2948,8 +2985,9 @@
     var bossName = lang === 'vi' ? curMap.boss.nameVi : curMap.boss.nameEn;
     var mobNames = lang === 'vi' ? curMap.mobs.namesVi : curMap.mobs.namesEn;
     var diff = { plateau: 1, island: 1, glacier: 2, caldera: 2, cross: 3 }[curMap.shape] || 2;
+    var hpPct = { glacier: 12, caldera: 12, cross: 25 }[curMap.shape] || 0;
     var layoutKey = { plateau: 'mapLayoutPlateau', island: 'mapLayoutIsland', glacier: 'mapLayoutGlacier', caldera: 'mapLayoutCaldera', cross: 'mapLayoutCross' }[curMap.shape] || 'mapLayoutIsland';
-    if (typeof mapDescEl !== 'undefined') mapDescEl.textContent = (lang === 'vi' ? '🐾 Quái: ' : '🐾 Mobs: ') + mobNames + ' · Boss: ' + bossName + ' · ' + t('mapDifficulty') + ' ' + '★'.repeat(diff) + '☆'.repeat(3 - diff) + ' · ' + t(layoutKey);
+    if (typeof mapDescEl !== 'undefined') mapDescEl.textContent = (lang === 'vi' ? '🐾 Quái: ' : '🐾 Mobs: ') + mobNames + ' · Boss: ' + bossName + ' · ' + t('mapDifficulty') + ' ' + '★'.repeat(diff) + '☆'.repeat(3 - diff) + ' · ' + t(layoutKey) + (hpPct ? ' · ' + fill(t('mapHpNote'), { p: hpPct }) : '');
     if (typeof mapEl !== 'undefined') mapEl.textContent = '🗺️ ' + (lang === 'vi' ? curMap.nameVi : curMap.nameEn);
   }
 
@@ -3119,8 +3157,9 @@
     if (!p) return;
     var mp = activeMapSpec();
     var tier = getThreatTier(wave);
-    var wScale = 1 + tier.hpBonus + (wave - 1) * 0.24;
-    var spdScale = Math.min(tier.spdCap, 1 + (wave - 1) * 0.09);
+    var dm = { plateau: 1, island: 1, glacier: 1.12, caldera: 1.12, cross: 1.25 }[mp.shape] || 1; // harder layouts: tougher enemies
+    var wScale = (1 + tier.hpBonus + (wave - 1) * 0.24) * dm;
+    var spdScale = Math.min(tier.spdCap, 1 + (wave - 1) * 0.09) * (1 + (dm - 1) * 0.4);
     var isElite = kind !== 'boss' && Math.random() < tier.eliteChance;
     var eMultHp = isElite ? 2.4 : 1.0;
     var eMultSize = isElite ? 1.32 : 1.0;
@@ -3210,6 +3249,7 @@
   }
 
   function spawnPopup(worldX, worldY, worldZ, text, col, small) {
+    if (lowFx && small) return;
     if (popups.length > (small ? 12 : 18)) return;
     var node = document.createElement('div');
     node.className = 'avq-pop';
@@ -3299,7 +3339,7 @@
   /* A quick additive flash: grows while it fades. */
   var flashes = [];
   function spawnFlash(x, y, z, col, size, dur) {
-    if (flashes.length > 14) return;
+    if (lowFx || flashes.length > 40) return;
     var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: col, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 1 }));
     sp.position.set(x, y, z); sp.scale.setScalar(size * 0.5);
     scene.add(sp);
@@ -3331,6 +3371,7 @@
       var dealt = Math.max(1, Math.round(dmg));
       spawnPopup(e.x + (Math.random() - 0.5) * 0.8, e.y + 1.9, e.z, (crit ? '💥' : '') + dealt, crit ? '#ffd166' : (dealt >= 6 ? '#ffb4a2' : '#ffffff'), true);
       if (Math.random() < 0.5) burst(e.x, e.y + 0.9, e.z, 2);
+      spawnFlash(e.x, e.y + 1.0, e.z, '#ffffff', 1.2, 0.12); // a white hit flash
     }
     if ((kx || kz) && e.kind !== 'boss') moveOnIsland(e, kx, kz, 0.35);
     if (e.hp <= 0) {
@@ -3412,7 +3453,7 @@
     mesh.position.set(hero.x, hero.y + 0.9, hero.z);
     scene.add(mesh);
     projectiles.push({
-      x: hero.x, z: hero.z, vx: vx, vz: vz, dmg: dmg, kind: k, pierce: pierce || 1,
+      x: hero.x, z: hero.z, vx: vx, vz: vz, dmg: dmg, kind: k, pierce: pierce || 1, color: colorHex, trailT: 0,
       homing: Boolean(homing), explosive: Boolean(explosive), life: 1.8, hitIds: [], mesh: mesh,
     });
   }
@@ -3421,6 +3462,7 @@
   function spawnEnemyBullet(x, z, vx, vz, colorHex) {
     var hex = hostileHex;
     var m = EB_MATS[hex];
+    var scaleK = cbMode ? 1.6 : 1;
     if (!m) {
       m = EB_MATS[hex] = {
         core: new THREE.MeshPhongMaterial({ color: hex, emissive: hex, emissiveIntensity: 0.85, shininess: 80, flatShading: true }),
@@ -3430,10 +3472,11 @@
       };
     }
     var mesh = new THREE.Mesh(EBULLET_GEO, m.core); // a 3D orb with a dark outline, a white hot centre and a halo
-    var outline = new THREE.Mesh(EBULLET_GEO, m.outline); outline.scale.setScalar(1.18);
-    var hot = new THREE.Mesh(EBULLET_GEO, m.bright); hot.scale.setScalar(0.35);
+    var outline = new THREE.Mesh(EBULLET_GEO, m.outline); outline.scale.setScalar(cbMode ? 1.7 : 1.18);
+    var hot = new THREE.Mesh(EBULLET_GEO, m.bright); hot.scale.setScalar(cbMode ? 0.7 : 0.35);
     var halo = new THREE.Sprite(m.halo); halo.scale.set(0.6, 0.6, 1);
     mesh.add(outline, hot, halo);
+    if (cbMode) mesh.scale.setScalar(scaleK);
     mesh.position.set(x, (groundAt(x, z) || 1) + 1.0, z);
     scene.add(mesh);
     enemyBullets.push({ x: x, z: z, vx: vx, vz: vz, life: 3.4, mesh: mesh, seed: Math.random() * 6 });
@@ -3566,6 +3609,7 @@
     web3Btn.className = connected ? 'avq-btn' : 'avq-btn pri';
     var skinNow = skinTintHex();
     if (skinNow !== lastSkinTint) { lastSkinTint = skinNow; if (phase !== 'playing') rebuildHeroMesh(); }
+    legalTerms.textContent = t('legalTerms'); legalPrivacy.textContent = t('legalPrivacy');
     heroBoxLbl.textContent = t('chooseHero');
     mapBoxLbl.textContent = t('chooseMap');
     if (typeof roadmapEl !== 'undefined') roadmapEl.textContent = t('roadmapLabel');
@@ -3697,6 +3741,12 @@
   var runGuest = false;
   var gameMode = 'normal', runMode = 'normal';
   var fxTrailT = 0, coinPulseT = 0;
+  var lowFx = false, cbMode = false;
+  try {
+    var savedLow = window.localStorage.getItem('arc-voxel-quest:lowfx');
+    lowFx = savedLow === null ? Boolean(window.matchMedia && window.matchMedia('(pointer:coarse)').matches && window.innerWidth < 820) : savedLow === '1';
+    cbMode = window.localStorage.getItem('arc-voxel-quest:cbmode') === '1';
+  } catch (e) { /* ignore */ }
   try { var savedMode = window.localStorage.getItem('arc-voxel-quest:mode'); if (savedMode === 'endless' || savedMode === 'bossrush') gameMode = savedMode; } catch (e) { /* ignore */ }
   var BOSS_RUSH_COUNT = 5;
   var bossesKilled = 0, bossRushDone = false, bossRushMs = 0, modeStatusText = '';
@@ -5070,7 +5120,7 @@
       spawnTimer += dt;
       var curTier = getThreatTier(wave);
       var curSpawnEvery = Math.max(curTier.spawnFloor, R.enemySpawnEvery - (wave - 1) * 0.09);
-      var waveMaxEnemies = Math.min(runMode === 'endless' ? 96 : 66, Math.round(curTier.maxMobs + (wave - 1) * 2.4)); // density grows gradually with the wave
+      var waveMaxEnemies = Math.min(runMode === 'endless' ? 96 : 66, Math.round(curTier.maxMobs + (wave - 1) * 2.4)) * (lowFx ? 0.7 : 1); // density grows gradually with the wave
       if (runMode === 'bossrush') waveMaxEnemies = 0; // only bosses
       // Waves 1-2 are gentler: 4 seconds with no spawns, about a third fewer mobs.
       if (wave <= 2) { curSpawnEvery /= 0.65; waveMaxEnemies = Math.round(waveMaxEnemies * 0.65); }
@@ -5256,6 +5306,8 @@
       for (var pi = projectiles.length - 1; pi >= 0; pi--) {
         var pr = projectiles[pi];
         pr.life -= dt;
+        pr.trailT -= dt; // a short glowing trail behind every shot
+        if (pr.trailT <= 0) { pr.trailT = 0.05; spawnFlash(pr.x, hero.y + 0.9, pr.z, pr.color || '#ffffff', 0.75, 0.2); }
         if (pr.homing) {
           var ht = nearestEnemy(15);
           if (ht) {
@@ -5288,6 +5340,7 @@
               pr.pierce -= 1;
               if (pr.explosive) {
                 burst(pr.x, targetE.y + 0.9, pr.z, 12);
+                spawnFlash(pr.x, targetE.y + 0.9, pr.z, '#ffb26b', 5, 0.25);
                 spawnFxRing(pr.x, (groundAt(pr.x, pr.z) || 1) + 0.25, pr.z, '#ff6b35', 0.8, 4.8, 0.3, false);
                 for (var ek = enemies.length - 1; ek >= 0; ek--) {
                   if (Math.hypot(enemies[ek].x - pr.x, enemies[ek].z - pr.z) < 3.1) {
@@ -5310,7 +5363,7 @@
         eb.life -= dt;
         eb.x += eb.vx * dt; eb.z += eb.vz * dt;
         eb.mesh.position.set(eb.x, (groundAt(eb.x, eb.z) || 1) + 1.0, eb.z);
-        eb.mesh.scale.setScalar(1 + Math.sin(tNow * 16 + eb.seed) * 0.08);
+        eb.mesh.scale.setScalar((cbMode ? 1.6 : 1) * (1 + Math.sin(tNow * 16 + eb.seed) * 0.08));
         if (Math.hypot(eb.x - hero.x, eb.z - hero.z) < 0.65) {
           scene.remove(eb.mesh); enemyBullets.splice(ebi, 1);
           triggerHeroDamage((eb.vx * 0.08), (eb.vz * 0.08));

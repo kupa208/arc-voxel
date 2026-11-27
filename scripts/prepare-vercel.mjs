@@ -13,5 +13,6 @@ await rm(out, { recursive: true, force: true })
 await mkdir(join(out, 'vendor'), { recursive: true })
 await copyFile(join(root, 'index.html'), join(out, 'index.html'))
 for (const f of ['passkey.js', 'walletconnect.js', 'circle-sdk.js']) await copyFile(join(root, 'vendor', f), join(out, 'vendor', f))
+for (const f of ['terms.html', 'privacy.html', 'admin.html']) await copyFile(join(root, 'pages', f), join(out, f))
 try { await copyFile(join(root, 'vendor', 'og.png'), join(out, 'og.png')) } catch { /* optional link preview image */ }
 console.log('public/ ready')
